@@ -83,7 +83,7 @@ char const* files[] = {
   MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
 };
 
-TEST_CASE("dense maros meszaros using the api")
+TEST_CASE("ProxQP: dense maros meszaros using the api")
 {
   using T = double;
   using isize = dense::isize;

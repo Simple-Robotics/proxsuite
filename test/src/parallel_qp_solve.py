@@ -56,6 +56,7 @@ class ParallelWrapper(unittest.TestCase):
     # TESTS OF GENERAL METHODS OF THE API
 
     def test_dense_parallel(self):
+        print("------------------------ ProxQP: dense_parallel")
         n = 10  # dimension
         batch_size = 4
         qps = []
@@ -106,6 +107,7 @@ class ParallelWrapper(unittest.TestCase):
             assert np.allclose(qps[i].results.x, qps_compare[i].results.x, rtol=1e-8)
 
     def test_dense_parallel_custom_BatchQP(self):
+        print("------------------------ ProxQP: dense_parallel_custom_BatchQP")
         n = 10  # dimension
         batch_size = 4
         qps = []
@@ -155,6 +157,7 @@ class ParallelWrapper(unittest.TestCase):
             assert np.allclose(qps[i].results.x, qp_vector.get(i).results.x, rtol=1e-8)
 
     def test_sparse_parallel_custom_BatchQP(self):
+        print("------------------------ ProxQP: sparse_parallel_custom_BatchQP")
         n = 10  # dimension
         batch_size = 4
         qps = []

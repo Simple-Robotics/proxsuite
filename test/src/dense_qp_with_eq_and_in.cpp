@@ -13,13 +13,13 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::common;
 
-DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and inequality constraints "
-  "and increasing dimension using wrapper API")
+DOCTEST_TEST_CASE("ProxQP: sparse random strongly convex qp with equality and "
+                  "inequality constraints "
+                  "and increasing dimension using wrapper API")
 {
 
   std::cout
-    << "---testing sparse random strongly convex qp with equality and "
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
        "inequality constraints and increasing dimension using wrapper API---"
     << std::endl;
   T sparsity_factor = 0.15;
@@ -66,14 +66,15 @@ DOCTEST_TEST_CASE(
   }
 }
 
-DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
-                  "constraints and increasing dimension using the API")
+DOCTEST_TEST_CASE(
+  "ProxQP: sparse random strongly convex qp with box inequality "
+  "constraints and increasing dimension using the API")
 {
 
-  std::cout
-    << "---testing sparse random strongly convex qp with box inequality "
-       "constraints and increasing dimension using the API---"
-    << std::endl;
+  std::cout << "---ProxQP: testing sparse random strongly convex qp with box "
+               "inequality "
+               "constraints and increasing dimension using the API---"
+            << std::endl;
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
@@ -116,14 +117,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
   }
 }
 
-DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
-                  "constraints and increasing dimension using the API")
+DOCTEST_TEST_CASE(
+  "ProxQP: sparse random not strongly convex qp with inequality "
+  "constraints and increasing dimension using the API")
 {
 
-  std::cout
-    << "---testing sparse random not strongly convex qp with inequality "
-       "constraints and increasing dimension using the API---"
-    << std::endl;
+  std::cout << "---ProxQP: testing sparse random not strongly convex qp with "
+               "inequality "
+               "constraints and increasing dimension using the API---"
+            << std::endl;
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
@@ -166,12 +168,13 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
   }
 }
 
-DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
-                  "constraints and increasing dimension using the API")
+DOCTEST_TEST_CASE(
+  "ProxQP: sparse random strongly convex qp with degenerate inequality "
+  "constraints and increasing dimension using the API")
 {
 
   std::cout
-    << "---testing sparse random strongly convex qp with degenerate "
+    << "---ProxQP: testing sparse random strongly convex qp with degenerate "
        "inequality constraints and increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.45;
@@ -222,13 +225,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
   }
 }
 
-DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
-                  "increasing dimension using the API")
+DOCTEST_TEST_CASE(
+  "ProxQP: linear problem with equality inequality constraints and "
+  "increasing dimension using the API")
 {
   srand(1);
-  std::cout << "---testing linear problem with inequality constraints and "
-               "increasing dimension using the API---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing linear problem with inequality constraints and "
+       "increasing dimension using the API---"
+    << std::endl;
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);

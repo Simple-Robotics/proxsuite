@@ -12,7 +12,7 @@
 using namespace proxsuite;
 using Scalar = double;
 
-DOCTEST_TEST_CASE("ruiz preconditioner")
+DOCTEST_TEST_CASE("ProxQP: ruiz preconditioner")
 {
   int dim = 5;
   int n_eq = 6;

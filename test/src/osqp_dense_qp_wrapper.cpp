@@ -14,10 +14,11 @@ using namespace proxsuite;
 using namespace proxsuite::common;
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with inequality constraints"
+  "OSQP: :dense: sparse random strongly convex qp with inequality constraints"
   "and empty equality constraints")
 {
-  // std::cout << "---testing sparse random strongly convex qp with inequality "
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // inequality "
   //  "constraints "
   //  "and empty equality constraints---"
   //  << std::endl;
@@ -164,10 +165,11 @@ DOCTEST_TEST_CASE(
   //  << qp.results.info.solve_time << std::endl;
 }
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test update H")
 {
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test update H---"
   //  << std::endl;
@@ -300,11 +302,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test update A")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test update A---"
   //  << std::endl;
@@ -438,11 +441,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test update C")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test update C---"
   //  << std::endl;
@@ -576,11 +580,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test update b")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test update b---"
   //  << std::endl;
@@ -714,11 +719,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test update u")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test update u---"
   //  << std::endl;
@@ -855,11 +861,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test update g")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test update g---"
   //  << std::endl;
@@ -992,12 +999,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and inequality "
+  "OSQP:  sparse random strongly convex qp with equality and inequality "
   "constraints: test update H and A and b and u and l")
 {
 
   // std::cout
-  //  << "---testing sparse random strongly convex qp with equality and "
+  //  << "---OSQP:  testing sparse random strongly convex qp with equality and "
   //  "inequality constraints: test update H and A and b and u and l---"
   //  << std::endl;
   double sparsity_factor = 0.15;
@@ -1145,11 +1152,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test update rho")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test update rho---"
   //  << std::endl;
@@ -1280,11 +1288,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test update mu_eq and mu_in")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test update mu_eq and mu_in---"
   //  << std::endl;
@@ -1418,11 +1427,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test warm starting")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test warm starting---"
   //  << std::endl;
@@ -1542,11 +1552,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test dense init")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test dense init---"
   //  << std::endl;
@@ -1591,11 +1602,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test with no initial guess")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test with no initial guess---"
   //  << std::endl;
@@ -1680,12 +1692,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "OSQP:  sparse random strongly convex qp with equality and "
   "inequality constraints: test with equality constrained initial guess")
 {
 
   // std::cout
-  //  << "---testing sparse random strongly convex qp with equality and "
+  //  << "---OSQP:  testing sparse random strongly convex qp with equality and "
   //  "inequality constraints: test with equality constrained initial guess---"
   //  << std::endl;
   double sparsity_factor = 0.15;
@@ -1771,12 +1783,13 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "OSQP:  sparse random strongly convex qp with equality and "
   "inequality constraints: test with warm start with previous result")
 {
 
   // // std::cout
-  // //  << "---testing sparse random strongly convex qp with equality and "
+  // //  << "---OSQP:  testing sparse random strongly convex qp with equality
+  // and "
   // //  "inequality constraints: test with warm start with previous result---"
   // //  << std::endl;
   double sparsity_factor = 0.15;
@@ -1900,11 +1913,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test with cold start option")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test with cold start option---"
   //  << std::endl;
@@ -2029,12 +2043,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "OSQP:  sparse random strongly convex qp with equality and "
   "inequality constraints: test equilibration options at initialization")
 {
 
   // std::cout
-  //  << "---testing sparse random strongly convex qp with equality and "
+  //  << "---OSQP:  testing sparse random strongly convex qp with equality and "
   //  "inequality constraints: test equilibration options at initialization---"
   //  << std::endl;
   double sparsity_factor = 0.15;
@@ -2127,11 +2141,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "OSQP:  sparse random strongly convex qp with equality and "
   "inequality constraints: test equilibration options at update")
 {
 
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test equilibration options at update---"
   //  << std::endl;
@@ -2277,7 +2292,7 @@ DOCTEST_TEST_CASE(
 
 /////  TESTS ALL INITIAL GUESS OPTIONS FOR MULTIPLE SOLVES AT ONCE
 TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "OSQP:  sparse random strongly convex qp with equality and "
   "inequality constraints: test multiple solve at once with no initial guess")
 {
 
@@ -2408,7 +2423,7 @@ TEST_CASE(
   //  << qp.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
+TEST_CASE("OSQP: :dense: sparse random strongly convex qp with equality and "
           "inequality constraints: test multiple solve at once with equality "
           "constrained initial guess")
 {
@@ -2541,7 +2556,7 @@ TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
   //  << qp.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
+TEST_CASE("OSQP: :dense: sparse random strongly convex qp with equality and "
           "inequality constraints: test multiple solve at once with equality "
           "constrained initial guess")
 {
@@ -2680,7 +2695,7 @@ TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
 }
 
 TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "OSQP:  sparse random strongly convex qp with equality and "
   "inequality constraints: test multiple solve at once with no initial guess")
 {
 
@@ -2817,7 +2832,7 @@ TEST_CASE(
   //  << qp.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
+TEST_CASE("OSQP: :dense: sparse random strongly convex qp with equality and "
           "inequality constraints: test multiple solve at once with cold start "
           "initial guess")
 {
@@ -2956,7 +2971,7 @@ TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
   //  << qp.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
+TEST_CASE("OSQP: :dense: sparse random strongly convex qp with equality and "
           "inequality constraints: test multiple solve at once with warm start")
 {
 
@@ -3090,7 +3105,7 @@ TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
   //  << qp.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
+TEST_CASE("OSQP: :dense: sparse random strongly convex qp with equality and "
           "inequality constraints: warm start test from init")
 {
 
@@ -3186,7 +3201,7 @@ TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
 
 /// TESTS WITH UPDATE + INITIAL GUESS OPTIONS
 
-TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
+TEST_CASE("OSQP: :dense: sparse random strongly convex qp with equality and "
           "inequality constraints: test update and multiple solve at once with "
           "no initial guess")
 {
@@ -3332,7 +3347,7 @@ TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
   //  << qp.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
+TEST_CASE("OSQP: :dense: sparse random strongly convex qp with equality and "
           "inequality constraints: test update + multiple solve at once with "
           "equality constrained initial guess")
 {
@@ -3480,7 +3495,7 @@ TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
 }
 
 TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "OSQP:  sparse random strongly convex qp with equality and "
   "inequality constraints: test update + multiple solve at once with equality "
   "constrained initial guess and then warm start with previous results")
 {
@@ -3633,7 +3648,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "OSQP:  sparse random strongly convex qp with equality and "
   "inequality constraints: test multiple solve at once with no initial guess")
 {
 
@@ -3781,7 +3796,7 @@ TEST_CASE(
   //  << qp.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
+TEST_CASE("OSQP: :dense: sparse random strongly convex qp with equality and "
           "inequality constraints: test update + multiple solve at once with "
           "cold start initial guess and then cold start option")
 {
@@ -3931,7 +3946,7 @@ TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
   //  << qp.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
+TEST_CASE("OSQP: :dense: sparse random strongly convex qp with equality and "
           "inequality constraints: test update + multiple solve at once with "
           "warm start")
 {
@@ -4121,7 +4136,7 @@ TEST_CASE("OSQP::dense: sparse random strongly convex qp with equality and "
 }
 
 TEST_CASE(
-  "OSQP::dense: Test initializaton with rho for different initial guess")
+  "OSQP: :dense: Test initializaton with rho for different initial guess")
 {
 
   double sparsity_factor = 0.15;
@@ -4331,7 +4346,7 @@ TEST_CASE(
   //  << qp5.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: Test g update for different initial guess")
+TEST_CASE("OSQP: :dense: Test g update for different initial guess")
 {
 
   double sparsity_factor = 0.15;
@@ -4598,7 +4613,7 @@ TEST_CASE("OSQP::dense: Test g update for different initial guess")
   //  << qp5.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: Test A update for different initial guess")
+TEST_CASE("OSQP: :dense: Test A update for different initial guess")
 {
 
   double sparsity_factor = 0.15;
@@ -4865,7 +4880,7 @@ TEST_CASE("OSQP::dense: Test A update for different initial guess")
   //  << qp5.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: Test rho update for different initial guess")
+TEST_CASE("OSQP: :dense: Test rho update for different initial guess")
 {
 
   double sparsity_factor = 0.15;
@@ -5170,7 +5185,7 @@ TEST_CASE("OSQP::dense: Test rho update for different initial guess")
   //  << qp5.results.info.solve_time << std::endl;
 }
 
-TEST_CASE("OSQP::dense: Test g update for different warm start with previous "
+TEST_CASE("OSQP: :dense: Test g update for different warm start with previous "
           "result option")
 {
 
@@ -5291,11 +5306,12 @@ TEST_CASE("OSQP::dense: Test g update for different warm start with previous "
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after updates using warm start with previous results")
 {
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test changing default settings after "
   //  "updates using warm start with previous results---"
@@ -5483,11 +5499,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after updates using cold start with previous results")
 {
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test changing default settings after "
   //  "updates using cold start with previous results---"
@@ -5676,11 +5693,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after updates using equality constrained initial guess")
 {
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test changing default settings after "
   //  "updates using equality constrained initial guess---"
@@ -5869,11 +5887,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after updates using no initial guess")
 {
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test changing default settings after "
   //  "updates using no initial guess---"
@@ -6059,11 +6078,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after several solves using warm start with previous results")
 {
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test changing default settings after "
   //  "several solves using warm start with previous results---"
@@ -6296,11 +6316,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after several solves using cold start with previous results")
 {
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test changing default settings after "
   //  "several solves using cold start with previous results---"
@@ -6525,11 +6546,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "OSQP:  sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings after several solves "
   "using equality constrained initial guess")
 {
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test changing default settings after "
   //  "several solves using equality constrained initial guess---"
@@ -6754,11 +6776,12 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "OSQP::dense: sparse random strongly convex qp with equality and "
+  "OSQP: :dense: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after several solves using no initial guess")
 {
-  // std::cout << "---testing sparse random strongly convex qp with equality and
+  // std::cout << "---OSQP:  testing sparse random strongly convex qp with
+  // equality and
   // "
   //  "inequality constraints: test changing default settings after "
   //  "several solves using no initial guess---"
@@ -6979,7 +7002,7 @@ DOCTEST_TEST_CASE(
   }
 }
 
-TEST_CASE("OSQP::dense: init must be called before update")
+TEST_CASE("OSQP: :dense: init must be called before update")
 {
 
   double sparsity_factor = 0.15;
@@ -7049,7 +7072,7 @@ TEST_CASE("OSQP::dense: init must be called before update")
   CHECK(pri_res <= eps_abs);
 }
 // test of the box constraints interface
-TEST_CASE("OSQP::dense: check ordering of z when there are box constraints")
+TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
 {
   isize n_test(1000);
   double sparsity_factor = 1.;
@@ -7346,7 +7369,7 @@ TEST_CASE("OSQP::dense: check ordering of z when there are box constraints")
     CHECK(pri_res <= eps_abs);
   }
 }
-TEST_CASE("OSQP::dense: check updates work when there are box constraints")
+TEST_CASE("OSQP: :dense: check updates work when there are box constraints")
 {
 
   double sparsity_factor = 1.;
@@ -7432,7 +7455,7 @@ TEST_CASE("OSQP::dense: check updates work when there are box constraints")
 }
 
 // TODO: To test when (if) OSQP with primal_infeasibility_solving (closest) is
-// coded TEST_CASE("OSQP::dense: test primal infeasibility solving")
+// coded TEST_CASE("OSQP: :dense: test primal infeasibility solving")
 // {
 //   double sparsity_factor = 0.15;
 //   T eps_abs = T(1e-3);
@@ -7468,10 +7491,10 @@ TEST_CASE("OSQP::dense: check updates work when there are box constraints")
 //             qp_random.u);
 //     qp.solve();
 
-//     proxsuite::OSQP::OSQP::utils::Vec<T> rhs_dim(dim);
-//     proxsuite::OSQP::OSQP::utils::Vec<T> rhs_n_eq(n_eq);
+//     proxsuite::OSQP: :OSQP: :utils::Vec<T> rhs_dim(dim);
+//     proxsuite::OSQP: :OSQP: :utils::Vec<T> rhs_n_eq(n_eq);
 //     rhs_n_eq.setOnes();
-//     proxsuite::OSQP::OSQP::utils::Vec<T> rhs_n_in(n_in);
+//     proxsuite::OSQP: :OSQP: :utils::Vec<T> rhs_n_in(n_in);
 //     rhs_n_in.setOnes();
 //     rhs_dim.noalias() =
 //       qp_random.A.transpose() * rhs_n_eq + qp_random.C.transpose() *
@@ -7543,7 +7566,7 @@ TEST_CASE("OSQP::dense: check updates work when there are box constraints")
 //   }
 // }
 
-TEST_CASE("OSQP::dense: estimate of minimal eigenvalues using Eigen")
+TEST_CASE("OSQP: :dense: estimate of minimal eigenvalues using Eigen")
 {
   double sparsity_factor = 1.;
   T tol = T(1e-6);
@@ -7674,7 +7697,7 @@ TEST_CASE("OSQP::dense: estimate of minimal eigenvalues using Eigen")
 }
 
 TEST_CASE(
-  "OSQP::dense: test estimate of minimal eigenvalue using manual choice")
+  "OSQP: :dense: test estimate of minimal eigenvalue using manual choice")
 {
   double sparsity_factor = 1.;
   T tol = T(1e-6);
@@ -7784,7 +7807,7 @@ TEST_CASE(
 }
 
 TEST_CASE(
-  "OSQP::dense: test estimate of minimal eigenvalue using power iteration")
+  "OSQP: :dense: test estimate of minimal eigenvalue using power iteration")
 {
   double sparsity_factor = 1.;
   T tol = T(1e-3);
@@ -7915,8 +7938,9 @@ TEST_CASE(
   }
 }
 
-DOCTEST_TEST_CASE("check that model.is_valid function for symmetric matrices "
-                  "works for epsilon precision")
+DOCTEST_TEST_CASE(
+  "OSQP:  check that model.is_valid function for symmetric matrices "
+  "works for epsilon precision")
 {
   Eigen::Matrix<T, 3, 3> matrix = Eigen::Matrix<T, 3, 3>::Random();
   Eigen::Matrix<T, 3, 3> symmetric_mat = matrix + matrix.transpose();
@@ -7939,7 +7963,7 @@ DOCTEST_TEST_CASE("check that model.is_valid function for symmetric matrices "
   qp.init(symmetric_mat, nullopt, nullopt, nullopt, nullopt, nullopt, nullopt);
 }
 
-TEST_CASE("OSQP::dense: test memory allocation when estimating biggest "
+TEST_CASE("OSQP: :dense: test memory allocation when estimating biggest "
           "eigenvalue with power iteration")
 {
   double sparsity_factor = 1.;
@@ -7965,11 +7989,11 @@ TEST_CASE("OSQP::dense: test memory allocation when estimating biggest "
 }
 
 // TODO: Test when PrimalLDLT is implemented
-// TEST_CASE("OSQP::dense: sparse random strongly convex qp with"
+// TEST_CASE("OSQP: :dense: sparse random strongly convex qp with"
 //           "inequality constraints: test PrimalLDLT backend mu update")
 // {
 
-//   // std::cout << "---testing sparse random strongly convex qp with"
+//   // std::cout << "---OSQP:  testing sparse random strongly convex qp with"
 //                "inequality constraints: test PrimalLDLT backend mu update---"
 //           //  << std::endl;
 //   double sparsity_factor = 1;

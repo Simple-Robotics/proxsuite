@@ -48,7 +48,7 @@ class SparseqpWrapper(unittest.TestCase):
     # TESTS OF GENERAL METHODS OF THE API
     def test_case_update_rho(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test update rho"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test update rho"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -89,7 +89,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_setting_SparseBackend(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test setting SparseBackend"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test setting SparseBackend"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -174,7 +174,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_update_mu(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test update mus"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test update mus"
         )
 
         n = 10
@@ -226,7 +226,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_no_equilibration_at_initialization(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test with no equilibration at initialization"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test with no equilibration at initialization"
         )
 
         n = 10
@@ -278,7 +278,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_with_equilibration_at_initialization(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test with equilibration at initialization"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test with equilibration at initialization"
         )
 
         n = 10
@@ -330,7 +330,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_no_initial_guess(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test with no initial guess"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test with no initial guess"
         )
 
         n = 10
@@ -382,7 +382,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_no_initial_guess_and_update(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test with no initial guess"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test with no initial guess"
         )
 
         n = 10
@@ -473,7 +473,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_warm_starting(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test with warm start---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test with warm start---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -527,7 +527,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_warm_start_with_previous_result(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test with warm start with previous result---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test with warm start with previous result---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -655,7 +655,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_cold_start_with_previous_result(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test with cold start with previous result---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test with cold start with previous result---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -785,7 +785,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_equilibration_option(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test equilibration option---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test equilibration option---"
         )
 
         n = 10
@@ -887,7 +887,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_equilibration_option_at_update(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test equilibration option at update---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test equilibration option at update---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -1054,7 +1054,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_warm_start_with_other_initialization(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test warm start with other initialization---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test warm start with other initialization---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -1104,7 +1104,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_multiple_solve_with_no_initial_guess(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with no inital guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with no inital guess---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -1230,7 +1230,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_multiple_solve_with_equality_constrained_initial_guess(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with equality constrained initial guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with equality constrained initial guess---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -1360,7 +1360,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and equality constrained inital guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and equality constrained inital guess---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -1492,7 +1492,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_warm_start_with_previous_result_starting_with_no_initial_guess(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and no initial guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and no initial guess---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -1622,7 +1622,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_cold_start_with_previous_result_starting_with_no_initial_guess(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after cold starting with previous results and no initial guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after cold starting with previous results and no initial guess---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -1752,7 +1752,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_warm_start_with_no_initial_guess(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve from warm start and no initial guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve from warm start and no initial guess---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -1883,7 +1883,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_warm_start_with_no_initial_guess_and_different_init(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test solve from warm start and no initial guess with other initialization---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test solve from warm start and no initial guess with other initialization---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -1966,7 +1966,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_multiple_solve_with_no_initial_guess_and_update(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with no inital guess and update---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with no inital guess and update---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -2107,7 +2107,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with equality constrained initial guess and update---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve with equality constrained initial guess and update---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -2250,7 +2250,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and equality constrained inital guess and update---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and equality constrained inital guess and update---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -2397,7 +2397,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and no initial guess and update---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after warm starting with previous results and no initial guess and update---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -2542,7 +2542,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after cold starting with previous results and no initial guess and update---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve after cold starting with previous results and no initial guess and update---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -2674,7 +2674,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_warm_start_with_no_initial_guess_and_update(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve from warm start and no initial guess and update---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test multiple solve from warm start and no initial guess and update---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -2815,7 +2815,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_initialization_with_rho_for_different_initial_guess(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test initializaton with rho for different initial guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test initializaton with rho for different initial guess---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -3034,7 +3034,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_update_g_for_different_initial_guess(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test update g for different initial guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test update g for different initial guess---"
         )
         n = 10
         H, g_old, A, b, C, u, l = generate_mixed_qp(n)
@@ -3334,7 +3334,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_update_A_for_different_initial_guess(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test update A for different initial guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test update A for different initial guess---"
         )
         n = 10
         H, g, A_old, b, C, u, l = generate_mixed_qp(n)
@@ -3629,7 +3629,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_case_update_rho_update_for_different_initial_guess(self):
         print(
-            "---testing sparse random strongly convex qp with equality and inequality constraints: test update rho for different initial guess---"
+            "---ProxQP: testing sparse random strongly convex qp with equality and inequality constraints: test update rho for different initial guess---"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -3930,7 +3930,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints, no initial guess, multiple solve and default rho and mu_eq"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints, no initial guess, multiple solve and default rho and mu_eq"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -4001,7 +4001,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints, EQUALITY_CONSTRAINED_INITIAL_GUESS, multiple solve and default rho and mu_eq"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints, EQUALITY_CONSTRAINED_INITIAL_GUESS, multiple solve and default rho and mu_eq"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -4074,7 +4074,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints, COLD_START_WITH_PREVIOUS_RESULT, multiple solve and default rho and mu_eq"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints, COLD_START_WITH_PREVIOUS_RESULT, multiple solve and default rho and mu_eq"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -4147,7 +4147,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints, WARM_START_WITH_PREVIOUS_RESULT, multiple solve and default rho and mu_eq"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints, WARM_START_WITH_PREVIOUS_RESULT, multiple solve and default rho and mu_eq"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -4220,7 +4220,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints, WARM_START_WITH_PREVIOUS_RESULT, update + solve and default rho and mu_eq"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints, WARM_START_WITH_PREVIOUS_RESULT, update + solve and default rho and mu_eq"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -4293,7 +4293,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints, COLD_START_WITH_PREVIOUS_RESULT, update + solve and default rho and mu_eq"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints, COLD_START_WITH_PREVIOUS_RESULT, update + solve and default rho and mu_eq"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -4366,7 +4366,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints, EQUALITY_CONSTRAINED_INITIAL_GUESS, update + solve and default rho and mu_eq"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints, EQUALITY_CONSTRAINED_INITIAL_GUESS, update + solve and default rho and mu_eq"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -4439,7 +4439,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints, NO_INITIAL_GUESS, update + solve and default rho and mu_eq"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints, NO_INITIAL_GUESS, update + solve and default rho and mu_eq"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -4508,7 +4508,7 @@ class SparseqpWrapper(unittest.TestCase):
 
     def test_sparse_problem_with_exact_solution_known(self):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints and exact solution known"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints and exact solution known"
         )
 
         n = 150
@@ -4579,7 +4579,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints, test infeasibility solving"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints, test infeasibility solving"
         )
         n = 20
         for i in range(20):
@@ -4697,7 +4697,7 @@ class SparseqpWrapper(unittest.TestCase):
         self,
     ):
         print(
-            "------------------------sparse non convex qp with inequality constraints, estimate minimal eigenvalue with power iter option"
+            "------------------------ProxQP: sparse non convex qp with inequality constraints, estimate minimal eigenvalue with power iter option"
         )
         n = 50
         tol = 1.0

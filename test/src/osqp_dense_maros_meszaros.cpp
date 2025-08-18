@@ -160,7 +160,7 @@ char const* files[] = {
   MAROS_MESZAROS_DIR "ZECEVIC2.mat", // ----- Pass
 };
 
-TEST_CASE("dense maros meszaros using the api")
+TEST_CASE("OSQP:  dense maros meszaros using the api")
 {
   using T = double;
   using isize = dense::isize;

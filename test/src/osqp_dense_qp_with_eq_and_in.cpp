@@ -13,13 +13,13 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::common;
 
-DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and inequality constraints "
-  "and increasing dimension using wrapper API")
+DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex qp with equality and "
+                  "inequality constraints "
+                  "and increasing dimension using wrapper API")
 {
 
   std::cout
-    << "---testing sparse random strongly convex qp with equality and "
+    << "---OSQP:  testing sparse random strongly convex qp with equality and "
        "inequality constraints and increasing dimension using wrapper API---"
     << std::endl;
   T sparsity_factor = 0.15;
@@ -67,12 +67,12 @@ DOCTEST_TEST_CASE(
   }
 }
 
-DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
+DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex qp with box inequality "
                   "constraints and increasing dimension using the API")
 {
 
   std::cout
-    << "---testing sparse random strongly convex qp with box inequality "
+    << "---OSQP:  testing sparse random strongly convex qp with box inequality "
        "constraints and increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.15;
@@ -118,12 +118,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
   }
 }
 
-DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
+DOCTEST_TEST_CASE("OSQP:  sparse random not strongly convex qp with inequality "
                   "constraints and increasing dimension using the API")
 {
 
   std::cout
-    << "---testing sparse random not strongly convex qp with inequality "
+    << "---OSQP:  testing sparse random not strongly convex qp with inequality "
        "constraints and increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.15;
@@ -170,12 +170,13 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
 }
 
 // Test fail
-DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
-                  "constraints and increasing dimension using the API")
+DOCTEST_TEST_CASE(
+  "OSQP:  sparse random strongly convex qp with degenerate inequality "
+  "constraints and increasing dimension using the API")
 {
 
   std::cout
-    << "---testing sparse random strongly convex qp with degenerate "
+    << "---OSQP:  testing sparse random strongly convex qp with degenerate "
        "inequality constraints and increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.45;
@@ -236,13 +237,15 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
   // -2.58e+20 / Primal infeasible dim = 910: Pass: But r_g -1.51e+20
 }
 
-DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
-                  "increasing dimension using the API")
+DOCTEST_TEST_CASE(
+  "OSQP:  linear problem with equality inequality constraints and "
+  "increasing dimension using the API")
 {
   srand(1);
-  std::cout << "---testing linear problem with inequality constraints and "
-               "increasing dimension using the API---"
-            << std::endl;
+  std::cout
+    << "---OSQP:  testing linear problem with inequality constraints and "
+       "increasing dimension using the API---"
+    << std::endl;
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
@@ -293,13 +296,14 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
 }
 
 DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and inequality constraints "
+  "OSQP:  sparse random strongly convex qp with equality and inequality "
+  "constraints "
   "and increasing dimension using wrapper API to test different settings "
   "on solution polishing.")
 {
 
   std::cout
-    << "---testing sparse random strongly convex qp with equality and "
+    << "---OSQP:  testing sparse random strongly convex qp with equality and "
        "inequality constraints and increasing dimension using wrapper API "
        "to test different settings on solution polishing---"
     << std::endl;

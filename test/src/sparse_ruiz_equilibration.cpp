@@ -16,7 +16,7 @@ using I = common::utils::c_int;
 
 using namespace proxsuite::linalg::sparse::tags;
 
-TEST_CASE("upper part")
+TEST_CASE("ProxQP: upper part")
 {
   isize n = 10;
   isize n_eq = 6;
@@ -108,7 +108,7 @@ TEST_CASE("upper part")
   CHECK(u_scaled.isApprox(u_scaled_dense));
 }
 
-TEST_CASE("lower part")
+TEST_CASE("ProxQP: lower part")
 {
   isize n = 3;
   isize n_eq = 0;

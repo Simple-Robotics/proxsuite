@@ -12,13 +12,14 @@
 using T = double;
 using namespace proxsuite;
 
-DOCTEST_TEST_CASE(
-  "sparse random strongly convex unconstrained qp and increasing dimension")
+DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex unconstrained qp and "
+                  "increasing dimension")
 {
 
-  std::cout << "---testing sparse random strongly convex qp with increasing "
-               "dimension---"
-            << std::endl;
+  std::cout
+    << "---OSQP:  testing sparse random strongly convex qp with increasing "
+       "dimension---"
+    << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = 0;
@@ -62,13 +63,15 @@ DOCTEST_TEST_CASE(
   }
 }
 
-DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
-                  "increasing dimension")
+DOCTEST_TEST_CASE(
+  "OSQP:  sparse random not strongly convex unconstrained qp and "
+  "increasing dimension")
 {
 
-  std::cout << "---testing sparse random not strongly convex unconstrained qp "
-               "with increasing dimension---"
-            << std::endl;
+  std::cout
+    << "---OSQP:  testing sparse random not strongly convex unconstrained qp "
+       "with increasing dimension---"
+    << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = 0;
@@ -117,10 +120,11 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
   }
 }
 
-DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
+DOCTEST_TEST_CASE("OSQP:  unconstrained qp with H = Id and g random")
 {
 
-  std::cout << "---unconstrained qp with H = Id and g random---" << std::endl;
+  std::cout << "---OSQP:  unconstrained qp with H = Id and g random---"
+            << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = 0;
@@ -166,10 +170,11 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
             << std::endl;
 }
 
-DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
+DOCTEST_TEST_CASE("OSQP:  unconstrained qp with H = Id and g = 0")
 {
 
-  std::cout << "---unconstrained qp with H = Id and g = 0---" << std::endl;
+  std::cout << "---OSQP:  unconstrained qp with H = Id and g = 0---"
+            << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = 0;
@@ -216,15 +221,16 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
             << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "sparse random strongly convex unconstrained qp and increasing dimension"
-  "with solution poslihing")
+DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex unconstrained qp and "
+                  "increasing dimension "
+                  "with solution poslihing")
 {
 
-  std::cout << "---testing sparse random strongly convex qp with increasing "
-               "dimension with solution poslihing to check that no active set  "
-               "is found---"
-            << std::endl;
+  std::cout
+    << "---OSQP:  testing sparse random strongly convex qp with increasing "
+       "dimension with solution poslihing to check that no active set  "
+       "is found---"
+    << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = 0;

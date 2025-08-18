@@ -12,13 +12,14 @@
 using T = double;
 using namespace proxsuite;
 
-DOCTEST_TEST_CASE(
-  "sparse random strongly convex unconstrained qp and increasing dimension")
+DOCTEST_TEST_CASE("ProxQP: sparse random strongly convex unconstrained qp and "
+                  "increasing dimension")
 {
 
-  std::cout << "---testing sparse random strongly convex qp with increasing "
-               "dimension---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with increasing "
+       "dimension---"
+    << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   for (int dim = 10; dim < 1000; dim += 100) {
@@ -60,13 +61,15 @@ DOCTEST_TEST_CASE(
   }
 }
 
-DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
-                  "increasing dimension")
+DOCTEST_TEST_CASE(
+  "ProxQP: sparse random not strongly convex unconstrained qp and "
+  "increasing dimension")
 {
 
-  std::cout << "---testing sparse random not strongly convex unconstrained qp "
-               "with increasing dimension---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random not strongly convex unconstrained qp "
+       "with increasing dimension---"
+    << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   for (int dim = 10; dim < 1000; dim += 100) {
@@ -113,10 +116,11 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
   }
 }
 
-DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
+DOCTEST_TEST_CASE("ProxQP: unconstrained qp with H = Id and g random")
 {
 
-  std::cout << "---unconstrained qp with H = Id and g random---" << std::endl;
+  std::cout << "---ProxQP: unconstrained qp with H = Id and g random---"
+            << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
 

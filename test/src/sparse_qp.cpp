@@ -182,7 +182,7 @@ u},
         }
 }
 */
-TEST_CASE("random id using the API")
+TEST_CASE("ProxQP: random id using the API")
 {
 
   for (auto const& dims : {

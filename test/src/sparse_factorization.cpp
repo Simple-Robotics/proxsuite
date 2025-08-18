@@ -106,7 +106,7 @@ ldlt_with_perm(proxsuite::linalg::veg::Slice<I> perm_inv,
 using namespace proxsuite::linalg::sparse;
 using namespace proxsuite::linalg::veg;
 
-TEST_CASE("ldlt: factorize compressed")
+TEST_CASE("ProxQP: ldlt: factorize compressed")
 {
   using I = int;
   using T = long double;
@@ -301,7 +301,7 @@ TEST_CASE("ldlt: factorize compressed")
   }
 }
 
-TEST_CASE("ldlt: factorize uncompressed, rank update")
+TEST_CASE("ProxQP: ldlt: factorize uncompressed, rank update")
 {
   using I = isize;
   using T = double;
@@ -469,7 +469,7 @@ TEST_CASE("ldlt: factorize uncompressed, rank update")
           .norm() < T(1e-10));
 }
 
-TEST_CASE("ldlt: row mod")
+TEST_CASE("ProxQP: ldlt: row mod")
 {
   using I = isize;
   using T = double;

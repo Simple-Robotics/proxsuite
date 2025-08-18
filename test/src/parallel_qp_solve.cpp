@@ -16,7 +16,7 @@ using T = double;
 using I = c_int;
 using namespace proxsuite::linalg::sparse::tags;
 
-DOCTEST_TEST_CASE("test parallel qp_solve for dense qps")
+DOCTEST_TEST_CASE("ProxQP: test parallel qp_solve for dense qps")
 {
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -76,7 +76,7 @@ DOCTEST_TEST_CASE("test parallel qp_solve for dense qps")
   }
 }
 
-DOCTEST_TEST_CASE("test dense BatchQP and optional NUM_THREADS")
+DOCTEST_TEST_CASE("ProxQP: test dense BatchQP and optional NUM_THREADS")
 {
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -132,7 +132,7 @@ DOCTEST_TEST_CASE("test dense BatchQP and optional NUM_THREADS")
   }
 }
 
-DOCTEST_TEST_CASE("test parallel qp_solve for sparse qps")
+DOCTEST_TEST_CASE("ProxQP: test parallel qp_solve for sparse qps")
 {
   sparse::isize dim = 500;
   sparse::isize n_eq(10);
@@ -193,7 +193,7 @@ DOCTEST_TEST_CASE("test parallel qp_solve for sparse qps")
   }
 }
 
-DOCTEST_TEST_CASE("test sparse BatchQP")
+DOCTEST_TEST_CASE("ProxQP: test sparse BatchQP")
 {
   sparse::isize dim = 500;
   sparse::isize n_eq(10);

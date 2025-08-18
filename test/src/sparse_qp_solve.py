@@ -49,7 +49,7 @@ class SparseQpWrapper(unittest.TestCase):
 
     def test_case_basic_solve(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test basic solve"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test basic solve"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -88,7 +88,7 @@ class SparseQpWrapper(unittest.TestCase):
 
     def test_case_different_rho_value(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test different rho values"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test different rho values"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -129,7 +129,7 @@ class SparseQpWrapper(unittest.TestCase):
 
     def test_case_different_mu_values(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test different mu_eq and mu_in values"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test different mu_eq and mu_in values"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -170,7 +170,7 @@ class SparseQpWrapper(unittest.TestCase):
 
     def test_case_different_warm_starting(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test warm starting"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test warm starting"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -214,7 +214,7 @@ class SparseQpWrapper(unittest.TestCase):
 
     def test_case_different_verbose_true(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test verbose = true"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test verbose = true"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -253,7 +253,7 @@ class SparseQpWrapper(unittest.TestCase):
 
     def test_case_different_no_initial_guess(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test no initial guess"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test no initial guess"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -292,7 +292,7 @@ class SparseQpWrapper(unittest.TestCase):
 
     def test_case_different_matrix_free_sparse_backend(self):
         print(
-            "------------------------sparse random strongly convex qp with equality and inequality constraints: test setting matrix free backend"
+            "------------------------ProxQP: sparse random strongly convex qp with equality and inequality constraints: test setting matrix free backend"
         )
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
@@ -332,7 +332,7 @@ class SparseQpWrapper(unittest.TestCase):
 
     def test_sparse_problem_with_exact_solution_known(self):
         print(
-            "------------------------sparse random strongly convex qp with inequality constraints and exact solution known"
+            "------------------------ProxQP: sparse random strongly convex qp with inequality constraints and exact solution known"
         )
 
         n = 150
@@ -370,7 +370,7 @@ class SparseQpWrapper(unittest.TestCase):
         )
 
     def test_initializing_with_None(self):
-        print("------------------------test initialization with Nones")
+        print("------------------------ProxQP: test initialization with Nones")
 
         H = np.array([[65.0, -22.0, -16.0], [-22.0, 14.0, 7.0], [-16.0, 7.0, 5.0]])
         g = np.array([-13.0, 15.0, 7.0])

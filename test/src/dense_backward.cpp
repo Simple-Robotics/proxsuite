@@ -13,7 +13,8 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::common;
 
-DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
+DOCTEST_TEST_CASE(
+  "ProxQP: proxqp::dense: test compute backward for g (feasible QP)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
@@ -80,7 +81,8 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
   }
 }
 
-DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
+DOCTEST_TEST_CASE(
+  "ProxQP: proxqp::dense: test compute backward for b (feasible QP)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
@@ -147,7 +149,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
   }
 }
 
-DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
+DOCTEST_TEST_CASE("ProxQP: proxqp::dense: test compute backward for g (QP with "
                   "saturating inequality constraints)")
 {
   double sparsity_factor = 0.85;

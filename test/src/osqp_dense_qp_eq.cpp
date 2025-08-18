@@ -13,17 +13,18 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::common;
 
-DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
+DOCTEST_TEST_CASE("OSQP:  qp: start from solution using the wrapper framework")
 {
   isize dim = 30;
   isize n_eq = 6;
   isize n_in = 0;
   T sparsity_factor = 0.15;
   T strong_convexity_factor(1.e-2);
-  std::cout << "---testing sparse random strongly convex qp with equality "
-               "constraints and starting at the solution using the wrapper "
-               "framework---"
-            << std::endl;
+  std::cout
+    << "---OSQP:  testing sparse random strongly convex qp with equality "
+       "constraints and starting at the solution using the wrapper "
+       "framework---"
+    << std::endl;
   common::utils::rand::set_seed(1);
   auto H = ::utils::rand::sparse_positive_definite_rand_not_compressed(
     dim, strong_convexity_factor, sparsity_factor);
@@ -54,13 +55,15 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
   DOCTEST_CHECK((H * qp.results.x + g + A.transpose() * qp.results.y)
                   .lpNorm<Eigen::Infinity>() <= eps_abs);
 }
-DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
-                  "and increasing dimension with the wrapper API")
+DOCTEST_TEST_CASE(
+  "OSQP:  sparse random strongly convex qp with equality constraints "
+  "and increasing dimension with the wrapper API")
 {
 
-  std::cout << "---testing sparse random strongly convex qp with equality "
-               "constraints and increasing dimension with the wrapper API---"
-            << std::endl;
+  std::cout
+    << "---OSQP:  testing sparse random strongly convex qp with equality "
+       "constraints and increasing dimension with the wrapper API---"
+    << std::endl;
   T sparsity_factor = 0.15;
   T eps_abs = T(1e-3); // OSQP unit test
   T eps_rel = T(0);
@@ -103,11 +106,12 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
               << std::endl;
   }
 }
-DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
-                  "linar cost and increasing dimension using wrapper API")
+DOCTEST_TEST_CASE(
+  "OSQP:  linear problem with equality  with equality constraints and "
+  "linar cost and increasing dimension using wrapper API")
 {
 
-  std::cout << "---testing linear problem with equality constraints and "
+  std::cout << "---OSQP:  testing linear problem with equality constraints and "
                "increasing dimension using wrapper API---"
             << std::endl;
   T sparsity_factor = 0.15;
@@ -159,13 +163,14 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
   }
 }
 
-DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
-                  "linear cost and increasing dimension using wrapper API and  "
-                  "the dedicated LP interface")
+DOCTEST_TEST_CASE(
+  "OSQP:  linear problem with equality with equality constraints and "
+  "linear cost and increasing dimension using wrapper API and  "
+  "the dedicated LP interface")
 {
 
   std::cout
-    << "---testing LP interface for solving linear problem with "
+    << "---OSQP:  testing LP interface for solving linear problem with "
        "equality constraints and increasing dimension using wrapper API---"
     << std::endl;
   T sparsity_factor = 0.15;
@@ -219,7 +224,7 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
   }
 }
 
-DOCTEST_TEST_CASE("infeasible qp")
+DOCTEST_TEST_CASE("OSQP:  infeasible qp")
 {
   // (x1- 9)^2 + (x2-6)^2
   // s.t.

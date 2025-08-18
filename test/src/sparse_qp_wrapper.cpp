@@ -14,14 +14,15 @@ using T = double;
 using I = c_int;
 using namespace proxsuite::linalg::sparse::tags;
 
-DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with inequality constraints"
-  "and empty equality constraints")
+DOCTEST_TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with "
+                  "inequality constraints"
+                  "and empty equality constraints")
 {
-  std::cout << "---testing sparse random strongly convex qp with inequality "
-               "constraints "
-               "and empty equality constraints---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with inequality "
+       "constraints "
+       "and empty equality constraints---"
+    << std::endl;
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
                             // proxsuite::linalg::veg::tuplify(10, 0, 10),
@@ -174,12 +175,13 @@ DOCTEST_TEST_CASE(
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test update rho")
 {
-  std::cout << "------------------------sparse random strongly convex qp with "
-               "equality and inequality constraints: test update rho"
-            << std::endl;
+  std::cout
+    << "------------------------ProxQP: sparse random strongly convex qp with "
+       "equality and inequality constraints: test update rho"
+    << std::endl;
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
                             // proxsuite::linalg::veg::tuplify(10, 0, 10),
@@ -234,12 +236,13 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test setting SparseBackend")
 {
-  std::cout << "------------------------sparse random strongly convex qp with "
-               "equality and inequality constraints: test setting SparseBackend"
-            << std::endl;
+  std::cout
+    << "------------------------ProxQP: sparse random strongly convex qp with "
+       "equality and inequality constraints: test setting SparseBackend"
+    << std::endl;
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
                             // proxsuite::linalg::veg::tuplify(10, 0, 10),
@@ -343,13 +346,14 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test update mus")
 {
 
-  std::cout << "------------------------sparse random strongly convex qp with "
-               "equality and inequality constraints: test update mus"
-            << std::endl;
+  std::cout
+    << "------------------------ProxQP: sparse random strongly convex qp with "
+       "equality and inequality constraints: test update mus"
+    << std::endl;
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
                             // proxsuite::linalg::veg::tuplify(10, 0, 10),
@@ -405,14 +409,15 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "ProxQP: sparse random strongly convex qp with equality and "
   "inequality constraints: test with no equilibration at initialization")
 {
 
-  std::cout << "------------------------sparse random strongly convex qp with "
-               "equality and inequality constraints: test with no "
-               "equilibration at initialization"
-            << std::endl;
+  std::cout
+    << "------------------------ProxQP: sparse random strongly convex qp with "
+       "equality and inequality constraints: test with no "
+       "equilibration at initialization"
+    << std::endl;
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
                             // proxsuite::linalg::veg::tuplify(10, 0, 10),
@@ -462,12 +467,13 @@ TEST_CASE(
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test with equilibration at initialization")
 {
 
   std::cout
-    << "------------------------sparse random strongly convex qp with equality "
+    << "------------------------ProxQP: sparse random strongly convex qp with "
+       "equality "
        "and inequality constraints: test with equilibration at initialization"
     << std::endl;
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
@@ -518,13 +524,14 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
               << qp.results.info.solve_time << std::endl;
   }
 }
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test with no initial guess")
 {
 
-  std::cout << "------------------------sparse random strongly convex qp with "
-               "equality and inequality constraints: test with no initial guess"
-            << std::endl;
+  std::cout
+    << "------------------------ProxQP: sparse random strongly convex qp with "
+       "equality and inequality constraints: test with no initial guess"
+    << std::endl;
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
                             // proxsuite::linalg::veg::tuplify(10, 0, 10),
@@ -575,13 +582,14 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test update g for unconstrained problem")
 {
 
-  std::cout << "------------------------sparse random strongly convex qp with "
-               "equality and inequality constraints: test with no initial guess"
-            << std::endl;
+  std::cout
+    << "------------------------ProxQP: sparse random strongly convex qp with "
+       "equality and inequality constraints: test with no initial guess"
+    << std::endl;
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
                             // proxsuite::linalg::veg::tuplify(10, 0, 10),
@@ -675,7 +683,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test warm starting")
 {
 
@@ -737,12 +745,12 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
 }
 
 DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "ProxQP: sparse random strongly convex qp with equality and "
   "inequality constraints: test with warm start with previous result")
 {
 
   std::cout
-    << "---testing sparse random strongly convex qp with equality and "
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
        "inequality constraints: test with warm start with previous result---"
     << std::endl;
 
@@ -856,13 +864,14 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test with cold start option")
 {
 
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test with cold start option---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test with cold start option---"
+    << std::endl;
 
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
@@ -981,13 +990,14 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test equilibration option")
 {
 
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test equilibration option---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test equilibration option---"
+    << std::endl;
 
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
@@ -1073,13 +1083,14 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test equilibration option at update")
 {
 
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test equilibration option at update---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test equilibration option at update---"
+    << std::endl;
 
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
                             // proxsuite::linalg::veg::tuplify(50, 25, 0),
@@ -1208,7 +1219,7 @@ DOCTEST_TEST_CASE(
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test new init")
 {
 
@@ -1269,7 +1280,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test new init")
 {
 
@@ -1357,7 +1368,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
 }
 /////  TESTS ALL INITIAL GUESS OPTIONS FOR MULTIPLE SOLVES AT ONCE
 TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "ProxQP: sparse random strongly convex qp with equality and "
   "inequality constraints: test multiple solve at once with no initial guess")
 {
 
@@ -1487,7 +1498,7 @@ TEST_CASE(
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test multiple solve at once with equality "
           "constrained initial guess")
 {
@@ -1619,7 +1630,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test multiple solve at once with equality "
           "constrained initial guess")
 {
@@ -1755,7 +1766,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "ProxQP: sparse random strongly convex qp with equality and "
   "inequality constraints: test multiple solve at once with no initial guess")
 {
 
@@ -1889,7 +1900,7 @@ TEST_CASE(
               << qp.results.info.solve_time << std::endl;
   }
 }
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test multiple solve at once with cold start "
           "initial guess")
 {
@@ -2025,7 +2036,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test multiple solve at once with warm start")
 {
 
@@ -2159,7 +2170,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: warm start test from init")
 {
 
@@ -2261,7 +2272,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
 
 /// TESTS WITH UPDATE + INITIAL GUESS OPTIONS
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test update and multiple solve at once with "
           "no initial guess")
 {
@@ -2406,7 +2417,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test update + multiple solve at once with "
           "equality constrained initial guess")
 {
@@ -2552,7 +2563,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
 }
 
 TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "ProxQP: sparse random strongly convex qp with equality and "
   "inequality constraints: test update + multiple solve at once with equality "
   "constrained initial guess and then warm start with previous results")
 {
@@ -2701,7 +2712,7 @@ TEST_CASE(
   }
 }
 TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "ProxQP: sparse random strongly convex qp with equality and "
   "inequality constraints: test multiple solve at once with no initial guess")
 {
 
@@ -2846,7 +2857,7 @@ TEST_CASE(
               << qp.results.info.solve_time << std::endl;
   }
 }
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test update + multiple solve at once with "
           "cold start initial guess and then cold start option")
 {
@@ -2993,7 +3004,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
   }
 }
 
-TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
+TEST_CASE("ProxQP: :sparse: sparse random strongly convex qp with equality and "
           "inequality constraints: test update + multiple solve at once with "
           "warm start")
 {
@@ -3183,7 +3194,7 @@ TEST_CASE("ProxQP::sparse: sparse random strongly convex qp with equality and "
 }
 
 TEST_CASE(
-  "ProxQP::sparse: Test initializaton with rho for different initial guess")
+  "ProxQP: :sparse: Test initializaton with rho for different initial guess")
 {
 
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
@@ -3389,7 +3400,7 @@ TEST_CASE(
   }
 }
 
-TEST_CASE("ProxQP::sparse: Test g update for different initial guess")
+TEST_CASE("ProxQP: :sparse: Test g update for different initial guess")
 {
 
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
@@ -3650,7 +3661,7 @@ TEST_CASE("ProxQP::sparse: Test g update for different initial guess")
   }
 }
 
-TEST_CASE("ProxQP::sparse: Test A update for different initial guess")
+TEST_CASE("ProxQP: :sparse: Test A update for different initial guess")
 {
 
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
@@ -3969,7 +3980,7 @@ TEST_CASE("ProxQP::sparse: Test A update for different initial guess")
   }
 }
 
-TEST_CASE("ProxQP::sparse: Test rho update for different initial guess")
+TEST_CASE("ProxQP: :sparse: Test rho update for different initial guess")
 {
 
   for (auto const& dims : { // proxsuite::linalg::veg::tuplify(50, 0, 0),
@@ -4272,14 +4283,15 @@ TEST_CASE("ProxQP::sparse: Test rho update for different initial guess")
 }
 
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after updates using no initial guess")
 {
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after "
-               "updates using no initial guess---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test changing default settings after "
+       "updates using no initial guess---"
+    << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
@@ -4470,14 +4482,15 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(dua_res <= eps_abs);
 }
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after updates using EQUALITY_CONSTRAINED_INITIAL_GUESS")
 {
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after "
-               "updates using EQUALITY_CONSTRAINED_INITIAL_GUESS---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test changing default settings after "
+       "updates using EQUALITY_CONSTRAINED_INITIAL_GUESS---"
+    << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
@@ -4667,14 +4680,15 @@ DOCTEST_TEST_CASE(
   DOCTEST_CHECK(dua_res <= eps_abs);
 }
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after updates using COLD_START_WITH_PREVIOUS_RESULT")
 {
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after "
-               "updates using COLD_START_WITH_PREVIOUS_RESULT---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test changing default settings after "
+       "updates using COLD_START_WITH_PREVIOUS_RESULT---"
+    << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
@@ -4869,14 +4883,15 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after updates using WARM_START_WITH_PREVIOUS_RESULT")
 {
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after "
-               "updates using WARM_START_WITH_PREVIOUS_RESULT---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test changing default settings after "
+       "updates using WARM_START_WITH_PREVIOUS_RESULT---"
+    << std::endl;
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
   common::utils::rand::set_seed(1);
@@ -5071,14 +5086,15 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after several solves using no initial guess")
 {
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after "
-               "several solves using no initial guess---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test changing default settings after "
+       "several solves using no initial guess---"
+    << std::endl;
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -5299,14 +5315,15 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and "
+  "ProxQP: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings after several solves "
   "using equality constrained initial guess")
 {
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after "
-               "several solves using equality constrained initial guess---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test changing default settings after "
+       "several solves using equality constrained initial guess---"
+    << std::endl;
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -5529,14 +5546,15 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after several solves using cold start with previous result")
 {
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after "
-               "several solves using cold start with previous result---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test changing default settings after "
+       "several solves using cold start with previous result---"
+    << std::endl;
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -5774,14 +5792,15 @@ DOCTEST_TEST_CASE(
 }
 
 DOCTEST_TEST_CASE(
-  "ProxQP::sparse: sparse random strongly convex qp with equality and "
+  "ProxQP: :sparse: sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings "
   "after several solves using warm start with previous result")
 {
-  std::cout << "---testing sparse random strongly convex qp with equality and "
-               "inequality constraints: test changing default settings after "
-               "several solves using warm start with previous result---"
-            << std::endl;
+  std::cout
+    << "---ProxQP: testing sparse random strongly convex qp with equality and "
+       "inequality constraints: test changing default settings after "
+       "several solves using warm start with previous result---"
+    << std::endl;
 
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -6018,7 +6037,7 @@ DOCTEST_TEST_CASE(
   }
 }
 
-TEST_CASE("ProxQP::sparse: init must be called before update")
+TEST_CASE("ProxQP: :sparse: init must be called before update")
 {
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -6092,7 +6111,7 @@ TEST_CASE("ProxQP::sparse: init must be called before update")
   DOCTEST_CHECK(dua_res <= eps_abs);
 }
 
-TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
+TEST_CASE("ProxQP: :sparse: test primal infeasibility solving")
 {
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-5);
@@ -6153,7 +6172,7 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
     DOCTEST_CHECK(dua_res <= eps_abs);
   }
 }
-// TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using Eigen")
+// TEST_CASE("ProxQP: :sparse: estimate of minimal eigenvalues using Eigen")
 // {
 //   double sparsity_factor = 0.25;
 //   T tol = T(1e-6);
@@ -6233,7 +6252,8 @@ TEST_CASE("ProxQP::sparse: test primal infeasibility solving")
 //                            minimal_eigenvalue) <= 1.);
 //   }
 // }
-TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
+TEST_CASE(
+  "ProxQP: :sparse: estimate of minimal eigenvalues using manual choice")
 {
   double sparsity_factor = 0.25;
   T tol = T(1e-6);
@@ -6321,7 +6341,7 @@ TEST_CASE("ProxQP::sparse: estimate of minimal eigenvalues using manual choice")
 }
 
 TEST_CASE(
-  "ProxQP::sparse: estimate of minimal eigenvalues using Power iteration")
+  "ProxQP: :sparse: estimate of minimal eigenvalues using Power iteration")
 {
   double sparsity_factor = 0.25;
   T tol = T(1e-6);

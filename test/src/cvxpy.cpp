@@ -18,10 +18,11 @@ using Mat = Eigen::Matrix<T,
 template<typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
-DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
+DOCTEST_TEST_CASE("ProxQP: 3 dim test case from cvxpy, check feasibility")
 {
 
-  std::cout << "---3 dim test case from cvxpy, check feasibility " << std::endl;
+  std::cout << "---ProxQP: 3 dim test case from cvxpy, check feasibility "
+            << std::endl;
   T eps_abs = T(1e-9);
   isize dim = 3;
 
@@ -57,10 +58,10 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
             << results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
+DOCTEST_TEST_CASE("ProxQP: simple test case from cvxpy, check feasibility")
 {
 
-  std::cout << "---simple test case from cvxpy, check feasibility "
+  std::cout << "---ProxQP: simple test case from cvxpy, check feasibility "
             << std::endl;
   T eps_abs = T(1e-8);
   isize dim = 1;
@@ -100,13 +101,15 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
             << results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
-                  "solver stays there")
+DOCTEST_TEST_CASE(
+  "ProxQP: simple test case from cvxpy, init with solution, check that "
+  "solver stays there")
 {
 
-  std::cout << "---simple test case from cvxpy, init with solution, check that "
-               "solver stays there"
-            << std::endl;
+  std::cout
+    << "---ProxQP: simple test case from cvxpy, init with solution, check that "
+       "solver stays there"
+    << std::endl;
   T eps_abs = T(1e-4);
   isize dim = 1;
 

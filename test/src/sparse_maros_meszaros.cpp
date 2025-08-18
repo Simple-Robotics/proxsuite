@@ -107,7 +107,7 @@ char const* files[] = {
   MAROS_MESZAROS_DIR "YAO.mat",      MAROS_MESZAROS_DIR "ZECEVIC2.mat",
 };
 
-TEST_CASE("sparse maros meszaros using the API")
+TEST_CASE("ProxQP: sparse maros meszaros using the API")
 {
   using isize = proxsuite::proxqp::sparse::isize;
   using T = double;

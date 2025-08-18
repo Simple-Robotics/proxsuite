@@ -64,7 +64,7 @@ def generic_test(object, filename):
 
 class DenseqpWrapperSerialization(unittest.TestCase):
     def test_pickle(self):
-        print("------------------------test pickle")
+        print("------------------------ProxQP: test pickle")
         n = 10
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]

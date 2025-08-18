@@ -17,7 +17,7 @@ def normInf(x):
 class CvxpyTest(unittest.TestCase):
     def test_trigger_infeasibility_with_exact_solution_known(self):
         print(
-            "------------------------ test if infeasibility is triggered even though exact solution known"
+            "------------------------ ProxQP: test if infeasibility is triggered even though exact solution known"
         )
 
         n = 3
@@ -54,7 +54,7 @@ class CvxpyTest(unittest.TestCase):
         )
 
     def test_one_dim_with_exact_solution_known(self):
-        print("------------------------ test_one_dim_with_exact_solution_known")
+        print("------------------------ ProxQP: test_one_dim_with_exact_solution_known")
         n = 1
         H = np.array([[20.0]])
         g = np.array([-10.0])

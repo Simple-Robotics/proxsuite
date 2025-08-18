@@ -110,9 +110,10 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::common;
 
-DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
+DOCTEST_TEST_CASE(
+  "ProxQP: test serialization of qp model, results and settings")
 {
-  std::cout << "--- serialization ---" << std::endl;
+  std::cout << "--- ProxQP: serialization ---" << std::endl;
   double sparsity_factor = 0.15;
   common::utils::rand::set_seed(1);
   isize dim = 10;
@@ -141,7 +142,7 @@ DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
 }
 
 DOCTEST_TEST_CASE(
-  "test serialization of eigen matrices with different storage orders")
+  "ProxQP: test serialization of eigen matrices with different storage orders")
 {
   Eigen::Matrix<float, 2, 2, Eigen::RowMajor> row_matrix;
   Eigen::Matrix<float, 2, 2, Eigen::RowMajor> row_matrix_loaded;
