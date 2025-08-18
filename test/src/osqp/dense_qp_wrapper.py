@@ -101,7 +101,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
@@ -119,7 +119,7 @@ class DenseqpWrapper(unittest.TestCase):
         y_prev = np.copy(qp.results.y)
         z_prev = np.copy(qp.results.z)
         for i in range(20):
-            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
             qp.settings.eps_abs = 1.0e-5  # OSQP unit test
             qp.settings.eps_rel = 0
             qp.settings.verbose = False
@@ -151,7 +151,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
@@ -200,7 +200,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
@@ -251,7 +251,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
@@ -301,7 +301,7 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
@@ -351,11 +351,11 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -401,11 +401,11 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -489,11 +489,11 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.WARM_START
         qp.init(
             H,
             np.asfortranarray(g),
@@ -541,12 +541,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -582,10 +582,10 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp2 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
-        qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
+        qp2.settings.initial_guess = proxsuite.osqp.InitialGuess.WARM_START
         qp2.init(
             H,
             np.asfortranarray(g),
@@ -602,7 +602,7 @@ class DenseqpWrapper(unittest.TestCase):
         qp2.solve(x, y, z)
 
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         qp.solve()
         dua_res = normInf(
@@ -667,12 +667,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -711,10 +711,10 @@ class DenseqpWrapper(unittest.TestCase):
         )
         assert pri_res <= 1.0e-5
         assert dua_res <= 1.0e-5
-        qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp2 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
-        qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
+        qp2.settings.initial_guess = proxsuite.osqp.InitialGuess.WARM_START
         qp2.init(
             H,
             np.asfortranarray(g),
@@ -730,7 +730,7 @@ class DenseqpWrapper(unittest.TestCase):
         qp2.solve(x, y, z)
 
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         qp.solve()
         dua_res = normInf(
@@ -796,12 +796,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -843,10 +843,10 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp2 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
-        qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
+        qp2.settings.initial_guess = proxsuite.osqp.InitialGuess.WARM_START
         qp2.init(
             H,
             np.asfortranarray(g),
@@ -895,12 +895,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_eq = A.shape[0]
         n_in = C.shape[0]
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -982,10 +982,10 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp2 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
-        qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
+        qp2.settings.initial_guess = proxsuite.osqp.InitialGuess.WARM_START
         qp2.init(
             H,
             np.asfortranarray(g),
@@ -1059,11 +1059,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.WARM_START
         qp.init(
             H,
             np.asfortranarray(g),
@@ -1110,11 +1110,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -1237,12 +1237,12 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -1368,12 +1368,12 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -1412,7 +1412,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
 
         qp.solve()
@@ -1501,11 +1501,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -1543,7 +1543,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
 
         qp.solve()
@@ -1632,11 +1632,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -1674,7 +1674,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
 
         qp.solve()
@@ -1763,10 +1763,10 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -1806,7 +1806,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.WARM_START
 
         qp.solve(qp.results.x, qp.results.y, qp.results.z)
         dua_res = normInf(
@@ -1894,11 +1894,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -1938,10 +1938,10 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp2 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp2.init(H, g, A, b, C, l, u)
         qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
-        qp2.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
+        qp2.settings.initial_guess = proxsuite.osqp.InitialGuess.WARM_START
         qp2.solve(qp.results.x, qp.results.y, qp.results.z)
         dua_res = normInf(
             H @ qp2.results.x
@@ -1978,11 +1978,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -2120,12 +2120,12 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -2264,12 +2264,12 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -2308,7 +2308,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
 
         H *= 2.0  # keep same sparsity structure
@@ -2412,11 +2412,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -2454,7 +2454,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
 
         H *= 2.0  # keep same sparsity structure
@@ -2558,11 +2558,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -2600,7 +2600,7 @@ class DenseqpWrapper(unittest.TestCase):
         )
 
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
 
         H *= 2  # keep same sparsity structure
@@ -2691,11 +2691,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -2732,7 +2732,7 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.WARM_START
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.WARM_START
 
         H *= 2.0  # keep same sparsity structure
         g = np.random.randn(n)
@@ -2833,11 +2833,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -2875,11 +2875,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp2 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         qp2.init(
             H,
@@ -2918,11 +2918,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp3 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp3.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp3.settings.verbose = False
         qp3.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp3.init(
             H,
@@ -2961,11 +2961,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp4 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp4.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp4.settings.verbose = False
         qp4.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         qp4.init(
             H,
@@ -3004,10 +3004,10 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp5 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp5.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp5.settings.verbose = False
-        qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp5.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp5.init(
             H,
             np.asfortranarray(g),
@@ -3053,11 +3053,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g_old, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g_old),
@@ -3112,11 +3112,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp2 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         qp2.init(
             H,
@@ -3171,11 +3171,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp3 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp3.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp3.settings.verbose = False
         qp3.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp3.init(
             H,
@@ -3230,11 +3230,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp4 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp4.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp4.settings.verbose = False
         qp4.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         qp4.init(
             H,
@@ -3289,10 +3289,10 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp5 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp5.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp5.settings.verbose = False
-        qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp5.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp5.init(
             H,
             np.asfortranarray(g_old),
@@ -3354,11 +3354,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A_old, b_old, C, u, l = generate_mixed_qp(n)
         n_eq = A_old.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -3413,11 +3413,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp2 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         qp2.init(
             H,
@@ -3472,11 +3472,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp3 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp3.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp3.settings.verbose = False
         qp3.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp3.init(
             H,
@@ -3531,11 +3531,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp4 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp4.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp4.settings.verbose = False
         qp4.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         qp4.init(
             H,
@@ -3590,10 +3590,10 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp5 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp5.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp5.settings.verbose = False
-        qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp5.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp5.init(
             H,
             np.asfortranarray(g),
@@ -3655,11 +3655,11 @@ class DenseqpWrapper(unittest.TestCase):
         H, g, A, b, C, u, l = generate_mixed_qp(n)
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -3713,11 +3713,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp2 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp2.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp2.settings.verbose = False
         qp2.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         qp2.init(
             H,
@@ -3772,11 +3772,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp3 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp3 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp3.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp3.settings.verbose = False
         qp3.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp3.init(
             H,
@@ -3831,11 +3831,11 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp4 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp4 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp4.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp4.settings.verbose = False
         qp4.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         qp4.init(
             H,
@@ -3890,10 +3890,10 @@ class DenseqpWrapper(unittest.TestCase):
             )
         )
 
-        qp5 = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp5 = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp5.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp5.settings.verbose = False
-        qp5.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp5.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp5.init(
             H,
             np.asfortranarray(g),
@@ -3966,7 +3966,7 @@ class DenseqpWrapper(unittest.TestCase):
         l = 2.0 * np.ones((n,))
         u = np.full(l.shape, +np.inf)
 
-        qp = proxsuite.proxqp.dense.QP(n, 0, n)
+        qp = proxsuite.osqp.dense.QP(n, 0, n)
         qp.init(H, g, A, b, C, l, u)
         qp.solve()
         x_theoretically_optimal = np.array([2.0] * 149 + [3.0])
@@ -4000,11 +4000,11 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
         rho = 1.0e-7
         mu_eq = 1.0e-4
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -4072,12 +4072,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
         rho = 1.0e-7
         mu_eq = 1.0e-4
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -4146,12 +4146,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
         rho = 1.0e-7
         mu_eq = 1.0e-4
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         qp.init(
             H,
@@ -4220,12 +4220,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
         rho = 1.0e-7
         mu_eq = 1.0e-4
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         qp.init(
             H,
@@ -4294,12 +4294,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
         rho = 1.0e-7
         mu_eq = 1.0e-4
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.WARM_START_WITH_PREVIOUS_RESULT
         )
         qp.init(
             H,
@@ -4368,12 +4368,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
         rho = 1.0e-7
         mu_eq = 1.0e-4
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
+            proxsuite.osqp.InitialGuess.COLD_START_WITH_PREVIOUS_RESULT
         )
         qp.init(
             H,
@@ -4442,12 +4442,12 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
         rho = 1.0e-7
         mu_eq = 1.0e-4
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
         qp.settings.initial_guess = (
-            proxsuite.proxqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
+            proxsuite.osqp.InitialGuess.EQUALITY_CONSTRAINED_INITIAL_GUESS
         )
         qp.init(
             H,
@@ -4516,11 +4516,11 @@ class DenseqpWrapper(unittest.TestCase):
         n_in = C.shape[0]
         rho = 1.0e-7
         mu_eq = 1.0e-4
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
         qp.settings.eps_abs = 1.0e-5  # OSQP unit test
         qp.settings.eps_rel = 0
         qp.settings.verbose = False
-        qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+        qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
         qp.init(
             H,
             np.asfortranarray(g),
@@ -4587,7 +4587,7 @@ class DenseqpWrapper(unittest.TestCase):
         u = None
         l = None
 
-        qp = proxsuite.proxqp.dense.QP(3, 0, 0)
+        qp = proxsuite.osqp.dense.QP(3, 0, 0)
         qp.init(H, g, A, b, C, l, u)
         qp.solve()
         print("optimal x: {}".format(qp.results.x))
@@ -4618,7 +4618,7 @@ class DenseqpWrapper(unittest.TestCase):
             n_eq = A.shape[0]
             n_in = C.shape[0]
 
-            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+            qp = proxsuite.osqp.dense.QP(n, n_eq, n_in, True)
             qp.init(H, g, A, b, C, l, u, l_box, u_box)
             qp.settings.eps_abs = eps
             qp.settings.eps_rel = 0
@@ -4626,11 +4626,11 @@ class DenseqpWrapper(unittest.TestCase):
 
             # if infeasibility is detected, we relax the tolerance and solve again
             if (
-                qp.results.info.status == proxsuite.proxqp.QPSOLVER_DUAL_INFEASIBLE
-                or qp.results.info.status == proxsuite.proxqp.QPSOLVER_PRIMAL_INFEASIBLE
+                qp.results.info.status == proxsuite.osqp.QPSOLVER_DUAL_INFEASIBLE
+                or qp.results.info.status == proxsuite.osqp.QPSOLVER_PRIMAL_INFEASIBLE
             ):
                 print(f"[{i}] {qp.results.info.status=}, solve again.")
-                qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+                qp = proxsuite.osqp.dense.QP(n, n_eq, n_in, True)
                 qp.init(H, g, A, b, C, l, u, l_box, u_box)
                 qp.settings.eps_abs = eps
                 qp.settings.eps_rel = 0
@@ -4638,7 +4638,7 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.settings.eps_dual_inf = 1e-12
                 qp.solve()
 
-            assert qp.results.info.status == proxsuite.proxqp.QPSOLVER_SOLVED
+            assert qp.results.info.status == proxsuite.osqp.QPSOLVER_SOLVED
 
             dua_res = normInf(
                 H @ qp.results.x
@@ -4669,7 +4669,7 @@ class DenseqpWrapper(unittest.TestCase):
             u = np.zeros(n_in)
             l = np.zeros(n_in)
 
-            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+            qp = proxsuite.osqp.dense.QP(n, n_eq, n_in, True)
             qp.init(H, g, A, b, C, l, u, l_box, u_box)
             qp.settings.eps_abs = eps
             qp.settings.eps_rel = 0
@@ -4677,11 +4677,11 @@ class DenseqpWrapper(unittest.TestCase):
 
             # if infeasibility is detected, we relax the tolerance and solve again
             if (
-                qp.results.info.status == proxsuite.proxqp.QPSOLVER_DUAL_INFEASIBLE
-                or qp.results.info.status == proxsuite.proxqp.QPSOLVER_PRIMAL_INFEASIBLE
+                qp.results.info.status == proxsuite.osqp.QPSOLVER_DUAL_INFEASIBLE
+                or qp.results.info.status == proxsuite.osqp.QPSOLVER_PRIMAL_INFEASIBLE
             ):
                 print(f"[{i}] {qp.results.info.status=}, solve again.")
-                qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+                qp = proxsuite.osqp.dense.QP(n, n_eq, n_in, True)
                 qp.init(H, g, A, b, C, l, u, l_box, u_box)
                 qp.settings.eps_abs = eps
                 qp.settings.eps_rel = 0
@@ -4689,7 +4689,7 @@ class DenseqpWrapper(unittest.TestCase):
                 qp.settings.eps_dual_inf = 1e-12
                 qp.solve()
 
-            assert qp.results.info.status == proxsuite.proxqp.QPSOLVER_SOLVED
+            assert qp.results.info.status == proxsuite.osqp.QPSOLVER_SOLVED
 
             dua_res = normInf(
                 H @ qp.results.x
@@ -4723,7 +4723,7 @@ class DenseqpWrapper(unittest.TestCase):
             A = np.zeros((n_eq, n))
             b = np.zeros(n_eq)
 
-            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+            qp = proxsuite.osqp.dense.QP(n, n_eq, n_in, True)
             qp.init(H, g, A, b, C, l, u, l_box, u_box)
             qp.settings.eps_abs = eps
             qp.settings.eps_rel = 0
@@ -4764,7 +4764,7 @@ class DenseqpWrapper(unittest.TestCase):
         u_box = np.ones(n) * 100
         l_box = -np.ones(n) * 100
 
-        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+        qp = proxsuite.osqp.dense.QP(n, n_eq, n_in, True)
         qp.init(H, g, A, b, C, l, u, l_box, u_box)
         qp.settings.eps_abs = eps
         qp.settings.eps_rel = 0
@@ -4830,13 +4830,13 @@ class DenseqpWrapper(unittest.TestCase):
             u -= 100.0
             n_eq = A.shape[0]
             n_in = C.shape[0]
-            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
             qp.settings.eps_abs = 1.0e-5
             qp.settings.eps_rel = 0
             qp.settings.eps_primal_inf = 1.0e-4
             qp.settings.verbose = False
             qp.settings.primal_infeasibility_solving = True
-            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
             qp.init(
                 H,
                 np.asfortranarray(g),
@@ -4879,13 +4879,13 @@ class DenseqpWrapper(unittest.TestCase):
             H, g, A, b, C, u, l = generate_mixed_qp(n, i, -0.01)
             n_eq = A.shape[0]
             n_in = C.shape[0]
-            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
             qp.settings.verbose = False
-            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
             estimate_minimal_eigen_value = (
-                proxsuite.proxqp.dense.estimate_minimal_eigen_value_of_symmetric_matrix(
+                proxsuite.osqp.dense.estimate_minimal_eigen_value_of_symmetric_matrix(
                     H,
-                    proxsuite.proxqp.EigenValueEstimateMethodOption.ExactMethod,
+                    proxsuite.osqp.EigenValueEstimateMethodOption.ExactMethod,
                     1.0e-6,
                     10000,
                 )
@@ -4919,9 +4919,9 @@ class DenseqpWrapper(unittest.TestCase):
             H, g, A, b, C, u, l = generate_mixed_qp(n, i, -0.01)
             n_eq = A.shape[0]
             n_in = C.shape[0]
-            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
             qp.settings.verbose = False
-            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
             vals, _ = spa.linalg.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
@@ -4952,13 +4952,13 @@ class DenseqpWrapper(unittest.TestCase):
             n_eq = A.shape[0]
             n_in = C.shape[0]
 
-            qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
+            qp = proxsuite.osqp.dense.QP(n, n_eq, n_in)
             qp.settings.verbose = False
-            qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
+            qp.settings.initial_guess = proxsuite.osqp.InitialGuess.NO_INITIAL_GUESS
             estimate_minimal_eigen_value = (
-                proxsuite.proxqp.dense.estimate_minimal_eigen_value_of_symmetric_matrix(
+                proxsuite.osqp.dense.estimate_minimal_eigen_value_of_symmetric_matrix(
                     H,
-                    proxsuite.proxqp.EigenValueEstimateMethodOption.PowerIteration,
+                    proxsuite.osqp.EigenValueEstimateMethodOption.PowerIteration,
                     1.0e-6,
                     10000,
                 )
