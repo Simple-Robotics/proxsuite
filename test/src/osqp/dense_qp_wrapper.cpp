@@ -7455,8 +7455,8 @@ TEST_CASE("OSQP: :dense: check updates work when there are box constraints")
   CHECK(pri_res <= eps_abs);
 }
 
-// TODO: To test when (if) OSQP with primal_infeasibility_solving (closest) is
-// coded TEST_CASE("OSQP: :dense: test primal infeasibility solving")
+// Option primal_infeasibility_solving
+// TEST_CASE("OSQP: :dense: test primal infeasibility solving")
 // {
 //   double sparsity_factor = 0.15;
 //   T eps_abs = T(1e-3);

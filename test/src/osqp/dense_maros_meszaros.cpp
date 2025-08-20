@@ -202,7 +202,7 @@ TEST_CASE("OSQP:  dense maros meszaros using the api")
         osqp::dense::QP<T> qp{
           dim, n_eq, n_in, false, DenseBackend::PrimalDualLDLT
         }; // creating QP object
-        // TODO: Automatic when PrimalDualLDLT is solved
+        // TODO: Automatic when PrimalLDLT is implemented
         qp.init(H, g, A, b, C, l, u);
         qp.settings.verbose = false;
 

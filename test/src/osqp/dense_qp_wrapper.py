@@ -4841,7 +4841,7 @@ class DenseqpWrapper(unittest.TestCase):
         assert dua_res <= eps
         assert pri_res <= eps
 
-    # TODO: Implement OSQP with primal_infeasibility_solving = True
+    # Option primal_infeasibility_solving
     # def test_dense_infeasibility_solving(
     #     self,
     # ):
