@@ -62,7 +62,7 @@ struct Info
   T rho_osqp_estimate;
 
   T polish_time;
-  PolishStatus status_polish;
+  PolishOutput status_polish;
 };
 ///
 /// @brief This class stores all the results of the solvers with sparse and
@@ -166,7 +166,7 @@ struct Results
     info.status = QPSolverOutput::QPSOLVER_NOT_RUN;
     info.sparse_backend = SparseBackend::Automatic;
     info.minimal_H_eigenvalue_estimate = 0.;
-    info.status_polish = PolishStatus::POLISH_NOT_RUN;
+    info.status_polish = PolishOutput::POLISH_NOT_RUN;
     info.rho_osqp_estimate = 1e-1;
   }
   /*!
@@ -201,7 +201,7 @@ struct Results
     info.iterative_residual = 0.;
     info.status = QPSolverOutput::QPSOLVER_MAX_ITER_REACHED;
     info.sparse_backend = SparseBackend::Automatic;
-    info.status_polish = PolishStatus::POLISH_NOT_RUN;
+    info.status_polish = PolishOutput::POLISH_NOT_RUN;
   }
   void cold_start(optional<Settings<T>> settings = nullopt)
   {

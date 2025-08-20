@@ -331,12 +331,12 @@ DOCTEST_TEST_CASE(
             qp_random.u);
 
     DOCTEST_CHECK(qp.results.info.status_polish ==
-                  common::PolishStatus::POLISH_NOT_RUN);
+                  common::PolishOutput::POLISH_NOT_RUN);
 
     qp.solve();
 
     DOCTEST_CHECK(qp.results.info.status_polish !=
-                  common::PolishStatus::POLISH_NO_ACTIVE_SET_FOUND);
+                  common::PolishOutput::POLISH_NO_ACTIVE_SET_FOUND);
 
     // Polishing not run because problem is not solved as
     // algorithm is stopped early
@@ -354,12 +354,12 @@ DOCTEST_TEST_CASE(
              qp_random.u);
 
     DOCTEST_CHECK(qp2.results.info.status_polish ==
-                  common::PolishStatus::POLISH_NOT_RUN);
+                  common::PolishOutput::POLISH_NOT_RUN);
 
     qp2.solve();
 
     DOCTEST_CHECK(qp2.results.info.status_polish ==
-                  common::PolishStatus::POLISH_NOT_RUN);
+                  common::PolishOutput::POLISH_NOT_RUN);
 
     // Polish succeeds as the problem is not hard (compared
     // to some Maros Meszaros ones, see OSQP benchmarks)
@@ -376,11 +376,11 @@ DOCTEST_TEST_CASE(
              qp_random.u);
 
     DOCTEST_CHECK(qp3.results.info.status_polish ==
-                  common::PolishStatus::POLISH_NOT_RUN);
+                  common::PolishOutput::POLISH_NOT_RUN);
 
     qp3.solve();
 
     DOCTEST_CHECK(qp3.results.info.status_polish ==
-                  common::PolishStatus::POLISH_SUCCEEDED);
+                  common::PolishOutput::POLISH_SUCCEEDED);
   }
 }

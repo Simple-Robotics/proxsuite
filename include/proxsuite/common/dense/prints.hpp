@@ -288,22 +288,22 @@ print_solver_statistics( //
     case QPSolver::OSQP: {
       if (qpsettings.polish == true) {
         switch (qpresults.info.status_polish) {
-          case PolishStatus::POLISH_SUCCEEDED: {
+          case PolishOutput::POLISH_SUCCEEDED: {
             std::cout << "status_polish:  "
                       << "Success" << std::endl;
             break;
           }
-          case PolishStatus::POLISH_FAILED: {
+          case PolishOutput::POLISH_FAILED: {
             std::cout << "status_polish:  "
                       << "Failed" << std::endl;
             break;
           }
-          case PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
+          case PolishOutput::POLISH_NO_ACTIVE_SET_FOUND: {
             std::cout << "status_polish:  "
                       << "No active set found" << std::endl;
             break;
           }
-          case PolishStatus::POLISH_NOT_RUN: {
+          case PolishOutput::POLISH_NOT_RUN: {
             std::cout << "status_polish:  "
                       << "Not" << std::endl;
             break;

@@ -31,7 +31,7 @@ using proxsuite::common::DenseBackend;
 using proxsuite::common::HessianType;
 using proxsuite::common::InitialGuessStatus;
 using proxsuite::common::MeritFunctionType;
-using proxsuite::common::PolishStatus;
+using proxsuite::common::PolishOutput;
 using proxsuite::common::PreconditionerStatus;
 using proxsuite::common::QPSolver;
 using proxsuite::common::QPSolverOutput;

@@ -108,7 +108,7 @@ NB_MODULE(PYTHON_MODULE_NAME, m)
     m.def_submodule("osqp", "The OSQP solvers of the proxSuite library");
   // exposeResults
   exposeAndExportValues<QPSolverOutput>(osqp_module);
-  exposeAndExportValues<PolishStatus>(osqp_module);
+  exposeAndExportValues<PolishOutput>(osqp_module);
   osqp_module.attr("Info") = m.attr("proxqp").attr("Info");
   osqp_module.attr("Results") = m.attr("proxqp").attr("Results");
   // exposeSettings

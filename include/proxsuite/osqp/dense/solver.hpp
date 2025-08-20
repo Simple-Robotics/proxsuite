@@ -537,7 +537,7 @@ print_polishing_line( //
   Results<T>& qpresults)
 {
   switch (qpresults.info.status_polish) {
-    case PolishStatus::POLISH_SUCCEEDED: {
+    case PolishOutput::POLISH_SUCCEEDED: {
       std::cout << "\033[1;34m[polishing]\033[0m" << std::endl;
       std::cout << std::scientific << std::setw(2) << std::setprecision(2)
                 << "| primal residual=" << qpresults.info.pri_res
@@ -547,7 +547,7 @@ print_polishing_line( //
       std::cout << "\033[1;34m[polishing: succeed]\033[0m" << std::endl;
       break;
     }
-    case PolishStatus::POLISH_FAILED: {
+    case PolishOutput::POLISH_FAILED: {
       std::cout << "\033[1;34m[polishing]\033[0m" << std::endl;
       std::cout << std::scientific << std::setw(2) << std::setprecision(2)
                 << "| primal residual=" << qpresults.info.pri_res
@@ -557,12 +557,12 @@ print_polishing_line( //
       std::cout << "\033[1;34m[polishing: failed]\033[0m" << std::endl;
       break;
     }
-    case PolishStatus::POLISH_NO_ACTIVE_SET_FOUND: {
+    case PolishOutput::POLISH_NO_ACTIVE_SET_FOUND: {
       std::cout << "\033[1;34m[polishing: no active set found]\033[0m"
                 << std::endl;
       break;
     }
-    case PolishStatus::POLISH_NOT_RUN: {
+    case PolishOutput::POLISH_NOT_RUN: {
       std::cout << "\033[1;34m[polishing: not run]\033[0m" << std::endl;
       break;
     }
@@ -1117,7 +1117,7 @@ qp_solve( //
       (qpresults.info.dua_res < dua_res_admm && pri_res_admm < 1e-10);
 
     if (polish_succeeded) {
-      qpresults.info.status_polish = PolishStatus::POLISH_SUCCEEDED;
+      qpresults.info.status_polish = PolishOutput::POLISH_SUCCEEDED;
     } else {
       qpresults.x = x_admm;
       qpresults.y = y_admm;
@@ -1128,7 +1128,7 @@ qp_solve( //
       qpresults.info.dua_res = dua_res_admm;
       qpresults.info.duality_gap = duality_gap_admm;
 
-      qpresults.info.status_polish = PolishStatus::POLISH_FAILED;
+      qpresults.info.status_polish = PolishOutput::POLISH_FAILED;
     }
 
     // Timing polishing

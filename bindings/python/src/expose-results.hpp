@@ -34,12 +34,12 @@ exposeResults(nanobind::module_ m)
     .value("QPSOLVER_NOT_RUN", QPSolverOutput::QPSOLVER_NOT_RUN)
     .export_values();
 
-  ::nanobind::enum_<PolishStatus>(m, "PolishStatus")
-    .value("POLISH_FAILED", PolishStatus::POLISH_FAILED)
-    .value("POLISH_NOT_RUN", PolishStatus::POLISH_NOT_RUN)
-    .value("POLISH_SUCCEEDED", PolishStatus::POLISH_SUCCEEDED)
+  ::nanobind::enum_<PolishOutput>(m, "PolishOutput")
+    .value("POLISH_FAILED", PolishOutput::POLISH_FAILED)
+    .value("POLISH_NOT_RUN", PolishOutput::POLISH_NOT_RUN)
+    .value("POLISH_SUCCEEDED", PolishOutput::POLISH_SUCCEEDED)
     .value("POLISH_NO_ACTIVE_SET_FOUND",
-           PolishStatus::POLISH_NO_ACTIVE_SET_FOUND)
+           PolishOutput::POLISH_NO_ACTIVE_SET_FOUND)
     .export_values();
 
   ::nanobind::class_<Info<T>>(m, "Info")

@@ -46,7 +46,7 @@ enum struct CheckSolvedStatus
   INTERVAL_BASED,  // use of settings.check_termination only.
 };
 // POLISH (OSQP) STATUS
-enum struct PolishStatus
+enum struct PolishOutput
 {
   POLISH_FAILED,             // polish failed.
   POLISH_NOT_RUN,            // polish have not been run yet.

@@ -254,12 +254,12 @@ DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex unconstrained qp and "
             qp_random.u);
 
     DOCTEST_CHECK(qp.results.info.status_polish ==
-                  common::PolishStatus::POLISH_NOT_RUN); // not run before solve
+                  common::PolishOutput::POLISH_NOT_RUN); // not run before solve
 
     qp.solve();
 
     DOCTEST_CHECK(qp.results.info.status_polish ==
-                  common::PolishStatus::POLISH_SUCCEEDED);
+                  common::PolishOutput::POLISH_SUCCEEDED);
     // Note: Choice in the implemntation: Perform solution polishing on Hx = -g
     // on unconstrained problems to make the dual residual vanish.
     // It is done in the osqp wrapper from conda.
