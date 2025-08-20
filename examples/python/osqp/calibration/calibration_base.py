@@ -4,7 +4,12 @@ import osqp
 import numpy as np
 import scipy.sparse as spa
 
-from utils import infty_norm, status_to_string, status_polish_to_string
+from utils import (
+    infty_norm,
+    status_to_string,
+    status_polish_to_string,
+    string_to_check_if_solved_option,
+)
 from utils import (
     unconstrained_qp,
     strongly_convex_qp,
@@ -28,6 +33,9 @@ def solve_qp(
     eps_rel: float = 0,
     eps_primal_inf: float = 1e-4,
     eps_dual_inf: float = 1e-4,
+    check_if_solved_option_str: str = "Iteration based",
+    check_termination: int = 25,
+    frequence_infeasibility_check: int = 1,
     sparsity_factor: float = 0.45,
     strong_convexity_factor: float = 1e-2,
     adaptive_mu: bool = False,
@@ -80,6 +88,13 @@ def solve_qp(
     proxsuite_osqp.settings.eps_primal_inf = eps_primal_inf
     proxsuite_osqp.settings.eps_dual_inf = eps_dual_inf
 
+    check_solved_option = string_to_check_if_solved_option(check_if_solved_option_str)
+    proxsuite_osqp.settings.check_solved_option = check_solved_option
+    proxsuite_osqp.settings.check_termination = check_termination
+    proxsuite_osqp.settings.frequence_infeasibility_check = (
+        frequence_infeasibility_check
+    )
+
     proxsuite_osqp.settings.adaptive_mu = adaptive_mu
     proxsuite_osqp.settings.adaptive_mu_interval = adaptive_mu_interval
     proxsuite_osqp.settings.adaptive_mu_tolerance = adaptive_mu_tolerance
@@ -102,6 +117,10 @@ def solve_qp(
     u_source = np.concatenate([b, u])
     A_source = spa.vstack([A_sparse, C_sparse], format="csc")
 
+    check_termination_source = (
+        check_termination if (check_if_solved_option_str == "Interval based") else 1
+    )
+
     prob = osqp.OSQP()
     prob.setup(
         H_source,
@@ -119,7 +138,7 @@ def solve_qp(
         scaling=10 if compute_preconditioner else 0,
         max_iter=max_iter,
         warm_start=False,
-        check_termination=1,
+        check_termination=check_termination_source,
         adaptive_rho=adaptive_mu,
         adaptive_rho_interval=adaptive_mu_interval,
         adaptive_rho_tolerance=adaptive_mu_tolerance,
@@ -288,6 +307,9 @@ def test_calibration_qp(
     eps_rel: float = 0,
     eps_primal_inf: float = 1e-4,
     eps_dual_inf: float = 1e-4,
+    check_if_solved_option_str: str = "Iteration based",
+    check_termination: int = 25,
+    frequence_infeasibility_check: int = 1,
     sparsity_factor: float = 0.45,
     strong_convexity_factor: float = 1e-2,
     adaptive_mu: bool = False,
@@ -395,6 +417,9 @@ def test_calibration_qp(
             eps_rel=eps_rel,
             eps_primal_inf=eps_primal_inf,
             eps_dual_inf=eps_dual_inf,
+            check_if_solved_option_str=check_if_solved_option_str,
+            check_termination=check_termination,
+            frequence_infeasibility_check=frequence_infeasibility_check,
             sparsity_factor=sparsity_factor,
             strong_convexity_factor=strong_convexity_factor,
             adaptive_mu=adaptive_mu,

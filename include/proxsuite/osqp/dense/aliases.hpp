@@ -26,6 +26,7 @@ using proxsuite::common::i64;
 using proxsuite::common::isize;
 using proxsuite::common::dense::infty_norm;
 
+using proxsuite::common::CheckSolvedStatus;
 using proxsuite::common::DenseBackend;
 using proxsuite::common::HessianType;
 using proxsuite::common::InitialGuessStatus;

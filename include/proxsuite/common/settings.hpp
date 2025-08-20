@@ -142,9 +142,12 @@ struct Settings
   MeritFunctionType merit_function_type;
   T alpha_gpdal;
 
-  SparseBackend sparse_backend;
+  CheckSolvedStatus check_solved_option;
+  isize check_termination;
   bool primal_infeasibility_solving;
   isize frequence_infeasibility_check;
+
+  SparseBackend sparse_backend;
   T default_H_eigenvalue_estimate;
 
   // OSQP
@@ -220,12 +223,18 @@ struct Settings
    * @param bcl_update if set to true, BCL strategy is used for calibrating
    * mu_eq and mu_in. If set to false, a strategy developped by Martinez & al is
    * used.
-   * @param sparse_backend Default automatic. User can choose between sparse
-   * cholesky or iterative matrix free sparse backend.
+   * @param check_solved_option: decide whether we check at each
+   * iteration (then use frequence_inefasibility_check to control the
+   * infeasibility check) or given an interval of iterations (then
+   * check_termination applies to solve and infeasibility checking)
+   * @param check_termination check termination interval for solved
+   * or infeasibility detected
    * @param primal_infeasibility_solving solves the closest primal feasible
    * problem if activated
    * @param frequence_infeasibility_check frequence at which infeasibility is
    * checked
+   * @param sparse_backend Default automatic. User can choose between sparse
+   * cholesky or iterative matrix free sparse backend.
    * @param find_H_minimal_eigenvalue track the minimal eigen value of the
    * quadratic cost H
    * @param default_H_eigenvalue_estimate default H eigenvalue estimate (i.e.,
@@ -290,9 +299,11 @@ struct Settings
     bool bcl_update = true,
     MeritFunctionType merit_function_type = MeritFunctionType::GPDAL,
     T alpha_gpdal = 0.95,
-    SparseBackend sparse_backend = SparseBackend::Automatic,
+    CheckSolvedStatus check_solved_option = CheckSolvedStatus::ITERATION_BASED,
+    isize check_termination = 25,
     bool primal_infeasibility_solving = false,
     isize frequence_infeasibility_check = 1,
+    SparseBackend sparse_backend = SparseBackend::Automatic,
     T default_H_eigenvalue_estimate = 0.,
     T alpha = 1.6,
     T mu_max_eq = 1e3,
@@ -343,9 +354,11 @@ struct Settings
     , bcl_update(bcl_update)
     , merit_function_type(merit_function_type)
     , alpha_gpdal(alpha_gpdal)
-    , sparse_backend(sparse_backend)
+    , check_solved_option(check_solved_option)
+    , check_termination(check_termination)
     , primal_infeasibility_solving(primal_infeasibility_solving)
     , frequence_infeasibility_check(frequence_infeasibility_check)
+    , sparse_backend(sparse_backend)
     , default_H_eigenvalue_estimate(default_H_eigenvalue_estimate)
     , alpha(alpha)
     , mu_max_eq(mu_max_eq)
@@ -418,11 +431,13 @@ operator==(const Settings<T>& settings1, const Settings<T>& settings2)
     settings1.bcl_update == settings2.bcl_update &&
     settings1.merit_function_type == settings2.merit_function_type &&
     settings1.alpha_gpdal == settings2.alpha_gpdal &&
-    settings1.sparse_backend == settings2.sparse_backend &&
+    settings1.check_solved_option == settings2.check_solved_option &&
+    settings1.check_termination == settings2.check_termination &&
     settings1.primal_infeasibility_solving ==
       settings2.primal_infeasibility_solving &&
     settings1.frequence_infeasibility_check ==
       settings2.frequence_infeasibility_check &&
+    settings1.sparse_backend == settings2.sparse_backend &&
     settings1.default_H_eigenvalue_estimate ==
       settings2.default_H_eigenvalue_estimate &&
     settings1.alpha == settings2.alpha &&

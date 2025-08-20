@@ -4,6 +4,7 @@ import osqp
 import numpy as np
 import scipy.sparse as spa
 
+from utils import string_to_check_if_solved_option
 from utils import load_qp, preprocess_qp
 from pathlib import Path
 
@@ -34,6 +35,11 @@ def solve_maros_maszaros(
     eps_primal_inf = 1e-12
     eps_dual_inf = 1e-12
 
+    check_if_solved_option_str = "Iteration based"
+    check_solved_option = string_to_check_if_solved_option(check_if_solved_option_str)
+    check_termination = 25
+    frequence_infeasibility_check = 1
+
     # OSQP proxsuite
     proxsuite_osqp = proxsuite.osqp.dense.QP(dim, n_eq, n_in, box_constraints=False)
     proxsuite_osqp.init(H, g, A, b, C, l, u)
@@ -43,6 +49,12 @@ def solve_maros_maszaros(
     proxsuite_osqp.settings.eps_rel = eps_rel
     proxsuite_osqp.settings.eps_primal_inf = eps_primal_inf
     proxsuite_osqp.settings.eps_dual_inf = eps_dual_inf
+
+    proxsuite_osqp.settings.check_solved_option = check_solved_option
+    proxsuite_osqp.settings.check_termination = check_termination
+    proxsuite_osqp.settings.frequence_infeasibility_check = (
+        frequence_infeasibility_check
+    )
 
     proxsuite_osqp.solve()
 
@@ -54,6 +66,10 @@ def solve_maros_maszaros(
     l_source = np.concatenate([b, l])
     u_source = np.concatenate([b, u])
     A_source = spa.vstack([A_sparse, C_sparse], format="csc")
+
+    check_termination_source = (
+        check_termination if (check_if_solved_option_str == "Interval based") else 1
+    )
 
     prob = osqp.OSQP()
     prob.setup(
@@ -72,7 +88,7 @@ def solve_maros_maszaros(
         scaling=10,
         max_iter=4000,
         warm_start=False,
-        check_termination=1,
+        check_termination=check_termination_source,
         adaptive_rho=True,
         adaptive_rho_interval=50,
         adaptive_rho_tolerance=5.0,
@@ -206,7 +222,7 @@ def test_calibration_maros_meszaros(
     data with dim > 1000 or n_eq + n_in > 1000.
     """
 
-    REPO_ROOT = Path(__file__).resolve().parents[3]
+    REPO_ROOT = Path(__file__).resolve().parents[4]
     MAROS_MESZAROS_DIR = REPO_ROOT / "test" / "data" / "maros_meszaros_data"
 
     files = [
@@ -405,7 +421,7 @@ def test_calibration_maros_meszaros(
 
 
 # test_calibration_maros_meszaros(
-#     test_skipped_problems=True,
+#     test_skipped_problems=False,
 #     verbose_solver=True,
 #     verbose_results_variables=False,
 #     verbose_calibration=False,

@@ -115,6 +115,7 @@ NB_MODULE(PYTHON_MODULE_NAME, m)
   exposeAndExportValues<InitialGuessStatus>(osqp_module);
   exposeAndExportValues<SparseBackend>(osqp_module);
   exposeAndExportValues<EigenValueEstimateMethodOption>(osqp_module);
+  exposeAndExportValues<CheckSolvedStatus>(osqp_module);
   osqp_module.attr("Settings") = m.attr("proxqp").attr("Settings");
   // OpenMP
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP

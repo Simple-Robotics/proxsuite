@@ -8,6 +8,7 @@
 #ifndef PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
 #define PROXSUITE_PROXQP_DENSE_WRAPPER_HPP
 
+#include "proxsuite/common/status.hpp"
 #include <proxsuite/proxqp/dense/aliases.hpp>
 #include <proxsuite/proxqp/dense/solver.hpp>
 #include <proxsuite/common/dense/wrapper.hpp>
@@ -232,14 +233,18 @@ public:
 
     this->settings.preconditioner_max_iter = 10;
     this->settings.preconditioner_accuracy = 1.E-3;
+    this->settings.primal_infeasibility_solving = false;
     this->settings.eps_primal_inf = 1.E-4;
     this->settings.eps_dual_inf = 1.E-4;
     this->settings.bcl_update = true;
     this->settings.merit_function_type = MeritFunctionType::GPDAL;
     this->settings.alpha_gpdal = 0.95;
-    this->settings.sparse_backend = SparseBackend::Automatic;
-    this->settings.primal_infeasibility_solving = false;
+
+    this->settings.check_solved_option = CheckSolvedStatus::ITERATION_BASED;
+    this->settings.check_termination = 25;
     this->settings.frequence_infeasibility_check = 1;
+
+    this->settings.sparse_backend = SparseBackend::Automatic;
     this->settings.default_H_eigenvalue_estimate = 0.;
 
     this->settings.alpha = 1.6;

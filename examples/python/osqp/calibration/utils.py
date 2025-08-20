@@ -66,6 +66,13 @@ def status_polish_to_string(status, solver):
         print("solver argument must be proxsuite or source")
 
 
+def string_to_check_if_solved_option(string):
+    if string == "Iteration based":
+        return proxsuite.osqp.CheckSolvedStatus.ITERATION_BASED
+    elif string == "Interval based":
+        return proxsuite.osqp.CheckSolvedStatus.INTERVAL_BASED
+
+
 def sparse_positive_definite_rand_not_compressed(dim, rho, p, rng):
     # Inspired from "proxsuite/common/utils/random_qp_problems.hpp"
 

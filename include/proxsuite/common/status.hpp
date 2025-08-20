@@ -39,6 +39,12 @@ enum struct PreconditionerStatus
   IDENTITY // do not execute, hence use identity preconditioner (for init
            // method)
 };
+// CHECK IF SOLVED OPTION
+enum struct CheckSolvedStatus
+{
+  ITERATION_BASED, // use of settings.frequence_infeasibility_check only.
+  INTERVAL_BASED,  // use of settings.check_termination only.
+};
 // POLISH (OSQP) STATUS
 enum struct PolishStatus
 {

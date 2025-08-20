@@ -42,10 +42,16 @@ exposeSettings(nanobind::module_ m)
     .value("MatrixFree", SparseBackend::MatrixFree)
     .value("SparseCholesky", SparseBackend::SparseCholesky)
     .export_values();
+
   ::nanobind::enum_<EigenValueEstimateMethodOption>(
     m, "EigenValueEstimateMethodOption")
     .value("PowerIteration", EigenValueEstimateMethodOption::PowerIteration)
     .value("ExactMethod", EigenValueEstimateMethodOption::ExactMethod)
+    .export_values();
+
+  ::nanobind::enum_<CheckSolvedStatus>(m, "CheckSolvedStatus")
+    .value("ITERATION_BASED", CheckSolvedStatus::ITERATION_BASED)
+    .value("INTERVAL_BASED", CheckSolvedStatus::INTERVAL_BASED)
     .export_values();
 
   ::nanobind::class_<Settings<T>>(m, "Settings")
@@ -86,6 +92,8 @@ exposeSettings(nanobind::module_ m)
     .def_rw("bcl_update", &Settings<T>::bcl_update)
     .def_rw("merit_function_type", &Settings<T>::merit_function_type)
     .def_rw("alpha_gpdal", &Settings<T>::alpha_gpdal)
+    .def_rw("check_solved_option", &Settings<T>::check_solved_option)
+    .def_rw("check_termination", &Settings<T>::check_termination)
     .def_rw("primal_infeasibility_solving",
             &Settings<T>::primal_infeasibility_solving)
     .def_rw("frequence_infeasibility_check",

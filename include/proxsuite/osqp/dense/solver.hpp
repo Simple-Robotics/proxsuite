@@ -705,21 +705,36 @@ qp_solve( //
     // Check if solved
     ///////////////////////
 
-    bool stop_solved = common::dense::is_solved(qpsettings,
-                                                qpresults,
-                                                qpwork,
-                                                scaled_eps,
-                                                primal_feasibility_lhs,
-                                                primal_feasibility_eq_rhs_0,
-                                                primal_feasibility_in_rhs_0,
-                                                dual_feasibility_lhs,
-                                                dual_feasibility_rhs_0,
-                                                dual_feasibility_rhs_1,
-                                                dual_feasibility_rhs_3,
-                                                rhs_duality_gap);
+    bool can_check_termination;
+    switch (qpsettings.check_solved_option) {
+      case CheckSolvedStatus::ITERATION_BASED: {
+        can_check_termination = true;
+        break;
+      }
+      case CheckSolvedStatus::INTERVAL_BASED: {
+        can_check_termination = qpsettings.check_termination != 0 &&
+                                iter % qpsettings.check_termination == 0;
+        break;
+      }
+    }
 
-    if (stop_solved) {
-      break;
+    if (can_check_termination) {
+      bool stop_solved = common::dense::is_solved(qpsettings,
+                                                  qpresults,
+                                                  qpwork,
+                                                  scaled_eps,
+                                                  primal_feasibility_lhs,
+                                                  primal_feasibility_eq_rhs_0,
+                                                  primal_feasibility_in_rhs_0,
+                                                  dual_feasibility_lhs,
+                                                  dual_feasibility_rhs_0,
+                                                  dual_feasibility_rhs_1,
+                                                  dual_feasibility_rhs_3,
+                                                  rhs_duality_gap);
+
+      if (stop_solved) {
+        break;
+      }
     }
 
     // Set iteration and variables
@@ -745,55 +760,69 @@ qp_solve( //
     // Check infeasibility
     ///////////////////////
 
-    Vec<T> dx = qpresults.x - qpwork.x_prev;
-    Vec<T> dy = qpresults.y - qpwork.y_prev;
-    Vec<T> dz = qpresults.z - qpwork.z_prev;
-
-    auto& Hdx = qpwork.Hdx;
-    auto& Adx = qpwork.Adx;
-    auto& Cdx = qpwork.Cdx;
-    auto& ATdy = qpwork.CTz;
-
-    switch (hessian_type) {
-      case HessianType::Zero:
+    switch (qpsettings.check_solved_option) {
+      case CheckSolvedStatus::ITERATION_BASED: {
+        can_check_termination =
+          iter % qpsettings.frequence_infeasibility_check == 0 ||
+          qpsettings.primal_infeasibility_solving;
         break;
-      case HessianType::Dense:
-        Hdx.noalias() =
-          qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * dx;
+      }
+      case CheckSolvedStatus::INTERVAL_BASED: {
+        can_check_termination = qpsettings.check_termination != 0 &&
+                                iter % qpsettings.check_termination == 0;
         break;
-      case HessianType::Diagonal:
+      }
+    }
+
+    if (can_check_termination) {
+      Vec<T> dx = qpresults.x - qpwork.x_prev;
+      Vec<T> dy = qpresults.y - qpwork.y_prev;
+      Vec<T> dz = qpresults.z - qpwork.z_prev;
+
+      auto& Hdx = qpwork.Hdx;
+      auto& Adx = qpwork.Adx;
+      auto& Cdx = qpwork.Cdx;
+      auto& ATdy = qpwork.CTz;
+
+      switch (hessian_type) {
+        case HessianType::Zero:
+          break;
+        case HessianType::Dense:
+          Hdx.noalias() =
+            qpwork.H_scaled.template selfadjointView<Eigen::Lower>() * dx;
+          break;
+        case HessianType::Diagonal:
 #ifndef NDEBUG
-        PROXSUITE_THROW_PRETTY(!qpwork.H_scaled.isDiagonal(),
-                               std::invalid_argument,
-                               "H is not diagonal.");
+          PROXSUITE_THROW_PRETTY(!qpwork.H_scaled.isDiagonal(),
+                                 std::invalid_argument,
+                                 "H is not diagonal.");
 #endif
-        Hdx.array() = qpwork.H_scaled.diagonal().array() * dx.array();
-        break;
-    }
+          Hdx.array() = qpwork.H_scaled.diagonal().array() * dx.array();
+          break;
+      }
 
-    Adx.noalias() = qpwork.A_scaled * dx;
-    ATdy.noalias() = qpwork.A_scaled.transpose() * dy;
+      Adx.noalias() = qpwork.A_scaled * dx;
+      ATdy.noalias() = qpwork.A_scaled.transpose() * dy;
 
-    proxsuite::linalg::veg::dynstack::DynStackMut stack{
-      proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
-    };
-    LDLT_TEMP_VEC(T, CTdz, qpmodel.dim, stack);
-    if (qpmodel.n_in > 0) {
-      Cdx.head(qpmodel.n_in).noalias() = qpwork.C_scaled * dx;
-      CTdz.noalias() = qpwork.C_scaled.transpose() * dz.head(qpmodel.n_in);
-    }
-    if (box_constraints) {
-      // use active_part_z as tmp variable in order to unscale primarilly dz
-      qpwork.active_part_z.tail(qpmodel.dim) = dz.tail(qpmodel.dim);
-      qpwork.active_part_z.tail(qpmodel.dim).array() *= qpwork.i_scaled.array();
-      CTdz.noalias() += qpwork.active_part_z.tail(qpmodel.dim);
+      proxsuite::linalg::veg::dynstack::DynStackMut stack{
+        proxsuite::linalg::veg::from_slice_mut, qpwork.ldl_stack.as_mut()
+      };
+      LDLT_TEMP_VEC(T, CTdz, qpmodel.dim, stack);
+      if (qpmodel.n_in > 0) {
+        Cdx.head(qpmodel.n_in).noalias() = qpwork.C_scaled * dx;
+        CTdz.noalias() = qpwork.C_scaled.transpose() * dz.head(qpmodel.n_in);
+      }
+      if (box_constraints) {
+        // use active_part_z as tmp variable in order to unscale primarilly dz
+        qpwork.active_part_z.tail(qpmodel.dim) = dz.tail(qpmodel.dim);
+        qpwork.active_part_z.tail(qpmodel.dim).array() *=
+          qpwork.i_scaled.array();
+        CTdz.noalias() += qpwork.active_part_z.tail(qpmodel.dim);
 
-      Cdx.tail(qpmodel.dim) = dx;
-      Cdx.tail(qpmodel.dim).array() *= qpwork.i_scaled.array();
-    }
+        Cdx.tail(qpmodel.dim) = dx;
+        Cdx.tail(qpmodel.dim).array() *= qpwork.i_scaled.array();
+      }
 
-    if (iter % qpsettings.frequence_infeasibility_check == 0 ||
-        qpsettings.primal_infeasibility_solving) {
       // compute primal and dual infeasibility criteria
       bool is_primal_infeasible =
         common::dense::global_primal_residual_infeasibility(
@@ -818,6 +847,7 @@ qp_solve( //
           qpmodel,
           box_constraints,
           ruiz);
+
       if (is_primal_infeasible) {
         qpresults.info.status = QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE;
         break;

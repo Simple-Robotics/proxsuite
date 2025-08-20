@@ -57,6 +57,22 @@ print_setup_header(const Settings<T>& qpsettings,
   } else {
     std::cout << "          box constraints: off, " << std::endl;
   }
+  switch (qpsettings.check_solved_option) {
+    case CheckSolvedStatus::ITERATION_BASED: {
+      std::cout << "          check_solved_option: iteration based, "
+                << std::endl
+                << "          frequence_infeasibility_check = "
+                << qpsettings.frequence_infeasibility_check << std::endl;
+      break;
+    }
+    case CheckSolvedStatus::INTERVAL_BASED: {
+      std::cout << "          check_solved_option: interval based, "
+                << std::endl
+                << "          check_termination = "
+                << qpsettings.check_termination << std::endl;
+      break;
+    }
+  }
   switch (dense_backend) {
     case DenseBackend::PrimalDualLDLT:
       std::cout << "          dense backend: PrimalDualLDLT, " << std::endl;
