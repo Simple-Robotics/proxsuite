@@ -41,7 +41,7 @@ DOCTEST_TEST_CASE("OSQP:  qp: start from solution using the wrapper framework")
   Eigen::Matrix<T, Eigen::Dynamic, 1> u(0);
   Eigen::Matrix<T, Eigen::Dynamic, 1> l(0);
   dual_init_in.setZero();
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
 
   osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
@@ -65,7 +65,7 @@ DOCTEST_TEST_CASE(
        "constraints and increasing dimension with the wrapper API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
   common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
@@ -115,7 +115,7 @@ DOCTEST_TEST_CASE(
                "increasing dimension using wrapper API---"
             << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
   common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
@@ -174,7 +174,7 @@ DOCTEST_TEST_CASE(
        "equality constraints and increasing dimension using wrapper API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
   common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
@@ -257,7 +257,7 @@ DOCTEST_TEST_CASE("OSQP:  infeasible qp")
   proxsuite::osqp::dense::QP<T> qp(n, n_eq, n_in);
   qp.init(H, g, nullopt, nullopt, C, l, u);
   qp.settings.eps_rel = 0.;
-  qp.settings.eps_abs = 1e-3; // OSQP unit test
+  qp.settings.eps_abs = 1e-5; // OSQP unit test
 
   qp.solve();
 

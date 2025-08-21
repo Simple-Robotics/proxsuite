@@ -24,7 +24,7 @@ DOCTEST_TEST_CASE("OSQP:  3 dim test case from cvxpy, check feasibility")
 
   std::cout << "---OSQP:  3 dim test case from cvxpy, check feasibility "
             << std::endl;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   isize dim = 3;
 
   Mat<T, colmajor> H = Mat<T, colmajor>(dim, dim);
@@ -65,7 +65,7 @@ DOCTEST_TEST_CASE("OSQP:  simple test case from cvxpy, check feasibility")
 
   std::cout << "---OSQP:  simple test case from cvxpy, check feasibility "
             << std::endl;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   isize dim = 1;
 
   Mat<T, colmajor> H = Mat<T, colmajor>(dim, dim);

@@ -23,7 +23,7 @@ DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex qp with equality and "
        "inequality constraints and increasing dimension using wrapper API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
   common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
@@ -76,7 +76,7 @@ DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex qp with box inequality "
        "constraints and increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
   common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
@@ -127,7 +127,7 @@ DOCTEST_TEST_CASE("OSQP:  sparse random not strongly convex qp with inequality "
        "constraints and increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
   common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
@@ -178,7 +178,7 @@ DOCTEST_TEST_CASE(
     << "---OSQP:  testing sparse random strongly convex qp with degenerate "
        "inequality constraints and increasing dimension using the API---"
     << std::endl;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
   T eps_primal_inf = T(1e-15);
   T eps_dual_inf = T(1e-15);
@@ -245,7 +245,7 @@ DOCTEST_TEST_CASE(
        "increasing dimension using the API---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
   common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {
@@ -306,7 +306,7 @@ DOCTEST_TEST_CASE(
        "to test different settings on solution polishing---"
     << std::endl;
   T sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = T(0);
   common::utils::rand::set_seed(1);
   for (isize dim = 10; dim < 1000; dim += 100) {

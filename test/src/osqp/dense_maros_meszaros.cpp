@@ -12,7 +12,7 @@ using namespace proxsuite::common;
 #define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
 // Pass or fail with the settings:
-// eps_abs = 1e-3, eps_rel = 0.
+// eps_abs = 1e-5, eps_rel = 0.
 // adaptive_mu_update = true, adaptive_mu_interval = 50
 // polish = false
 
@@ -124,13 +124,13 @@ char const* files[] = {
   // MAROS_MESZAROS_DIR "QSCAGR25.mat", // ------------- Fail
   // MAROS_MESZAROS_DIR "QSCAGR7.mat",  // ------------- Fail
   // MAROS_MESZAROS_DIR "QSCFXM1.mat",  // ------------- Fail
-  MAROS_MESZAROS_DIR "QSCFXM2.mat",  // Skip
-  MAROS_MESZAROS_DIR "QSCFXM3.mat",  // Skip
-  MAROS_MESZAROS_DIR "QSCORPIO.mat", // ----- Pass
-  MAROS_MESZAROS_DIR "QSCRS8.mat",   // Skip
-  MAROS_MESZAROS_DIR "QSCSD1.mat",   // ----- Pass
-  MAROS_MESZAROS_DIR "QSCSD6.mat",   // Skip
-  MAROS_MESZAROS_DIR "QSCSD8.mat",   // Skip
+  MAROS_MESZAROS_DIR "QSCFXM2.mat", // Skip
+  MAROS_MESZAROS_DIR "QSCFXM3.mat", // Skip
+  // MAROS_MESZAROS_DIR "QSCORPIO.mat", // --------------Fail
+  MAROS_MESZAROS_DIR "QSCRS8.mat", // Skip
+  MAROS_MESZAROS_DIR "QSCSD1.mat", // ----- Pass
+  MAROS_MESZAROS_DIR "QSCSD6.mat", // Skip
+  MAROS_MESZAROS_DIR "QSCSD8.mat", // Skip
   // MAROS_MESZAROS_DIR "QSCTAP1.mat",  // ------------- Fail
   MAROS_MESZAROS_DIR "QSCTAP2.mat", // Skip
   MAROS_MESZAROS_DIR "QSCTAP3.mat", // Skip
@@ -206,7 +206,7 @@ TEST_CASE("OSQP:  dense maros meszaros using the api")
         qp.init(H, g, A, b, C, l, u);
         qp.settings.verbose = false;
 
-        qp.settings.eps_abs = 1e-3; // OSQP unit test
+        qp.settings.eps_abs = 1e-5; // OSQP unit test
         qp.settings.eps_rel = 0;
         qp.settings.eps_primal_inf = 1e-12;
         qp.settings.eps_dual_inf = 1e-12;

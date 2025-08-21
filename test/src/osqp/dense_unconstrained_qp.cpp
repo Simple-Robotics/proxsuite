@@ -21,7 +21,7 @@ DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex unconstrained qp and "
        "dimension---"
     << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = 0;
   for (int dim = 10; dim < 1000; dim += 100) {
 
@@ -73,7 +73,7 @@ DOCTEST_TEST_CASE(
        "with increasing dimension---"
     << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = 0;
   for (int dim = 10; dim < 1000; dim += 100) {
 
@@ -126,7 +126,7 @@ DOCTEST_TEST_CASE("OSQP:  unconstrained qp with H = Id and g random")
   std::cout << "---OSQP:  unconstrained qp with H = Id and g random---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = 0;
 
   int dim(100);
@@ -176,7 +176,7 @@ DOCTEST_TEST_CASE("OSQP:  unconstrained qp with H = Id and g = 0")
   std::cout << "---OSQP:  unconstrained qp with H = Id and g = 0---"
             << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = 0;
 
   int dim(100);
@@ -232,7 +232,7 @@ DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex unconstrained qp and "
        "is found---"
     << std::endl;
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-3); // OSQP unit test
+  T eps_abs = T(1e-5); // OSQP unit test
   T eps_rel = 0;
   for (int dim = 10; dim < 1000; dim += 100) {
 
