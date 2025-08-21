@@ -652,7 +652,6 @@ qp_solve( //
   T scaled_dual_feasibility_rhs_1(0);
   T scaled_dual_feasibility_rhs_3(0);
 
-  T sqrt_mu_update(0);
   T zeta_norms(0);
   T pri_res_norms(0);
   T pri_res_update(0);
