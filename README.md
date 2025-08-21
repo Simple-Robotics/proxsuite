@@ -166,6 +166,13 @@ where $x \in \mathbb{R}^n$ is the optimization variable. The objective function 
 ### Citing **QPLayer**
 
 If you are using **QPLayer** for your work, we encourage you to [cite the related paper](https://inria.hal.science/hal-04133055v2/).
+## **WIP: OSQP**
+
+The **OSQP** algorithm is a numerical optimization approach for solving quadratic programming problems with the same form as problems treated by **ProxQP**. It is based on the Alternating Direction Method of Multipliers.
+
+### Citing **OSQP**
+
+**OSQP** was developped by B. Stellato, G. Banjac, P. Goulart, A. Bemporad and S. Boyd. Information about the algorithm and the API of **OSQP** are available in the [related paper](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf) and [related website](https://osqp.org/).
 ## Installation procedure
 
 Please follow the installation procedure [here](https://github.com/Simple-Robotics/proxsuite/blob/devel/doc/5-installation.md).
