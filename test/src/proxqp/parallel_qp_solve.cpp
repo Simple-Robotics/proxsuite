@@ -10,10 +10,9 @@
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxsuite;
-using namespace proxsuite::proxqp;
-using namespace proxsuite::common::utils;
+using namespace proxsuite::common;
 using T = double;
-using I = c_int;
+using I = utils::c_int;
 using namespace proxsuite::linalg::sparse::tags;
 
 DOCTEST_TEST_CASE("ProxQP: test parallel qp_solve for dense qps")
@@ -36,7 +35,7 @@ DOCTEST_TEST_CASE("ProxQP: test parallel qp_solve for dense qps")
     common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
-    dense::QP<T> qp{ dim, n_eq, n_in };
+    proxqp::dense::QP<T> qp{ dim, n_eq, n_in };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0.0;
     qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
@@ -49,7 +48,7 @@ DOCTEST_TEST_CASE("ProxQP: test parallel qp_solve for dense qps")
             qp_random.u);
     qps.push_back(qp);
 
-    dense::QP<T> qp_compare{ dim, n_eq, n_in };
+    proxqp::dense::QP<T> qp_compare{ dim, n_eq, n_in };
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0.0;
     qp_compare.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
@@ -88,7 +87,7 @@ DOCTEST_TEST_CASE("ProxQP: test dense BatchQP and optional NUM_THREADS")
   T strong_convexity_factor(1.e-2);
   int num_qps = 64;
   std::vector<proxqp::dense::QP<T>> qps_compare;
-  dense::BatchQP<T> qps_vector = dense::BatchQP<T>(num_qps);
+  proxqp::dense::BatchQP<T> qps_vector = proxqp::dense::BatchQP<T>(num_qps);
 
   for (int i = 0; i < num_qps; i++) {
     auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
@@ -134,22 +133,22 @@ DOCTEST_TEST_CASE("ProxQP: test dense BatchQP and optional NUM_THREADS")
 
 DOCTEST_TEST_CASE("ProxQP: test parallel qp_solve for sparse qps")
 {
-  sparse::isize dim = 500;
-  sparse::isize n_eq(10);
-  sparse::isize n_in(10);
+  proxqp::sparse::isize dim = 500;
+  proxqp::sparse::isize n_eq(10);
+  proxqp::sparse::isize n_in(10);
 
   T eps_abs = T(1e-9);
   T sparsity_factor = 0.15;
   T strong_convexity_factor = 0.01;
 
   int num_qps = 64;
-  std::vector<sparse::QP<T, I>> qps;
-  std::vector<sparse::QP<T, I>> qps_compare;
+  std::vector<proxqp::sparse::QP<T, I>> qps;
+  std::vector<proxqp::sparse::QP<T, I>> qps_compare;
 
   // Generate two lists with identical QPs
   for (int i = 0; i < num_qps; i++) {
     utils::rand::set_seed(i);
-    sparse::SparseModel<T> qp_random = utils::sparse_strongly_convex_qp(
+    proxqp::sparse::SparseModel<T> qp_random = utils::sparse_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
 
     qps.emplace_back(dim, n_eq, n_in);
@@ -195,24 +194,25 @@ DOCTEST_TEST_CASE("ProxQP: test parallel qp_solve for sparse qps")
 
 DOCTEST_TEST_CASE("ProxQP: test sparse BatchQP")
 {
-  sparse::isize dim = 500;
-  sparse::isize n_eq(10);
-  sparse::isize n_in(10);
+  proxqp::sparse::isize dim = 500;
+  proxqp::sparse::isize n_eq(10);
+  proxqp::sparse::isize n_in(10);
 
   T eps_abs = T(1e-9);
   T sparsity_factor = 0.15;
   T strong_convexity_factor = 0.01;
 
   int num_qps = 64;
-  std::vector<sparse::QP<T, I>> qps_compare;
+  std::vector<proxqp::sparse::QP<T, I>> qps_compare;
 
-  sparse::BatchQP<T, I> qps_vector = sparse::BatchQP<T, I>(num_qps);
+  proxqp::sparse::BatchQP<T, I> qps_vector =
+    proxqp::sparse::BatchQP<T, I>(num_qps);
   // qps_vector.init_qp_in_place(dim, n_eq, n_in);
   // Generate two lists with identical QPs
   for (int i = 0; i < num_qps; i++) {
     auto& qp = qps_vector.init_qp_in_place(dim, n_eq, n_in);
     utils::rand::set_seed(i);
-    sparse::SparseModel<T> qp_random = utils::sparse_strongly_convex_qp(
+    proxqp::sparse::SparseModel<T> qp_random = utils::sparse_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0.0;
