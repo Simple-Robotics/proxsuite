@@ -420,9 +420,13 @@ def test_calibration_maros_meszaros(
     print(source_pass_proxsuite_fail)
 
 
-# test_calibration_maros_meszaros(
-#     test_skipped_problems=False,
-#     verbose_solver=True,
-#     verbose_results_variables=False,
-#     verbose_calibration=False,
-# )
+# Calibration test
+run_test = False
+
+if run_test:
+    test_calibration_maros_meszaros(
+        test_skipped_problems=False,
+        verbose_solver=True,
+        verbose_results_variables=False,
+        verbose_calibration=False,
+    )
