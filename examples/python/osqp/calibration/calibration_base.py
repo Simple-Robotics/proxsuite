@@ -296,6 +296,7 @@ def solve_qp(
 
 def test_calibration_qp(
     problem: str,
+    run_test: bool = False,
     dim_start: int = 10,
     dim_end: int = 1000,
     dim_step: int = 20,
@@ -331,6 +332,10 @@ def test_calibration_qp(
     prec_iter: int = 0,
     prec_mu_updates: int = 0,
 ):
+    # Run test
+    if not run_test:
+        return
+
     # Constraints setting
     if only_eq and only_in:
         print("only_eq and only_in cannot be set together")

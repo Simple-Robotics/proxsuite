@@ -195,7 +195,8 @@ def solve_maros_maszaros(
 
 
 def test_calibration_maros_meszaros(
-    test_skipped_problems: bool = False,
+    run_test=False,
+    test_skipped_problems=False,
     verbose_solver=False,
     verbose_results_variables=False,
     verbose_calibration=False,
@@ -221,6 +222,10 @@ def test_calibration_maros_meszaros(
     that are skipped in the unit test, due to high dimensionality. It filters
     data with dim > 1000 or n_eq + n_in > 1000.
     """
+
+    # Run test
+    if not run_test:
+        return
 
     REPO_ROOT = Path(__file__).resolve().parents[4]
     MAROS_MESZAROS_DIR = REPO_ROOT / "test" / "data" / "maros_meszaros_data"
@@ -420,13 +425,10 @@ def test_calibration_maros_meszaros(
     print(source_pass_proxsuite_fail)
 
 
-# Calibration test
-run_test = False
-
-if run_test:
-    test_calibration_maros_meszaros(
-        test_skipped_problems=False,
-        verbose_solver=True,
-        verbose_results_variables=False,
-        verbose_calibration=False,
-    )
+test_calibration_maros_meszaros(
+    run_test=False,
+    test_skipped_problems=False,
+    verbose_solver=True,
+    verbose_results_variables=False,
+    verbose_calibration=False,
+)
