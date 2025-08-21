@@ -1,6 +1,11 @@
 file(GLOB_RECURSE ${PROJECT_NAME}_PYTHON_EXAMPLES *.py)
 foreach(EXAMPLE_FILE ${${PROJECT_NAME}_PYTHON_EXAMPLES})
   get_filename_component(EXAMPLE_NAME ${EXAMPLE_FILE} NAME_WE)
+
+  if(EXAMPLE_FILE MATCHES ".*/calibration/.*")
+    continue()
+  endif()
+
   string(
     REGEX REPLACE
     "${PROJECT_SOURCE_DIR}/"
