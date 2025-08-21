@@ -94,7 +94,7 @@ NB_MODULE(PYTHON_MODULE_NAME, m)
   exposeDenseAlgorithms<f64>(proxqp_dense_module);
   exposeBackward<f64>(proxqp_dense_module);
 #ifdef PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP
-  exposeDenseParallel<f64>(dense_module);
+  exposeDenseParallel<f64>(proxqp_dense_module);
 #endif
   nanobind::module_ sparse_module =
     proxqp_module.def_submodule("sparse", "Sparse solver of proxQP");
