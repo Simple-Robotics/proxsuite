@@ -2,8 +2,8 @@
 // Copyright (c) 2025 INRIA
 //
 
-#include "pytypedefs.h"
 #include <nanobind/nanobind.h>
+
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
 
