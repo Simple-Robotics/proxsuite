@@ -7,16 +7,28 @@
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
 
+#include <string_view>
+
 namespace proxsuite {
 namespace common {
 namespace python {
 namespace detail {
-inline auto
+inline nanobind::str
 type_name_short(nanobind::handle h)
 {
   namespace nb = nanobind;
   assert(h.is_type());
-  return nb::type_name(h);
+  // nb::type_name return the type_name with modules.
+  // In the next step, we will trim the modules to only keep the type name.
+  auto str = nb::type_name(h);
+  std::string_view work_str(str.c_str());
+  auto dot_index = work_str.find_last_of('.');
+  if (dot_index == std::string_view::npos) {
+    return str;
+  } else {
+    return nb::str(work_str.data() + dot_index + 1);
+  }
+  // return nb::str(dot_it++, str.end());
 }
 } // namespace detail
 
