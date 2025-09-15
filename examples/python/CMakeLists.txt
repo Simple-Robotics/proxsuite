@@ -6,13 +6,7 @@ foreach(EXAMPLE_FILE ${${PROJECT_NAME}_PYTHON_EXAMPLES})
     continue()
   endif()
 
-  string(
-    REGEX REPLACE
-    "${PROJECT_SOURCE_DIR}/"
-    ""
-    EXAMPLE_FILE_REL
-    ${EXAMPLE_FILE}
-  )
+  string(REPLACE "${PROJECT_SOURCE_DIR}/" "" EXAMPLE_FILE_REL ${EXAMPLE_FILE})
 
   string(
     REGEX REPLACE
