@@ -1158,6 +1158,38 @@ qp_solve( //
                                           primal_feasibility_eq_lhs,
                                           primal_feasibility_in_lhs);
 
+    ruiz.scale_primal_residual_in_place_in(
+      VectorViewMut<T>{ from_eigen,
+                        qpwork.primal_residual_in_scaled_up.head(
+                          qpmodel.n_in) }); // contains now scaled(Cx)
+    if (box_constraints) {
+      ruiz.scale_box_primal_residual_in_place_in(
+        VectorViewMut<T>{ from_eigen,
+                          qpwork.primal_residual_in_scaled_up.tail(
+                            qpmodel.dim) }); // contains now scaled(x)
+    }
+
+    qpwork.primal_residual_in_scaled_up +=
+      qpwork.z_prev *
+      qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
+
+    qpresults.si = qpwork.primal_residual_in_scaled_up;
+    qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
+      qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+    qpresults.si.head(qpmodel.n_in) -=
+      qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+
+    if (box_constraints) {
+      qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+        qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+      qpresults.si.tail(qpmodel.dim) -=
+        qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+    }
+
+    qpwork.active_set_up.array() =
+      (qpwork.primal_residual_in_scaled_up.array() >= 0);
+    qpwork.active_set_low.array() = (qpresults.si.array() <= 0);
+
     common::dense::global_dual_residual(qpresults,
                                         qpwork,
                                         qpmodel,
