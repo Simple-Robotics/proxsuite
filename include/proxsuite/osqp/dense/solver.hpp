@@ -629,6 +629,37 @@ qp_solve( //
                                n_constraints,
                                QPSolver::OSQP);
 
+  // Active sets for duality gap computation
+  ///////////////////////
+
+  qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in).noalias() =
+    qpwork.C_scaled * qpresults.x; // contains now scaled(Cx)
+  if (box_constraints) {
+    qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) = qpresults.x;
+    // contains now scaled(Cx)
+  }
+
+  qpwork.primal_residual_in_scaled_up +=
+    qpwork.z_prev *
+    qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
+
+  qpresults.si = qpwork.primal_residual_in_scaled_up;
+  qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
+    qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+  qpresults.si.head(qpmodel.n_in) -=
+    qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+
+  if (box_constraints) {
+    qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+      qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+    qpresults.si.tail(qpmodel.dim) -=
+      qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+  }
+
+  qpwork.active_set_up.array() =
+    (qpwork.primal_residual_in_scaled_up.array() >= 0);
+  qpwork.active_set_low.array() = (qpresults.si.array() <= 0);
+
   // Tmp variables
   ///////////////////////
 
@@ -744,6 +775,41 @@ qp_solve( //
     qpwork.x_prev = qpresults.x;
     qpwork.y_prev = qpresults.y;
     qpwork.z_prev = qpresults.z;
+
+    // Active sets for duality gap computation
+    ///////////////////////
+
+    ruiz.scale_primal_residual_in_place_in(
+      VectorViewMut<T>{ from_eigen,
+                        qpwork.primal_residual_in_scaled_up.head(
+                          qpmodel.n_in) }); // contains now scaled(Cx)
+    if (box_constraints) {
+      ruiz.scale_box_primal_residual_in_place_in(
+        VectorViewMut<T>{ from_eigen,
+                          qpwork.primal_residual_in_scaled_up.tail(
+                            qpmodel.dim) }); // contains now scaled(x)
+    }
+
+    qpwork.primal_residual_in_scaled_up +=
+      qpwork.z_prev *
+      qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
+
+    qpresults.si = qpwork.primal_residual_in_scaled_up;
+    qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
+      qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+    qpresults.si.head(qpmodel.n_in) -=
+      qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+
+    if (box_constraints) {
+      qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+        qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+      qpresults.si.tail(qpmodel.dim) -=
+        qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+    }
+
+    qpwork.active_set_up.array() =
+      (qpwork.primal_residual_in_scaled_up.array() >= 0);
+    qpwork.active_set_low.array() = (qpresults.si.array() <= 0);
 
     // ADMM step of variable updates
     ///////////////////////

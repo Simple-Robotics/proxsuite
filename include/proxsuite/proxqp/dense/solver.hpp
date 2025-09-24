@@ -627,6 +627,42 @@ qp_solve( //
                                n_constraints,
                                QPSolver::PROXQP);
 
+  // Active sets for duality gap computation
+  ///////////////////////
+
+  qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in).noalias() =
+    qpwork.C_scaled * qpresults.x; // contains now scaled(Cx)
+  if (box_constraints) {
+    qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) = qpresults.x;
+    // contains now scaled(Cx)
+  }
+
+  qpwork.primal_residual_in_scaled_up +=
+    qpwork.z_prev *
+    qpresults.info.mu_in; // contains now scaled(Cx+z_prev*mu_in)
+
+  switch (qpsettings.merit_function_type) {
+    case MeritFunctionType::GPDAL:
+      qpwork.primal_residual_in_scaled_up +=
+        (qpsettings.alpha_gpdal - 1.) * qpresults.info.mu_in * qpresults.z;
+      break;
+    case MeritFunctionType::PDAL:
+      break;
+  }
+
+  qpresults.si = qpwork.primal_residual_in_scaled_up;
+  qpwork.primal_residual_in_scaled_up.head(qpmodel.n_in) -=
+    qpwork.u_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+  qpresults.si.head(qpmodel.n_in) -=
+    qpwork.l_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+
+  if (box_constraints) {
+    qpwork.primal_residual_in_scaled_up.tail(qpmodel.dim) -=
+      qpwork.u_box_scaled; // contains now scaled(Cx-u+z_prev*mu_in)
+    qpresults.si.tail(qpmodel.dim) -=
+      qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
+  }
+
   // Tmp variables
   ///////////////////////
 
