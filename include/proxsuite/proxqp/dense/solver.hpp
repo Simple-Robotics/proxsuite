@@ -663,6 +663,10 @@ qp_solve( //
       qpwork.l_box_scaled; // contains now scaled(Cx-l+z_prev*mu_in)
   }
 
+  qpwork.active_set_up.array() =
+    (qpwork.primal_residual_in_scaled_up.array() >= 0);
+  qpwork.active_set_low.array() = (qpresults.si.array() <= 0);
+
   // Tmp variables
   ///////////////////////
 
