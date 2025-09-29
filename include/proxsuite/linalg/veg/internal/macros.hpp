@@ -1093,7 +1093,7 @@ HEDLEY_DIAGNOSTIC_PUSH
 template<typename Char,
          Char... Cs>
 constexpr auto
-operator""__veglib_const_literal_gnuc() noexcept // NOLINT
+operator""_veglib_const_literal_gnuc() noexcept // NOLINT
   -> proxsuite::linalg::veg::StrLiteralConstant<
     proxsuite::linalg::veg::CharUnit(Cs)...>
 {
@@ -1103,7 +1103,7 @@ operator""__veglib_const_literal_gnuc() noexcept // NOLINT
 HEDLEY_DIAGNOSTIC_POP
 
 #define __VEG_IMPL_UTF8_CONST(Literal) /* NOLINT */                            \
-  (u8##Literal##__veglib_const_literal_gnuc)
+  (u8##Literal##_veglib_const_literal_gnuc)
 
 #elif (defined(__clang__) && defined(VEG_WITH_CXX20_SUPPORT)) ||               \
   (defined(__cpp_nontype_template_args) &&                                     \
@@ -1157,7 +1157,7 @@ struct StrLiteralExpand<_meta::integer_sequence<usize, Is...>, L>
 
 template<proxsuite::linalg::veg::_detail::StrLiteralImpl S>
 constexpr auto
-operator""__veglib_const_literal_cpp20() noexcept ->
+operator""_veglib_const_literal_cpp20() noexcept ->
   typename proxsuite::linalg::veg::_detail::StrLiteralExpand< //
     proxsuite::linalg::veg::_detail::_meta::make_index_sequence<
       proxsuite::linalg::veg::_detail::StrLiteralLen<decltype(S)>::value>,
@@ -1166,7 +1166,7 @@ operator""__veglib_const_literal_cpp20() noexcept ->
   return {};
 }
 #define __VEG_IMPL_UTF8_CONST(Literal)                                         \
-  (u8##Literal##__veglib_const_literal_cpp20)
+  (u8##Literal##_veglib_const_literal_cpp20)
 
 #else
 

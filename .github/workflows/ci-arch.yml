@@ -2,6 +2,7 @@ name: CI - ArchLinux
 
 on:
   push:
+    branches: devel
   pull_request:
     paths-ignore:
       - CHANGELOG.md
@@ -18,7 +19,7 @@ jobs:
     steps:
     - run: pacman -Syu --noconfirm cmake eigen git libmatio python-scipy simde
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         submodules: recursive
 

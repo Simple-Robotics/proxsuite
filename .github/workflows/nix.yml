@@ -3,11 +3,9 @@ name: "CI - Nix"
 on:
   push:
     branches:
-      - main
       - devel
   pull_request:
     branches:
-      - main
       - devel
 
 jobs:
@@ -17,7 +15,7 @@ jobs:
       matrix:
         os: ["ubuntu-24.04", "ubuntu-24.04-arm", "macos-13", "macos-14"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v31
       - uses: cachix/cachix-action@v16
         with:

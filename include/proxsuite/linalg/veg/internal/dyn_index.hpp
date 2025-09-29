@@ -259,7 +259,7 @@ struct binary_traits<Dyn, Fix<N>> : binary_traits<Dyn, Dyn>
 
 inline namespace literals {
 VEG_INLINE constexpr auto
-operator"" _v(unsigned long long n) VEG_NOEXCEPT->Dyn
+operator""_v(unsigned long long n) VEG_NOEXCEPT->Dyn
 {
   return isize(n);
 }
