@@ -91,7 +91,10 @@ def QPFunction(
     class QPFunctionFn(Function):
         @staticmethod
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
-            nBatch = extract_nBatch(Q_, p_, A_, b_, G_, l_, u_)
+            if len(Q_.size()) == 3:
+                nBatch = Q_.size(0)
+            else:
+                nBatch = 1
             Q, _ = expandParam(Q_, nBatch, 3)
             p, _ = expandParam(p_, nBatch, 2)
             G, _ = expandParam(G_, nBatch, 3)
@@ -103,8 +106,13 @@ def QPFunction(
             ctx.vector_of_qps = proxsuite.proxqp.dense.BatchQP()
 
             ctx.nBatch = nBatch
-
-            _, nineq, nz = G.size()
+            do_neq = True
+            if len(G.size()) == 3 or len(G.size()) == 2:
+                nineq, nz = G.size()[1:]
+            else:
+                nineq = 0
+                nz = Q.size()[-1]
+                do_neq = False
             neq = A.size(1) if A.nelement() > 0 else 0
             assert neq > 0 or nineq > 0
             ctx.neq, ctx.nineq, ctx.nz = neq, nineq, nz
@@ -134,13 +142,13 @@ def QPFunction(
                 if p[i] is not None:
                     p__ = p[i].cpu().numpy()
                 G__ = None
-                if G[i] is not None:
+                if do_neq and G[i] is not None:
                     G__ = G[i].cpu().numpy()
                 u__ = None
-                if u[i] is not None:
+                if do_neq and u[i] is not None:
                     u__ = u[i].cpu().numpy()
                 l__ = None
-                if l[i] is not None:
+                if do_neq and l[i] is not None:
                     l__ = l[i].cpu().numpy()
                 A__ = None
                 if Ai is not None:
@@ -148,7 +156,6 @@ def QPFunction(
                 b__ = None
                 if bi is not None:
                     b__ = bi.cpu().numpy()
-
                 qp.init(
                     H=H__, g=p__, A=A__, b=b__, C=G__, l=l__, u=u__, rho=default_rho
                 )
@@ -256,9 +263,22 @@ def QPFunction(
         @staticmethod
         def forward(ctx, Q_, p_, A_, b_, G_, l_, u_):
 
-            n_in, nz = G_.size()[-2], G_.size()[-1]  # true double-sided inequality size
+            do_neq = True
+            if len(G_.size()) == 3:
+                _, n_in, nz = G_.size()
+            elif len(G_.size()) == 2:
+                print("la")
+                n_in = G_.size()[-2]
+                nz = G_.size()[-1]
+            else:
+                n_in = Q_.size()[-1]
+                nz = Q_.size()[-1]
+                do_neq = False
             ctx.G_size = G_.size()
-            nBatch = extract_nBatch(Q_, p_, A_, b_, G_, l_, u_)
+            if len(Q_.size()) == 3:
+                nBatch = Q_.size(0)
+            else:
+                nBatch = 1
 
             Q, _ = expandParam(Q_, nBatch, 3)
             p, _ = expandParam(p_, nBatch, 2)
@@ -270,32 +290,43 @@ def QPFunction(
 
             h = torch.cat((-l, u), axis=1)  # single-sided inequality
             G = torch.cat((-G, G), axis=1)  # single-sided inequality
-
-            _, nineq, nz = G.size()
-            neq = A.size(1) if A.nelement() > 0 else 0
+            if len(G.size()) == 3:
+                _, nineq, nz = G.size()
+            else:
+                nineq = 0
+                nz = Q.size()[-1]
+            if len(A.size()) == 3 or len(A.size()) == 2:
+                neq = A.size(-2) if A.nelement() > 0 else 0
+            else:
+                neq = 0
             assert neq > 0 or nineq > 0
             ctx.neq, ctx.nineq, ctx.nz = neq, nineq, nz
 
             zhats = torch.empty((nBatch, ctx.nz), dtype=Q.dtype)
             nus = torch.empty((nBatch, ctx.nineq), dtype=Q.dtype)
-            nus_sol = torch.empty(
-                (nBatch, n_in), dtype=Q.dtype
-            )  # double-sided inequality multiplier
+            if do_neq:
+                nus_sol = torch.empty(
+                    (nBatch, n_in), dtype=Q.dtype
+                )  # double-sided inequality multiplier
+            else:
+                nus_sol = None
             lams = (
                 torch.empty(nBatch, ctx.neq, dtype=Q.dtype)
                 if ctx.neq > 0
-                else torch.empty()
+                else torch.tensor([])
             )
             s_e = (
                 torch.empty(nBatch, ctx.neq, dtype=Q.dtype)
                 if ctx.neq > 0
-                else torch.empty()
+                else torch.tensor([])
             )
             slacks = torch.empty((nBatch, ctx.nineq), dtype=Q.dtype)
-            s_i = torch.empty(
-                (nBatch, n_in), dtype=Q.dtype
-            )  # this one is of size the one of the original n_in
-
+            if do_neq:
+                s_i = torch.empty(
+                    (nBatch, n_in), dtype=Q.dtype
+                )  # this one is of size the one of the original n_in
+            else:
+                s_i = None
             vector_of_qps = proxsuite.proxqp.dense.BatchQP()
 
             ctx.cpu = os.cpu_count()
@@ -313,6 +344,7 @@ def QPFunction(
                 qp.settings.refactor_rho_threshold = default_rho  # no refactorization
                 qp.settings.eps_abs = eps
                 Ai, bi = (A[i], b[i]) if neq > 0 else (None, None)
+
                 H__ = None
                 if Q[i] is not None:
                     H__ = Q[i].cpu().numpy()
@@ -320,11 +352,13 @@ def QPFunction(
                 if p[i] is not None:
                     p__ = p[i].cpu().numpy()
                 G__ = None
-                if G[i] is not None:
+                if do_neq and G[i] is not None:
                     G__ = G[i].cpu().numpy()
                 u__ = None
-                if h[i] is not None:
+                if do_neq and h[i] is not None:
                     u__ = h[i].cpu().numpy()
+                if not do_neq:
+                    l = None
                 # l__ = None
                 # if (l[i] is not None):
                 #     l__ = l[i].cpu().numpy()
@@ -334,7 +368,6 @@ def QPFunction(
                 b__ = None
                 if bi is not None:
                     b__ = bi.cpu().numpy()
-
                 qp.init(H=H__, g=p__, A=A__, b=b__, C=G__, l=l, u=u__, rho=default_rho)
 
             if proxqp_parallel:
@@ -350,16 +383,18 @@ def QPFunction(
                 if nineq > 0:
                     # we re-convert the solution to a double sided inequality QP
                     slack = -h[i] + G[i] @ vector_of_qps.get(i).results.x
-                    nus_sol[i] = torch.Tensor(
-                        -vector_of_qps.get(i).results.z[:n_in]
-                        + vector_of_qps.get(i).results.z[n_in:]
-                    )  # de-projecting this one may provoke loss of information when using inexact solution
+                    if do_neq:
+                        nus_sol[i] = torch.Tensor(
+                            -vector_of_qps.get(i).results.z[:n_in]
+                            + vector_of_qps.get(i).results.z[n_in:]
+                        )  # de-projecting this one may provoke loss of information when using inexact solution
                     nus[i] = torch.tensor(vector_of_qps.get(i).results.z)
                     slacks[i] = slack.clone().detach()
-                    s_i[i] = torch.tensor(
-                        -vector_of_qps.get(i).results.si[:n_in]
-                        + vector_of_qps.get(i).results.si[n_in:]
-                    )
+                    if do_neq:
+                        s_i[i] = torch.tensor(
+                            -vector_of_qps.get(i).results.si[:n_in]
+                            + vector_of_qps.get(i).results.si[n_in:]
+                        )
                 if neq > 0:
                     lams[i] = torch.tensor(vector_of_qps.get(i).results.y)
                     s_e[i] = torch.tensor(vector_of_qps.get(i).results.se)
@@ -373,7 +408,10 @@ def QPFunction(
         @staticmethod
         def backward(ctx, dl_dzhat, dl_dlams, dl_dnus, dl_ds_e, dl_ds_i):
             zhats, s_e, Q, p, G, l, u, A, b = ctx.saved_tensors
-            nBatch = extract_nBatch(Q, p, A, b, G, l, u)
+            if len(Q.size()) == 3:
+                nBatch = Q.size(0)
+            else:
+                nBatch = 1
 
             Q, Q_e = expandParam(Q, nBatch, 3)
             p, p_e = expandParam(p, nBatch, 2)
