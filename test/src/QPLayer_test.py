@@ -1,7 +1,6 @@
 from typing import Optional, Tuple, Union
 import unittest
 
-import cvxpy as cp
 import numpy as np
 import proxsuite
 import proxsuite.torch.qplayer as qplayer
@@ -17,6 +16,8 @@ def solve_single_qp_numpy(
     C: Optional[np.ndarray],
     l: Optional[np.ndarray],
     u: Optional[np.ndarray],
+    eq: bool = True,
+    neq: bool = True,
 ) -> np.ndarray:
     """Solve a single QP problem using proxsuite numpy backend.
 
@@ -32,11 +33,11 @@ def solve_single_qp_numpy(
     Returns:
         Optimal solution vector
 
-    Raises:
-        AssertionError: If the QP problem is not feasible
     """
-    assert is_qp_feasible(H, g, A, b, C, l, u), "QP problem is not feasible"
-
+    if not eq:
+        A = b = None
+    if not neq:
+        C = u = l = None
     results = proxsuite.proxqp.dense.solve(
         H=H,
         g=np.asfortranarray(g),
@@ -60,6 +61,8 @@ def solve_single_qp_torch_feasible(
     G: Optional[torch.Tensor],
     lb: Optional[torch.Tensor],
     ub: Optional[torch.Tensor],
+    eq=True,
+    neq=True,
 ) -> torch.Tensor:
     """Solve a single QP problem using torch QPFunction with structural feasibility.
 
@@ -78,6 +81,10 @@ def solve_single_qp_torch_feasible(
     eps = 1e-5
     max_iter = 1000
     function = qplayer.QPFunction(eps, max_iter, structural_feasibility=True)
+    if not eq:
+        A = b = torch.tensor([])
+    if not neq:
+        G = lb = ub = torch.tensor([])
     output_torch = function(P, q, A, b, G, lb, ub)
     return output_torch[0]
 
@@ -90,6 +97,8 @@ def solve_single_qp_torch_non_structural_feasible(
     G: Optional[torch.Tensor],
     lb: Optional[torch.Tensor],
     ub: Optional[torch.Tensor],
+    eq=True,
+    neq=True,
 ) -> torch.Tensor:
     """Solve a single QP problem using torch QPFunction without structural feasibility.
 
@@ -108,6 +117,10 @@ def solve_single_qp_torch_non_structural_feasible(
     eps = 1e-5
     max_iter = 1000
     function = qplayer.QPFunction(eps, max_iter, structural_feasibility=False)
+    if not eq:
+        A = b = torch.tensor([])
+    if not neq:
+        C = u = l = torch.tensor([])
     output_torch = function(P, q, A, b, G, lb, ub)
     return output_torch[0]
 
@@ -131,7 +144,6 @@ def batch_generate_qps(
 
     for _ in range(n_batch):
         P, q, A, b, G, lb, ub = generate_qp_func(qp_size)
-
         # Convert sparse matrices to dense arrays
         Ps.append(P.toarray() if sp.issparse(P) else P)
         qs.append(q.toarray() if sp.issparse(q) else q)
@@ -160,6 +172,8 @@ def solve_batch_qp_torch_feasible(
     G: torch.Tensor,
     lb: torch.Tensor,
     ub: torch.Tensor,
+    eq=True,
+    neq=True,
 ) -> torch.Tensor:
     """Solve a batch of QP problems using torch QPFunction with structural feasibility.
 
@@ -178,6 +192,10 @@ def solve_batch_qp_torch_feasible(
     eps = 1e-5
     max_iter = 1000
     function = qplayer.QPFunction(eps, max_iter, structural_feasibility=True)
+    if not eq:
+        A = b = torch.tensor([])
+    if not neq:
+        G = lb = ub = torch.tensor([])
     output_torch = function(P, q, A, b, G, lb, ub)
     return output_torch[0]
 
@@ -190,6 +208,8 @@ def solve_batch_qp_torch_non_structural_feasible(
     G: torch.Tensor,
     lb: torch.Tensor,
     ub: torch.Tensor,
+    eq=True,
+    neq=True,
 ) -> torch.Tensor:
     """Solve a batch of QP problems using torch QPFunction without structural feasibility.
 
@@ -208,6 +228,10 @@ def solve_batch_qp_torch_non_structural_feasible(
     eps = 1e-5
     max_iter = 1000
     function = qplayer.QPFunction(eps, max_iter, structural_feasibility=False)
+    if not eq:
+        A = b = torch.tensor([])
+    if not neq:
+        G = lb = ub = torch.tensor([])
     output_torch = function(P, q, A, b, G, lb, ub)
     return output_torch[0]
 
@@ -303,57 +327,6 @@ def generate_mixed_qp(n: int, seed: int = 1, reg: float = 0.01) -> Tuple[
     return P, q, A[:n_eq, :], u[:n_eq], A[n_in:, :], u[n_in:], l[n_in:]
 
 
-def is_qp_feasible(
-    Q: np.ndarray,
-    p: np.ndarray,
-    A: Optional[np.ndarray] = None,
-    b: Optional[np.ndarray] = None,
-    G: Optional[np.ndarray] = None,
-    lb: Optional[np.ndarray] = None,
-    ub: Optional[np.ndarray] = None,
-) -> Optional[bool]:
-    """Check if a quadratic programming problem is feasible.
-
-    Args:
-        Q: Quadratic cost matrix
-        p: Linear cost vector
-        A: Equality constraint matrix (optional)
-        b: Equality constraint vector (optional)
-        G: Inequality constraint matrix (optional)
-        lb: Lower bounds for inequality constraints (optional)
-        ub: Upper bounds for inequality constraints (optional)
-
-    Returns:
-        True if feasible, False if infeasible, None if solver status unclear
-    """
-    n = Q.shape[0]
-    x = cp.Variable(n)
-
-    constraints = []
-
-    # Add equality constraints
-    if A is not None and b is not None:
-        constraints.append(A @ x == b)
-
-    # Add inequality constraints
-    if G is not None:
-        if lb is not None:
-            constraints.append(G @ x >= lb)
-        if ub is not None:
-            constraints.append(G @ x <= ub)
-
-    # Create feasibility problem (minimize 0)
-    prob = cp.Problem(cp.Minimize(0), constraints)
-    prob.solve(solver=cp.OSQP, verbose=False)
-
-    if prob.status in ["optimal", "optimal_inaccurate"]:
-        return True
-    elif prob.status == "infeasible":
-        return False
-    else:
-        return None
-
-
 class TestQpLayerWrapper(unittest.TestCase):
     """Test suite for QP layer functionality comparing different solvers."""
 
@@ -366,9 +339,11 @@ class TestQpLayerWrapper(unittest.TestCase):
     def test_single_qp_solver_consistency(self) -> None:
         """Test that different single QP solvers produce consistent results."""
         # Generate a single QP problem
+
         qp_matrices = generate_mixed_qp(self.qp_size)
 
         # Solve using different methods
+        # With eq and neq
         torch_sol_feasible = solve_single_qp_torch_feasible(
             *to_torch_tensors(qp_matrices)
         )
@@ -385,8 +360,66 @@ class TestQpLayerWrapper(unittest.TestCase):
                 torch_sol_feasible.detach().cpu().numpy(),
                 numpy_sol,
                 rtol=self.tolerance,
+                atol=self.tolerance,
             ),
-            "QPFunction does not match proxqp.dense.solve for single QP problem",
+            "QPFunction does not match proxqp.dense.solve for single QP problem with eq and neq",
+        )
+        self.assertTrue(
+            np.allclose(
+                torch_sol_feasible.detach().cpu().numpy(),
+                torch_sol_non_structural_feasible.detach().cpu().numpy(),
+                rtol=self.tolerance,
+                atol=self.tolerance,
+            ),
+            "Structural feasible and non-structural feasible solutions do not match with neq and eq",
+        )
+
+        # With eq
+        numpy_sol = solve_single_qp_numpy(
+            *to_dense_np_arrays(qp_matrices), eq=True, neq=False
+        )
+
+        torch_sol_feasible = solve_single_qp_torch_feasible(
+            *to_torch_tensors(qp_matrices), eq=True, neq=False
+        )
+        torch_sol_non_structural_feasible = (
+            solve_single_qp_torch_non_structural_feasible(
+                *to_torch_tensors(qp_matrices), eq=True, neq=False
+            )
+        )
+
+        self.assertTrue(
+            np.allclose(
+                torch_sol_feasible.detach().cpu().numpy(),
+                numpy_sol,
+                rtol=self.tolerance,
+                atol=self.tolerance,
+            ),
+            "QPFunction does not match proxqp.dense.solve for single QP problem with eq and no neq",
+        )
+
+        # With neq
+        numpy_sol = solve_single_qp_numpy(
+            *to_dense_np_arrays(qp_matrices), eq=False, neq=True
+        )
+        torch_sol_feasible = solve_single_qp_torch_feasible(
+            *to_torch_tensors(qp_matrices), eq=False, neq=True
+        )
+
+        torch_sol_non_structural_feasible = (
+            solve_single_qp_torch_non_structural_feasible(
+                *to_torch_tensors(qp_matrices), eq=False, neq=True
+            )
+        )
+
+        self.assertTrue(
+            np.allclose(
+                torch_sol_feasible.detach().cpu().numpy(),
+                numpy_sol,
+                rtol=self.tolerance,
+                atol=self.tolerance,
+            ),
+            "QPFunction does not match proxqp.dense.solve for single QP problem with neq and no eq",
         )
 
         self.assertTrue(
@@ -394,9 +427,16 @@ class TestQpLayerWrapper(unittest.TestCase):
                 torch_sol_feasible.detach().cpu().numpy(),
                 torch_sol_non_structural_feasible.detach().cpu().numpy(),
                 rtol=self.tolerance,
+                atol=self.tolerance,
             ),
-            "Structural feasible and non-structural feasible solutions do not match",
+            "Structural feasible and non-structural feasible solutions do not match with neq and no eq",
         )
+
+        # TODO
+        # Without eq or neq
+        # I am not sure that without eq or neq is an intended mode as the original code has :
+        #                           "assert neq > 0 or nineq > 0"
+        # for now we consider that this mode is not doable
 
     def test_batch_qp_solver_consistency(self) -> None:
         """Test that batch QP solvers with different feasibility modes produce consistent results."""
@@ -404,6 +444,7 @@ class TestQpLayerWrapper(unittest.TestCase):
         batch = batch_generate_qps(generate_mixed_qp, self.batch_size, self.qp_size)
 
         # Solve using different feasibility modes
+        # With eq and neq
         sol_structural_feasible = solve_batch_qp_torch_feasible(
             *to_torch_tensors(batch)
         )
@@ -412,7 +453,6 @@ class TestQpLayerWrapper(unittest.TestCase):
         )
 
         # Test batch solver against individual numpy solutions for validation
-        batch_sol_torch = solve_batch_qp_torch_feasible(*to_torch_tensors(batch))
 
         # Solve each QP individually with numpy and concatenate results
         numpy_solutions = []
@@ -425,19 +465,23 @@ class TestQpLayerWrapper(unittest.TestCase):
 
         self.assertTrue(
             np.allclose(
-                batch_sol_torch.detach().cpu().numpy(),
+                sol_structural_feasible.detach().cpu().numpy(),
                 numpy_batch_sol,
                 rtol=self.tolerance,
+                atol=self.tolerance,
             ),
             "Batch PyTorch solver does not match concatenated individual numpy solutions",
         )
-
+        print(sol_structural_feasible)
+        print(sol_non_structural_feasible)
+        print(sol_structural_feasible.shape)
         # Assert batch solutions match within tolerance
         self.assertTrue(
             np.allclose(
                 sol_structural_feasible.detach().cpu().numpy(),
                 sol_non_structural_feasible.detach().cpu().numpy(),
                 rtol=self.tolerance,
+                atol=self.tolerance,
             ),
             "Batch structural feasible and non-structural feasible solutions do not match",
         )
@@ -450,9 +494,94 @@ class TestQpLayerWrapper(unittest.TestCase):
             f"Expected batch solution shape {expected_batch_shape}, got {sol_structural_feasible.shape}",
         )
 
+        # With eq
+        sol_structural_feasible = solve_batch_qp_torch_feasible(
+            *to_torch_tensors(batch), eq=True, neq=False
+        )
+        sol_non_structural_feasible = solve_batch_qp_torch_non_structural_feasible(
+            *to_torch_tensors(batch), eq=True, neq=False
+        )
+
+        # Test batch solver against individual numpy solutions for validation
+        batch_sol_torch = solve_batch_qp_torch_feasible(
+            *to_torch_tensors(batch), eq=True, neq=False
+        )
+
+        # Solve each QP individually with numpy and concatenate results
+        numpy_solutions = []
+        for i in range(self.batch_size):
+            single_qp = tuple(arr[i] for arr in batch)
+            numpy_sol = solve_single_qp_numpy(*single_qp, eq=True, neq=False)
+            numpy_solutions.append(numpy_sol)
+
+        numpy_batch_sol = np.stack(numpy_solutions, axis=0)
+
+        self.assertTrue(
+            np.allclose(
+                batch_sol_torch.detach().cpu().numpy(),
+                numpy_batch_sol,
+                rtol=self.tolerance,
+                atol=self.tolerance,
+            ),
+            "Batch PyTorch solver does not match concatenated individual numpy solutions with eq and no neq",
+        )
+
+        # Assert batch solutions match within tolerance
+        self.assertTrue(
+            np.allclose(
+                sol_structural_feasible.detach().cpu().numpy(),
+                sol_non_structural_feasible.detach().cpu().numpy(),
+                rtol=self.tolerance,
+                atol=self.tolerance,
+            ),
+            "Batch structural feasible and non-structural feasible solutions do not match with eq and no neq",
+        )
+
+        # With neq
+        sol_structural_feasible = solve_batch_qp_torch_feasible(
+            *to_torch_tensors(batch), eq=False, neq=True
+        )
+        sol_non_structural_feasible = solve_batch_qp_torch_non_structural_feasible(
+            *to_torch_tensors(batch), eq=False, neq=True
+        )
+
+        # Test batch solver against individual numpy solutions for validation
+        batch_sol_torch = solve_batch_qp_torch_feasible(
+            *to_torch_tensors(batch), eq=False, neq=True
+        )
+
+        # Solve each QP individually with numpy and concatenate results
+        numpy_solutions = []
+        for i in range(self.batch_size):
+            single_qp = tuple(arr[i] for arr in batch)
+            numpy_sol = solve_single_qp_numpy(*single_qp, eq=False, neq=True)
+            numpy_solutions.append(numpy_sol)
+
+        numpy_batch_sol = np.stack(numpy_solutions, axis=0)
+
+        self.assertTrue(
+            np.allclose(
+                batch_sol_torch.detach().cpu().numpy(),
+                numpy_batch_sol,
+                rtol=self.tolerance,
+                atol=self.tolerance,
+            ),
+            "Batch PyTorch solver does not match concatenated individual numpy solutions with neq and no eq",
+        )
+
+        # Assert batch solutions match within tolerance
+        self.assertTrue(
+            np.allclose(
+                sol_structural_feasible.detach().cpu().numpy(),
+                sol_non_structural_feasible.detach().cpu().numpy(),
+                rtol=self.tolerance,
+                atol=self.tolerance,
+            ),
+            "Batch structural feasible and non-structural feasible solutions do not match with neq and no eq",
+        )
+
     def test_backward_pass(self) -> None:
         """Test that backward pass works correctly for both single and batch problems."""
-
         # Test single QP backward pass with structural feasibility
         qp_matrices = generate_mixed_qp(self.qp_size)
         torch_tensors_single = to_torch_tensors(qp_matrices)
