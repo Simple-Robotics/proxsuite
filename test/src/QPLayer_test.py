@@ -320,7 +320,6 @@ def generate_mixed_qp(n: int, seed: int = 1, reg: float = 0.01) -> Tuple[
     # Generate constraint matrices
     A = sp.random(m, n, density=0.15, data_rvs=np.random.randn, format="csc")
     v = np.random.randn(n)
-    delta = np.random.rand(m)
     u = A @ v
     l = 1.0e20 * np.ones(m)
 
