@@ -120,8 +120,8 @@ def solve_single_qp_torch_non_structural_feasible(
     if not eq:
         A = b = torch.tensor([])
     if not neq:
-        C = u = l = torch.tensor([])
-    output_torch = function(P, q, A, b, C, l, u)
+        G = ub = lb = torch.tensor([])
+    output_torch = function(P, q, A, b, G, lb, ub)
     return output_torch[0]
 
 
