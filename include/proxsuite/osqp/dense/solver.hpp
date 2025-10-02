@@ -964,7 +964,8 @@ qp_solve( //
     ///////////////////////
 
     if (qpsettings.adaptive_mu) {
-      bool iteration_condition = iter % qpsettings.adaptive_mu_interval == 0;
+      bool iteration_condition =
+        (iter + 1) % qpsettings.adaptive_mu_interval == 0;
 
       if (iteration_condition) {
         scaled_global_primal_residual(
