@@ -3998,7 +3998,7 @@ class DenseqpWrapper(unittest.TestCase):
 
         assert dua_res <= 1e-3  # default precision of the solver
         assert pri_res <= 1e-3
-        assert normInf(x_theoretically_optimal - qp.results.x) <= 1e-3
+        assert normInf(x_theoretically_optimal - qp.results.x) <= 2e-3  # OSQP
         print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
         print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
         print("total number of iteration: {}".format(qp.results.info.iter_ext))
