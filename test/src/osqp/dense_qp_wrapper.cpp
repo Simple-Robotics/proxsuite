@@ -7071,7 +7071,7 @@ TEST_CASE("OSQP: :dense: init must be called before update")
   CHECK(dua_res <= eps_abs);
   CHECK(pri_res <= eps_abs);
 }
-// Fail
+
 // test of the box constraints interface
 TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
 {
@@ -7103,8 +7103,8 @@ TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
     l_box.setZero();
     for (isize i = 0; i < dim; ++i) {
       T shift = common::utils::rand::uniform_rand();
-      u_box(i) = x_sol(i) + shift;
-      l_box(i) = x_sol(i) - shift;
+      u_box(i) = x_sol(i) + 2 * shift; // OSQP unit test
+      l_box(i) = x_sol(i) - 2 * shift; // OSQP unit test
     }
     /////////////////// for debuging
     // using Mat =
@@ -7199,8 +7199,8 @@ TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
     l_box.setZero();
     for (isize i = 0; i < dim; ++i) {
       T shift = common::utils::rand::uniform_rand();
-      u_box(i) = x_sol(i) + shift;
-      l_box(i) = x_sol(i) - shift;
+      u_box(i) = x_sol(i) + 2 * shift; // OSQP unit test
+      l_box(i) = x_sol(i) - 2 * shift; // OSQP unit test
     }
 
     osqp::dense::QP<T> qp(dim, n_eq, n_in, true);
@@ -7238,7 +7238,7 @@ TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
                  qp.results.z.tail(dim))
                   .lpNorm<Eigen::Infinity>();
     CHECK(dua_res <= eps_abs);
-    // CHECK(pri_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
     if (pri_res > eps_abs) {
       std::cout << "pri_res: " << pri_res << std::endl;
       std::cout << "i of failed pri_res: " << i << std::endl;
@@ -7261,10 +7261,6 @@ TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
                       ? "Not run"
                       : "Unknown")
                 << std::endl;
-      // Only 3 over 1000 tests do not pass
-      // i = 294: pri_res 0.00624957 >= 0.001 / iter 83 / Primal infeasible
-      // i = 715: pri_res 0.00138004 >= 0.001 / iter 72 / Primal infeasible
-      // i = 782: pri_res 0.00217198 >= 0.001 / iter 91 / Primal infeasible
     }
   }
   // idem but without ineq and without eq constraints
@@ -7295,8 +7291,8 @@ TEST_CASE("OSQP: :dense: check ordering of z when there are box constraints")
     l_box.setZero();
     for (isize i = 0; i < dim; ++i) {
       T shift = common::utils::rand::uniform_rand();
-      u_box(i) = x_sol(i) + shift;
-      l_box(i) = x_sol(i) - shift;
+      u_box(i) = x_sol(i) + 2 * shift; // OSQP unit test
+      l_box(i) = x_sol(i) - 2 * shift; // OSQP unit test
     }
     // make a qp to compare
     osqp::dense::QP<T> qp_compare(dim, n_eq, dim, false);
