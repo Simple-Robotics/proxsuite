@@ -129,7 +129,7 @@ def QPFunction(
                 qp = ctx.vector_of_qps.init_qp_in_place(ctx.nz, ctx.neq, ctx.nineq)
                 qp.settings.primal_infeasibility_solving = False
                 qp.settings.max_iter = maxIter
-                qp.settings.max_iter_in = 100
+                qp.settings.max_iter_in = 1000
                 default_rho = 5.0e-5
                 qp.settings.default_rho = default_rho
                 qp.settings.refactor_rho_threshold = default_rho  # no refactorization
@@ -267,7 +267,6 @@ def QPFunction(
             if len(G_.size()) == 3:
                 _, n_in, nz = G_.size()
             elif len(G_.size()) == 2:
-                print("la")
                 n_in = G_.size()[-2]
                 nz = G_.size()[-1]
             else:
@@ -338,7 +337,7 @@ def QPFunction(
                 qp = vector_of_qps.init_qp_in_place(ctx.nz, ctx.neq, ctx.nineq)
                 qp.settings.primal_infeasibility_solving = True
                 qp.settings.max_iter = maxIter
-                qp.settings.max_iter_in = 100
+                qp.settings.max_iter_in = 1000
                 default_rho = 5.0e-5
                 qp.settings.default_rho = default_rho
                 qp.settings.refactor_rho_threshold = default_rho  # no refactorization
@@ -454,7 +453,9 @@ def QPFunction(
 
             for i in range(nBatch):
                 Q_i = Q[i].numpy()
-                C_i = G[i].numpy()
+                C_i = None
+                if G is not None and G.numel() != 0:
+                    C_i = G[i].numpy()
                 A_i = None
                 if A is not None:
                     if A.shape[0] != 0:
@@ -484,8 +485,9 @@ def QPFunction(
                         dim + n_eq + 2 * n_in : 2 * dim + n_eq + 2 * n_in,
                     ] = A_i
 
-                kkt[:dim, dim + n_eq : dim + n_eq + n_in] = C_i.transpose()
-                kkt[dim + n_eq : dim + n_eq + n_in, :dim] = C_i
+                if n_in > 0:
+                    kkt[:dim, dim + n_eq : dim + n_eq + n_in] = C_i.transpose()
+                    kkt[dim + n_eq : dim + n_eq + n_in, :dim] = C_i
 
                 D_1_c = np.eye(n_in)  # represents [s_i]_- + z_i < 0
                 D_1_c[P_1, P_1] = 0.0
@@ -555,9 +557,9 @@ def QPFunction(
 
                 qp.settings.primal_infeasibility_solving = True
                 qp.settings.eps_abs = eps_backward
-                qp.settings.max_iter = 10
-                qp.settings.default_rho = 1.0e-3
-                qp.settings.refactor_rho_threshold = 1.0e-3
+                qp.settings.max_iter = 1000
+                qp.settings.default_rho = 5.0e-5
+                qp.settings.refactor_rho_threshold = 5.0e-5
                 qp.init(
                     H,
                     g,
@@ -587,11 +589,14 @@ def QPFunction(
                         .astype(np.float64)
                     )
 
-                dnu[i] = torch.from_numpy(
-                    np.float64(
-                        vector_of_qps.get(i).results.x[dim + n_eq : dim + n_eq + n_in]
+                if dnu is not None:
+                    dnu[i] = torch.from_numpy(
+                        np.float64(
+                            vector_of_qps.get(i).results.x[
+                                dim + n_eq : dim + n_eq + n_in
+                            ]
+                        )
                     )
-                )
                 dim_ = 0
                 if n_eq > 0:
                     b_5[i] = torch.from_numpy(
@@ -609,16 +614,18 @@ def QPFunction(
                 )
 
             dps = dx
-            dGs = (
-                bger(dnu.double(), zhats.double())
-                + bger(ctx.nus.double(), dx.double())
-                + bger(P_2_c_s_i.double(), b_6.double())
-            )
-            if G_e:
-                dGs = dGs.mean(0)
-            dhs = -dnu
-            if h_e:
-                dhs = dhs.mean(0)
+            dGs = None
+            if dnu is not None:
+                dGs = (
+                    bger(dnu.double(), zhats.double())
+                    + bger(ctx.nus.double(), dx.double())
+                    + bger(P_2_c_s_i.double(), b_6.double())
+                )
+                if G_e:
+                    dGs = dGs.mean(0)
+                dhs = -dnu
+                if h_e:
+                    dhs = dhs.mean(0)
             if neq > 0:
                 dAs = (
                     bger(dlam.double(), zhats.double())
@@ -661,7 +668,15 @@ def QPFunction(
                     dhs[:, n_in_sol:],
                 )
             else:
-                raise
+                grads = (
+                    dQs,
+                    dps,
+                    dAs,
+                    dbs,
+                    None,
+                    None,
+                    None,
+                )
             return grads
 
     if structural_feasibility:
