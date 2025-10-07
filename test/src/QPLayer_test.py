@@ -78,7 +78,7 @@ def solve_single_qp_derivative_numpy(
     neq: bool = True,
     feasible=True,
 ) -> np.ndarray:
-    """Solve a single QP problem using proxsuite numpy backend.
+    """Solve a single QP problem using proxsuite numpy backend then compute the gradients of the QP matrices with respect to the squared norm of the QP output.
 
     Args:
         H: Quadratic cost matrix (Hessian)
@@ -90,7 +90,7 @@ def solve_single_qp_derivative_numpy(
         u: Upper bounds for inequality constraints
 
     Returns:
-        Optimal solution vector
+        gradients on QP matrices
 
     """
     if not eq:
