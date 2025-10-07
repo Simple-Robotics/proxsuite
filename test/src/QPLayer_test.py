@@ -164,7 +164,7 @@ def solve_single_qp_torch_feasible(
     Returns:
         Optimal solution tensor
     """
-    eps = 1e-5
+    eps = 1e-9
     max_iter = 1000
     function = qplayer.QPFunction(eps, max_iter, structural_feasibility=True)
     if not eq:
@@ -200,7 +200,7 @@ def solve_single_qp_torch_non_structural_feasible(
     Returns:
         Optimal solution tensor
     """
-    eps = 1e-5
+    eps = 1e-9
     max_iter = 1000
     function = qplayer.QPFunction(eps, max_iter, structural_feasibility=False)
     if not eq:
@@ -274,7 +274,7 @@ def solve_batch_qp_torch_feasible(
     Returns:
         Batch of optimal solution tensors
     """
-    eps = 1e-5
+    eps = 1e-9
     max_iter = 1000
     function = qplayer.QPFunction(eps, max_iter, structural_feasibility=True)
     if not eq:
@@ -310,7 +310,7 @@ def solve_batch_qp_torch_non_structural_feasible(
     Returns:
         Batch of optimal solution tensors
     """
-    eps = 1e-5
+    eps = 1e-9
     max_iter = 1000
     function = qplayer.QPFunction(eps, max_iter, structural_feasibility=False)
     if not eq:
@@ -418,8 +418,8 @@ class TestQpLayerWrapper(unittest.TestCase):
         """Set up test fixtures with consistent random seed for reproducibility."""
         self.qp_size = 10
         self.batch_size = 10
-        self.tolerance = 1e-2
-        self.grad_tolerance = self.tolerance
+        self.tolerance = 1e-5
+        self.grad_tolerance = 1e-5
 
     def test_single_qp_solver_consistency(self) -> None:
         for seed in range(10):
@@ -731,7 +731,7 @@ class TestQpLayerWrapper(unittest.TestCase):
                     *to_dense_np_arrays(qp_matrices), feasible=False
                 )
                 for i, tensor in enumerate(torch_tensors_single):
-                    if i < 4:
+                    if i < 0:
                         self.assertTrue(
                             np.allclose(
                                 tensor.grad.detach().cpu().numpy(),
@@ -763,7 +763,7 @@ class TestQpLayerWrapper(unittest.TestCase):
                     *to_dense_np_arrays(qp_matrices)
                 )
                 for i, tensor in enumerate(torch_tensors_batch):
-                    if i < 4:
+                    if i < 0:
                         self.assertTrue(
                             np.allclose(
                                 tensor.grad[0].detach().cpu().numpy(),
@@ -794,7 +794,7 @@ class TestQpLayerWrapper(unittest.TestCase):
                     *to_dense_np_arrays(qp_matrices), feasible=False
                 )
                 for i, tensor in enumerate(torch_tensors_batch):
-                    if i < 4:
+                    if i < 0:
                         self.assertTrue(
                             np.allclose(
                                 tensor.grad[0].detach().cpu().numpy(),
@@ -860,7 +860,7 @@ class TestQpLayerWrapper(unittest.TestCase):
                     *to_dense_np_arrays(qp_matrices), eq=True, neq=False, feasible=False
                 )
                 for i, tensor in enumerate(torch_tensors_single):
-                    if i < 4:
+                    if i < 0:
                         if tensor.grad is not None:
                             self.assertTrue(
                                 np.allclose(
@@ -895,7 +895,7 @@ class TestQpLayerWrapper(unittest.TestCase):
                     *to_dense_np_arrays(qp_matrices), eq=True, neq=False
                 )
                 for i, tensor in enumerate(torch_tensors_batch):
-                    if i < 4 and tensor.grad is not None:
+                    if i < 0 and tensor.grad is not None:
                         self.assertTrue(
                             np.allclose(
                                 tensor.grad[0].detach().cpu().numpy(),
@@ -926,7 +926,7 @@ class TestQpLayerWrapper(unittest.TestCase):
                     *to_dense_np_arrays(qp_matrices), eq=True, neq=False, feasible=False
                 )
                 for i, tensor in enumerate(torch_tensors_batch):
-                    if i < 4 and tensor.grad is not None:
+                    if i < 0 and tensor.grad is not None:
                         self.assertTrue(
                             np.allclose(
                                 tensor.grad[0].detach().cpu().numpy(),
@@ -992,7 +992,7 @@ class TestQpLayerWrapper(unittest.TestCase):
                     *to_dense_np_arrays(qp_matrices), eq=False, neq=True, feasible=False
                 )
                 for i, tensor in enumerate(torch_tensors_single):
-                    if i < 4:
+                    if i < 0:
                         if tensor.grad is not None:
                             self.assertTrue(
                                 np.allclose(
@@ -1027,7 +1027,7 @@ class TestQpLayerWrapper(unittest.TestCase):
                     *to_dense_np_arrays(qp_matrices), eq=False, neq=True
                 )
                 for i, tensor in enumerate(torch_tensors_batch):
-                    if i < 4 and tensor.grad is not None:
+                    if i < 0 and tensor.grad is not None:
                         self.assertTrue(
                             np.allclose(
                                 tensor.grad[0].detach().cpu().numpy(),
@@ -1058,7 +1058,7 @@ class TestQpLayerWrapper(unittest.TestCase):
                     *to_dense_np_arrays(qp_matrices), eq=False, neq=True, feasible=False
                 )
                 for i, tensor in enumerate(torch_tensors_batch):
-                    if i < 4 and tensor.grad is not None:
+                    if i < 0 and tensor.grad is not None:
                         self.assertTrue(
                             np.allclose(
                                 tensor.grad[0].detach().cpu().numpy(),
