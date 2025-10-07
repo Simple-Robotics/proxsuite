@@ -129,7 +129,7 @@ def QPFunction(
                 qp = ctx.vector_of_qps.init_qp_in_place(ctx.nz, ctx.neq, ctx.nineq)
                 qp.settings.primal_infeasibility_solving = False
                 qp.settings.max_iter = maxIter
-                qp.settings.max_iter_in = 1000
+                qp.settings.max_iter_in = 100
                 default_rho = 5.0e-5
                 qp.settings.default_rho = default_rho
                 qp.settings.refactor_rho_threshold = default_rho  # no refactorization
@@ -337,7 +337,7 @@ def QPFunction(
                 qp = vector_of_qps.init_qp_in_place(ctx.nz, ctx.neq, ctx.nineq)
                 qp.settings.primal_infeasibility_solving = True
                 qp.settings.max_iter = maxIter
-                qp.settings.max_iter_in = 1000
+                qp.settings.max_iter_in = 100
                 default_rho = 5.0e-5
                 qp.settings.default_rho = default_rho
                 qp.settings.refactor_rho_threshold = default_rho  # no refactorization
