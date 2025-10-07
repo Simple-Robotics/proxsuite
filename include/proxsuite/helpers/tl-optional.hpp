@@ -980,8 +980,7 @@ public:
 #ifndef TL_OPTIONAL_NO_CONSTRR
   template<class F>
   constexpr decltype(optional_map_impl(std::declval<const optional&&>(),
-                                       std::declval<F&&>()))
-  map(F&& f) const&&
+                                       std::declval<F&&>())) map(F&& f) const&&
   {
     return optional_map_impl(std::move(*this), std::forward<F>(f));
   }
@@ -1044,8 +1043,8 @@ public:
 #ifndef TL_OPTIONAL_NO_CONSTRR
   template<class F>
   constexpr decltype(optional_map_impl(std::declval<const optional&&>(),
-                                       std::declval<F&&>()))
-  transform(F&& f) const&&
+                                       std::declval<F&&>())) transform(F&& f)
+    const&&
   {
     return optional_map_impl(std::move(*this), std::forward<F>(f));
   }
@@ -2035,8 +2034,8 @@ public:
 #ifndef TL_OPTIONAL_NO_CONSTRR
   template<class F>
   constexpr decltype(detail::optional_map_impl(std::declval<const optional&&>(),
-                                               std::declval<F&&>()))
-  map(F&& f) const&&
+                                               std::declval<F&&>())) map(F&& f)
+    const&&
   {
     return detail::optional_map_impl(std::move(*this), std::forward<F>(f));
   }
@@ -2101,9 +2100,9 @@ public:
 
 #ifndef TL_OPTIONAL_NO_CONSTRR
   template<class F>
-  constexpr decltype(detail::optional_map_impl(std::declval<const optional&&>(),
-                                               std::declval<F&&>()))
-  transform(F&& f) const&&
+  constexpr decltype(detail::optional_map_impl(
+    std::declval<const optional&&>(),
+    std::declval<F&&>())) transform(F&& f) const&&
   {
     return detail::optional_map_impl(std::move(*this), std::forward<F>(f));
   }

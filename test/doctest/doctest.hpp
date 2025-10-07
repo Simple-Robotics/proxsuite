@@ -525,7 +525,8 @@ consume(const int*, int) noexcept
 #define DOCTEST_BREAK_INTO_DEBUGGER() __debugbreak()
 #elif defined(__MINGW32__)
 DOCTEST_GCC_SUPPRESS_WARNING_WITH_PUSH("-Wredundant-decls")
-extern "C" __declspec(dllimport) void __stdcall DebugBreak();
+extern "C" __declspec(dllimport) void __stdcall
+DebugBreak();
 DOCTEST_GCC_SUPPRESS_WARNING_POP
 #define DOCTEST_BREAK_INTO_DEBUGGER() ::DebugBreak()
 #else // linux
@@ -1454,8 +1455,7 @@ struct DOCTEST_INTERFACE Approx
 #ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
   template<typename T>
   typename std::enable_if<std::is_constructible<double, T>::value,
-                          Approx&>::type
-  epsilon(const T& newEpsilon)
+                          Approx&>::type epsilon(const T& newEpsilon)
   {
     m_epsilon = static_cast<double>(newEpsilon);
     return *this;
@@ -1467,8 +1467,7 @@ struct DOCTEST_INTERFACE Approx
 #ifdef DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS
   template<typename T>
   typename std::enable_if<std::is_constructible<double, T>::value,
-                          Approx&>::type
-  scale(const T& newScale)
+                          Approx&>::type scale(const T& newScale)
   {
     m_scale = static_cast<double>(newScale);
     return *this;
@@ -5046,7 +5045,8 @@ getContextOptions()
 
 DOCTEST_MSVC_SUPPRESS_WARNING_WITH_PUSH(4738)
 template<typename F>
-IsNaN<F>::operator bool() const
+IsNaN<F>::
+operator bool() const
 {
   return std::isnan(value) ^ flipped;
 }

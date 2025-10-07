@@ -142,8 +142,7 @@ struct Fix : _detail::idx::adl::IdxBase<Fix<N>>
     (typename R),
     requires(VEG_CONCEPT(index<R>) &&
              VEG_CONCEPT(index<typename _detail::binary_traits<Fix, R>::Div>)),
-    VEG_NODISCARD VEG_INLINE constexpr auto
-    operator/,
+    VEG_NODISCARD VEG_INLINE constexpr auto operator/,
     (b, R))
   const VEG_NOEXCEPT->typename _detail::binary_traits<Fix, R>::Div
   {

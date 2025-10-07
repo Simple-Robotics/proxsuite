@@ -587,10 +587,7 @@
   template<typename... Ts>                                                     \
   struct Name                                                                  \
   {                                                                            \
-    void apply(Ts&&... args)                                                   \
-    {                                                                          \
-      Fn(VEG_FWD(args)...);                                                    \
-    }                                                                          \
+    void apply(Ts&&... args) { Fn(VEG_FWD(args)...); }                         \
   };                                                                           \
   template struct Name<__VA_ARGS__>
 

@@ -176,8 +176,7 @@ struct bit_cast
                requires((VEG_CONCEPT(trivially_copyable<From>) && //
                          VEG_CONCEPT(trivially_copyable<To>) &&   //
                          (sizeof(From) == sizeof(To)))),
-               VEG_INLINE VEG_BITCAST_CONSTEXPR auto
-               operator(),
+               VEG_INLINE VEG_BITCAST_CONSTEXPR auto operator(),
                (from, From const&))
   const VEG_NOEXCEPT->To
   {

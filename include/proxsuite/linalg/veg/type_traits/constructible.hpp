@@ -48,7 +48,7 @@ VEG_DEF_CONCEPT_FROM_BUILTIN_OR_TRAIT(typename T,
 VEG_CONCEPT_EXPR((typename T, typename... Ts),
                  (T, Ts...),
                  inplace_constructible,
-                 new(static_cast<void*>(nullptr)) T(VEG_DECLVAL(Ts&&)...),
+                 new (static_cast<void*>(nullptr)) T(VEG_DECLVAL(Ts&&)...),
                  true);
 
 VEG_DEF_CONCEPT_FROM_BUILTIN_OR_STD((typename T, typename... Ts),

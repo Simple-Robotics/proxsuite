@@ -94,8 +94,7 @@ struct Dyn
     (typename R),
     requires(VEG_CONCEPT(index<R>) &&
              VEG_CONCEPT(index<typename _detail::binary_traits<Dyn, R>::Div>)),
-    VEG_NODISCARD VEG_INLINE constexpr auto
-    operator/,
+    VEG_NODISCARD VEG_INLINE constexpr auto operator/,
     (b, R))
   const VEG_NOEXCEPT->typename _detail::binary_traits<Dyn, R>::Div
   {
