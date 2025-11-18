@@ -1,7 +1,10 @@
 //
 // Copyright (c) 2022 INRIA
 //
-/** \file */
+/**
+ * @file dense.hpp
+ */
+
 #ifndef PROXSUITE_PROXQP_DENSE_DENSE_HPP
 #define PROXSUITE_PROXQP_DENSE_DENSE_HPP
 

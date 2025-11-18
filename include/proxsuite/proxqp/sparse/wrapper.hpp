@@ -7,14 +7,17 @@
 
 #ifndef PROXSUITE_PROXQP_SPARSE_WRAPPER_HPP
 #define PROXSUITE_PROXQP_SPARSE_WRAPPER_HPP
-#include <proxsuite/proxqp/results.hpp>
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/results.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <proxsuite/proxqp/sparse/solver.hpp>
 #include <proxsuite/proxqp/sparse/helpers.hpp>
 
 namespace proxsuite {
 namespace proxqp {
 namespace sparse {
+
+;
+
 ///
 /// @brief This class defines the API of PROXQP solver with sparse backend.
 ///
@@ -37,9 +40,9 @@ auto main() -> int {
         // Generate a random QP problem with primal variable dimension of size
 dim; n_eq equality constraints and n_in inequality constraints
         ::proxsuite::proxqp::test::rand::set_seed(1);
-        proxqp::isize dim = 10;
-        proxqp::isize n_eq(dim / 4);
-        proxqp::isize n_in(dim / 4);
+        isize dim = 10;
+        isize n_eq(dim / 4);
+        isize n_in(dim / 4);
         T strong_convexity_factor(1.e-2);
         T sparsity_factor = 0.15; // controls the sparsity of each matrix of the
 problem generated T eps_abs = T(1e-9); double p = 1.0; T conditioning(10.0);
@@ -259,9 +262,9 @@ struct QP
     work.internal.proximal_parameter_update = false;
     PreconditionerStatus preconditioner_status;
     if (compute_preconditioner_) {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::EXECUTE;
+      preconditioner_status = PreconditionerStatus::EXECUTE;
     } else {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
+      preconditioner_status = PreconditionerStatus::IDENTITY;
     }
     proxsuite::proxqp::sparse::update_proximal_parameters(
       settings, results, work, rho, mu_eq, mu_in);
@@ -379,9 +382,9 @@ struct QP
     work.internal.proximal_parameter_update = false;
     PreconditionerStatus preconditioner_status;
     if (update_preconditioner) {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::EXECUTE;
+      preconditioner_status = PreconditionerStatus::EXECUTE;
     } else {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
+      preconditioner_status = PreconditionerStatus::KEEP;
     }
     isize n = model.dim;
     isize n_eq = model.n_eq;
@@ -708,36 +711,34 @@ struct QP
  * criterion.
  */
 template<typename T, typename I>
-proxqp::Results<T>
-solve(
-  optional<SparseMat<T, I>> H,
-  optional<VecRef<T>> g,
-  optional<SparseMat<T, I>> A,
-  optional<VecRef<T>> b,
-  optional<SparseMat<T, I>> C,
-  optional<VecRef<T>> l,
-  optional<VecRef<T>> u,
-  optional<VecRef<T>> x = nullopt,
-  optional<VecRef<T>> y = nullopt,
-  optional<VecRef<T>> z = nullopt,
-  optional<T> eps_abs = nullopt,
-  optional<T> eps_rel = nullopt,
-  optional<T> rho = nullopt,
-  optional<T> mu_eq = nullopt,
-  optional<T> mu_in = nullopt,
-  optional<bool> verbose = nullopt,
-  bool compute_preconditioner = true,
-  bool compute_timings = false,
-  optional<isize> max_iter = nullopt,
-  proxsuite::proxqp::InitialGuessStatus initial_guess =
-    proxsuite::proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
-  proxsuite::proxqp::SparseBackend sparse_backend =
-    proxsuite::proxqp::SparseBackend::Automatic,
-  bool check_duality_gap = false,
-  optional<T> eps_duality_gap_abs = nullopt,
-  optional<T> eps_duality_gap_rel = nullopt,
-  bool primal_infeasibility_solving = false,
-  optional<T> manual_minimal_H_eigenvalue = nullopt)
+Results<T>
+solve(optional<SparseMat<T, I>> H,
+      optional<VecRef<T>> g,
+      optional<SparseMat<T, I>> A,
+      optional<VecRef<T>> b,
+      optional<SparseMat<T, I>> C,
+      optional<VecRef<T>> l,
+      optional<VecRef<T>> u,
+      optional<VecRef<T>> x = nullopt,
+      optional<VecRef<T>> y = nullopt,
+      optional<VecRef<T>> z = nullopt,
+      optional<T> eps_abs = nullopt,
+      optional<T> eps_rel = nullopt,
+      optional<T> rho = nullopt,
+      optional<T> mu_eq = nullopt,
+      optional<T> mu_in = nullopt,
+      optional<bool> verbose = nullopt,
+      bool compute_preconditioner = true,
+      bool compute_timings = false,
+      optional<isize> max_iter = nullopt,
+      InitialGuessStatus initial_guess =
+        InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS,
+      SparseBackend sparse_backend = SparseBackend::Automatic,
+      bool check_duality_gap = false,
+      optional<T> eps_duality_gap_abs = nullopt,
+      optional<T> eps_duality_gap_rel = nullopt,
+      bool primal_infeasibility_solving = false,
+      optional<T> manual_minimal_H_eigenvalue = nullopt)
 {
 
   isize n(0);

@@ -13,15 +13,16 @@
 #include "proxsuite/helpers/common.hpp"
 #include <proxsuite/linalg/dense/core.hpp>
 #include <proxsuite/linalg/sparse/core.hpp>
-#include "proxsuite/proxqp/sparse/workspace.hpp"
 #include <proxsuite/linalg/sparse/factorize.hpp>
 #include <proxsuite/linalg/sparse/update.hpp>
 #include <proxsuite/linalg/sparse/rowmod.hpp>
-#include <proxsuite/proxqp/dense/views.hpp>
-#include <proxsuite/proxqp/settings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
-#include "proxsuite/proxqp/results.hpp"
-#include "proxsuite/proxqp/utils/prints.hpp"
+#include <proxsuite/common/dense/views.hpp>
+#include <proxsuite/common/settings.hpp>
+#include "proxsuite/common/results.hpp"
+#include "proxsuite/common/utils/prints.hpp"
+#include "proxsuite/proxqp/sparse/workspace.hpp"
+#include "proxsuite/proxqp/sparse/aliases.hpp"
 #include "proxsuite/proxqp/sparse/views.hpp"
 #include "proxsuite/proxqp/sparse/model.hpp"
 #include "proxsuite/proxqp/sparse/preconditioner/ruiz.hpp"
@@ -31,6 +32,8 @@ namespace proxsuite {
 namespace proxqp {
 namespace sparse {
 
+;
+
 template<typename T, typename I>
 void
 print_setup_header(const Settings<T>& settings,
@@ -38,7 +41,7 @@ print_setup_header(const Settings<T>& settings,
                    const Model<T, I>& model)
 {
 
-  proxsuite::proxqp::print_preambule();
+  print_preambule(QPSolver::PROXQP);
 
   // Print variables and constraints
   std::cout << "problem:  " << std::noshowpos << std::endl;
@@ -266,11 +269,11 @@ noalias_gevmmv_add(OutL&& out_l,
 {
   // noalias general vector matrix matrix vector add
   noalias_gevmmv_add_impl<typename A::Scalar, typename A::StorageIndex>(
-    { proxqp::from_eigen, out_l },
-    { proxqp::from_eigen, out_r },
+    { from_eigen, out_l },
+    { from_eigen, out_r },
     { proxsuite::linalg::sparse::from_eigen, a },
-    { proxqp::from_eigen, in_l },
-    { proxqp::from_eigen, in_r });
+    { from_eigen, in_l },
+    { from_eigen, in_r });
 }
 
 template<typename Out, typename A, typename In>
@@ -279,9 +282,9 @@ noalias_symhiv_add(Out&& out, A const& a, In const& in)
 {
   // noalias symmetric (hi) matrix vector add
   noalias_symhiv_add_impl<typename A::Scalar, typename A::StorageIndex>(
-    { proxqp::from_eigen, out },
+    { from_eigen, out },
     { proxsuite::linalg::sparse::from_eigen, a },
-    { proxqp::from_eigen, in });
+    { from_eigen, in });
 }
 
 template<typename T, typename I>
@@ -646,9 +649,9 @@ unscaled_primal_dual_residual(
     dual_residual_scaled += tmp;
 
     precond.unscale_dual_residual_in_place(
-      { proxqp::from_eigen, tmp }); // contains unscaled Hx
+      { from_eigen, tmp }); // contains unscaled Hx
     dual_feasibility_rhs_0 = infty_norm(tmp);
-    precond.unscale_primal_in_place({ proxqp::from_eigen, x_e });
+    precond.unscale_primal_in_place({ from_eigen, x_e });
     results.info.duality_gap = x_e.dot(data.g); // contains gTx
     rhs_duality_gap = std::fabs(results.info.duality_gap);
 
@@ -656,15 +659,15 @@ unscaled_primal_dual_residual(
     results.info.duality_gap += xHx;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(xHx));
     tmp += data.g; // contains now Hx+g
-    precond.scale_primal_in_place({ proxqp::from_eigen, x_e });
+    precond.scale_primal_in_place({ from_eigen, x_e });
 
-    precond.unscale_dual_in_place_eq({ proxsuite::proxqp::from_eigen, y_e });
+    precond.unscale_dual_in_place_eq({ from_eigen, y_e });
     const T by = (data.b).dot(y_e);
     results.info.duality_gap += by;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(by));
-    precond.scale_dual_in_place_eq({ proxsuite::proxqp::from_eigen, y_e });
+    precond.scale_dual_in_place_eq({ from_eigen, y_e });
 
-    precond.unscale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
+    precond.unscale_dual_in_place_in({ from_eigen, z_e });
 
     const T zl =
       helpers::select(work.active_set_low, results.z, 0)
@@ -678,7 +681,7 @@ unscaled_primal_dual_residual(
     results.info.duality_gap += zu;
     rhs_duality_gap = std::max(rhs_duality_gap, std::abs(zu));
 
-    precond.scale_dual_in_place_in({ proxsuite::proxqp::from_eigen, z_e });
+    precond.scale_dual_in_place_in({ from_eigen, z_e });
   }
 
   {
@@ -691,7 +694,7 @@ unscaled_primal_dual_residual(
 
     dual_residual_scaled += ATy;
 
-    precond.unscale_dual_residual_in_place({ proxqp::from_eigen, ATy });
+    precond.unscale_dual_residual_in_place({ from_eigen, ATy });
     dual_feasibility_rhs_1 = infty_norm(ATy);
   }
 
@@ -705,15 +708,15 @@ unscaled_primal_dual_residual(
 
     dual_residual_scaled += CTz;
 
-    precond.unscale_dual_residual_in_place({ proxqp::from_eigen, CTz });
+    precond.unscale_dual_residual_in_place({ from_eigen, CTz });
     dual_feasibility_rhs_3 = infty_norm(CTz);
   }
   precond.unscale_primal_residual_in_place_eq(
-    { proxqp::from_eigen, primal_residual_eq_scaled });
+    { from_eigen, primal_residual_eq_scaled });
   primal_feasibility_eq_rhs_0 = infty_norm(primal_residual_eq_scaled);
 
   precond.unscale_primal_residual_in_place_in(
-    { proxqp::from_eigen, primal_residual_in_scaled_up });
+    { from_eigen, primal_residual_in_scaled_up });
   primal_feasibility_in_rhs_0 = infty_norm(primal_residual_in_scaled_up);
 
   auto b = data.b;
@@ -730,42 +733,38 @@ unscaled_primal_dual_residual(
     std::max(primal_feasibility_eq_lhs, primal_feasibility_in_lhs);
 
   if ((settings.primal_infeasibility_solving &&
-       results.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE)) {
+       results.info.status == QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE)) {
     tmp.setZero();
     {
       results.se = primal_residual_eq_scaled;
       results.si = primal_residual_in_scaled_lo;
       precond.unscale_primal_residual_in_place_eq(
-        { proxqp::from_eigen,
-          primal_residual_eq_scaled }); // E^{-1}(unscaled Ax-b)
+        { from_eigen, primal_residual_eq_scaled }); // E^{-1}(unscaled Ax-b)
       tmp.noalias() = qp_scaled.AT.to_eigen() * primal_residual_eq_scaled;
     }
 
     {
       precond.unscale_primal_residual_in_place_in(
-        { proxqp::from_eigen,
-          primal_residual_in_scaled_lo }); // E^{-1}(unscaled Ax-b)
+        { from_eigen, primal_residual_in_scaled_lo }); // E^{-1}(unscaled Ax-b)
       tmp.noalias() += qp_scaled.CT.to_eigen() * primal_residual_in_scaled_lo;
     }
-    precond.unscale_dual_residual_in_place({ proxqp::from_eigen, tmp });
+    precond.unscale_dual_residual_in_place({ from_eigen, tmp });
 
     primal_feasibility_lhs = infty_norm(tmp);
     precond.scale_primal_residual_in_place_eq(
-      { proxqp::from_eigen, primal_residual_eq_scaled });
+      { from_eigen, primal_residual_eq_scaled });
   }
 
   // scaled Ax - b
   precond.scale_primal_residual_in_place_eq(
-    { proxqp::from_eigen, primal_residual_eq_scaled });
+    { from_eigen, primal_residual_eq_scaled });
   // scaled Cx
   precond.scale_primal_residual_in_place_in(
-    { proxqp::from_eigen, primal_residual_in_scaled_up });
+    { from_eigen, primal_residual_in_scaled_up });
 
-  precond.unscale_dual_residual_in_place(
-    { proxqp::from_eigen, dual_residual_scaled });
+  precond.unscale_dual_residual_in_place({ from_eigen, dual_residual_scaled });
   T dual_feasibility_lhs = infty_norm(dual_residual_scaled);
-  precond.scale_dual_residual_in_place(
-    { proxqp::from_eigen, dual_residual_scaled });
+  precond.scale_dual_residual_in_place({ from_eigen, dual_residual_scaled });
 
   return proxsuite::linalg::veg::tuplify(primal_feasibility_lhs,
                                          dual_feasibility_lhs);

@@ -1,7 +1,7 @@
 #include "util_f64.hpp"
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace utils {
 
 namespace eigen {
@@ -23,5 +23,5 @@ LDLT_EXPLICIT_TPL_DEF(3, sparse_positive_definite_rand<f64>);
 LDLT_EXPLICIT_TPL_DEF(1, mat_cast<f64, long double>);
 
 } // namespace utils
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite

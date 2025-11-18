@@ -9,13 +9,13 @@
 #define PROXSUITE_SERIALIZATION_SETTINGS_HPP
 
 #include <cereal/cereal.hpp>
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/settings.hpp>
 
 namespace cereal {
 
 template<class Archive, typename T>
 void
-serialize(Archive& archive, proxsuite::proxqp::Settings<T>& settings)
+serialize(Archive& archive, proxsuite::common::Settings<T>& settings)
 {
   archive(CEREAL_NVP(settings.default_rho),
           CEREAL_NVP(settings.default_mu_eq),

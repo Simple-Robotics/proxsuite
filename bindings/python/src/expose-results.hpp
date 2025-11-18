@@ -1,7 +1,7 @@
 //
-// Copyright (c) 2022-2024 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
-#include <proxsuite/proxqp/results.hpp>
+
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
@@ -9,11 +9,13 @@
 #include "optional-eigen-fix.hpp"
 
 #include <proxsuite/helpers/optional.hpp>
+#include <proxsuite/common/results.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/results.hpp>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace python {
 
 template<typename T>
@@ -21,19 +23,31 @@ void
 exposeResults(nanobind::module_ m)
 {
   ::nanobind::enum_<QPSolverOutput>(m, "QPSolverOutput")
-    .value("PROXQP_SOLVED", QPSolverOutput::PROXQP_SOLVED)
-    .value("PROXQP_MAX_ITER_REACHED", QPSolverOutput::PROXQP_MAX_ITER_REACHED)
-    .value("PROXQP_PRIMAL_INFEASIBLE", QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE)
-    .value("PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE",
-           QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE)
-    .value("PROXQP_DUAL_INFEASIBLE", QPSolverOutput::PROXQP_DUAL_INFEASIBLE)
-    .value("PROXQP_NOT_RUN", QPSolverOutput::PROXQP_NOT_RUN)
+    .value("QPSOLVER_SOLVED", QPSolverOutput::QPSOLVER_SOLVED)
+    .value("QPSOLVER_MAX_ITER_REACHED",
+           QPSolverOutput::QPSOLVER_MAX_ITER_REACHED)
+    .value("QPSOLVER_PRIMAL_INFEASIBLE",
+           QPSolverOutput::QPSOLVER_PRIMAL_INFEASIBLE)
+    .value("QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE",
+           QPSolverOutput::QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE)
+    .value("QPSOLVER_DUAL_INFEASIBLE", QPSolverOutput::QPSOLVER_DUAL_INFEASIBLE)
+    .value("QPSOLVER_NOT_RUN", QPSolverOutput::QPSOLVER_NOT_RUN)
+    .export_values();
+
+  ::nanobind::enum_<PolishOutput>(m, "PolishOutput")
+    .value("POLISH_FAILED", PolishOutput::POLISH_FAILED)
+    .value("POLISH_NOT_RUN", PolishOutput::POLISH_NOT_RUN)
+    .value("POLISH_SUCCEEDED", PolishOutput::POLISH_SUCCEEDED)
+    .value("POLISH_NO_ACTIVE_SET_FOUND",
+           PolishOutput::POLISH_NO_ACTIVE_SET_FOUND)
     .export_values();
 
   ::nanobind::class_<Info<T>>(m, "Info")
     .def(::nanobind::init(), "Default constructor.")
     .def_rw("mu_eq", &Info<T>::mu_eq)
     .def_rw("mu_in", &Info<T>::mu_in)
+    .def_rw("mu_eq_inv", &Info<T>::mu_eq_inv)
+    .def_rw("mu_in_inv", &Info<T>::mu_in_inv)
     .def_rw("rho", &Info<T>::rho)
     .def_rw("iter", &Info<T>::iter)
     .def_rw("iter_ext", &Info<T>::iter_ext)
@@ -57,7 +71,10 @@ exposeResults(nanobind::module_ m)
             &Info<T>::minimal_H_eigenvalue_estimate,
             "By default it equals 0, in order to get an estimate, set "
             "appropriately the setting option "
-            "find_H_minimal_eigenvalue.");
+            "find_H_minimal_eigenvalue.")
+    .def_rw("rho_osqp_estimate", &Info<T>::rho_osqp_estimate)
+    .def_rw("polish_time", &Info<T>::polish_time)
+    .def_rw("status_polish", &Info<T>::status_polish);
 
   ::nanobind::class_<Results<T>>(m, "Results")
     .def(::nanobind::init<isize, isize, isize>(),
@@ -99,6 +116,8 @@ exposeResults(nanobind::module_ m)
             &Results<T>::si,
             "Optimal shift to the closest feasible problem wrt inequality "
             "constraints.")
+    .def_rw("zeta_eq", &Results<T>::zeta_eq, "Equality 'z' in OSQP")
+    .def_rw("zeta_in", &Results<T>::zeta_in, "Equality 'z' in OSQP")
     .def_rw("info", &Results<T>::info)
     .def(nanobind::self == nanobind::self)
     .def(nanobind::self != nanobind::self)
@@ -113,5 +132,5 @@ exposeResults(nanobind::module_ m)
   ;
 }
 } // namespace python
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite

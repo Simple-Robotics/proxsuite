@@ -7,6 +7,7 @@
 #define PROXSUITE_PROXQP_SPARSE_PRECOND_RUIZ_HPP
 
 #include "proxsuite/proxqp/sparse/fwd.hpp"
+#include "proxsuite/proxqp/sparse/aliases.hpp"
 
 namespace proxsuite {
 namespace proxqp {
@@ -20,6 +21,7 @@ enum struct Symmetry
 };
 
 namespace detail {
+
 template<typename T, typename I>
 void
 rowwise_infty_norm(T* row_norm, proxsuite::linalg::sparse::MatRef<T, I> m)
@@ -331,6 +333,8 @@ ruiz_scale_qp_in_place( //
 }
 } // namespace detail
 
+;
+
 template<typename T, typename I>
 struct RuizEquilibration
 {
@@ -380,7 +384,7 @@ struct RuizEquilibration
     if (execute_preconditioner) {
       delta.setOnes();
       c = detail::ruiz_scale_qp_in_place( //
-        { proxqp::from_eigen, delta },
+        { from_eigen, delta },
         qp,
         epsilon,
         max_iter,

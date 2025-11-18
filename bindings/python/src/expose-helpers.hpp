@@ -1,19 +1,17 @@
 //
-// Copyright (c) 2022-2024 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
 
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
 
-#include <proxsuite/proxqp/dense/helpers.hpp>
+#include <proxsuite/common/dense/helpers.hpp>
 #include <proxsuite/proxqp/sparse/helpers.hpp>
 
 namespace proxsuite {
-namespace proxqp {
-
+namespace common {
 namespace dense {
-
 namespace python {
 
 template<typename T>
@@ -26,7 +24,7 @@ exposeDenseHelpers(nanobind::module_ m)
         EigenValueEstimateMethodOption estimate_method_option,
         T power_iteration_accuracy,
         isize nb_power_iteration) {
-      return dense::estimate_minimal_eigen_value_of_symmetric_matrix(
+      return estimate_minimal_eigen_value_of_symmetric_matrix(
         H,
         estimate_method_option,
         power_iteration_accuracy,
@@ -46,9 +44,12 @@ exposeDenseHelpers(nanobind::module_ m)
 }
 } // namespace python
 } // namespace dense
+} // namespace common
+} // namespace proxsuite
 
+namespace proxsuite {
+namespace proxqp {
 namespace sparse {
-
 namespace python {
 
 template<typename T, typename I>
@@ -68,6 +69,5 @@ exposeSparseHelpers(nanobind::module_ m)
 
 } // namespace python
 } // namespace sparse
-
 } // namespace proxqp
 } // namespace proxsuite

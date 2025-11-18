@@ -576,7 +576,7 @@ In this table you have on the three columns from left to right: the name of the 
 | iter_ext                            | 0                              | Total number of outer iterations.
 | mu_updates                          | 0                              | Total number of mu updates.
 | rho_updates                         | 0                              | Total number of rho updates.
-| status                              | PROXQP_NOT_RUN                 | Status of the solver.
+| status                              | QPSOLVER_NOT_RUN                 | Status of the solver.
 | setup_time                          | 0                              | Setup time (takes into account the equilibration procedure).
 | solve_time                          | 0                              | Solve time (takes into account the first factorization).
 | run_time                            | 0                              | the sum of the setup time and the solve time.
@@ -606,12 +606,12 @@ Note finally that when initializing a QP object, by default, the proximal step s
 \subsection OverviewSolverStatus The solver's status
 
 The solver has five status:
-* PROXQP_SOLVED: the problem is solved.
-* PROXQP_MAX_ITER_REACHED: the maximum number of iterations has been reached.
-* PROXQP_PRIMAL_INFEASIBLE: the problem is primal infeasible.
-* PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE: the closest feasible problem in L2 sense is solved.
-* PROXQP_DUAL_INFEASIBLE: the problem is dual infeasible.
-* PROXQP_NOT_RUN: the solver has not been run yet.
+* QPSOLVER_SOLVED: the problem is solved.
+* QPSOLVER_MAX_ITER_REACHED: the maximum number of iterations has been reached.
+* QPSOLVER_PRIMAL_INFEASIBLE: the problem is primal infeasible.
+* QPSOLVER_SOLVED_CLOSEST_PRIMAL_FEASIBLE: the closest feasible problem in L2 sense is solved.
+* QPSOLVER_DUAL_INFEASIBLE: the problem is dual infeasible.
+* QPSOLVER_NOT_RUN: the solver has not been run yet.
 
 Infeasibility is detected using the necessary conditions exposed in [section 3.4](https://web.stanford.edu/~boyd/papers/pdf/osqp.pdf). More precisely, primal infeasibility is assumed if the following conditions are matched for some non zeros dy and dz (according to the eps_prim_inf variable set by the user):
 

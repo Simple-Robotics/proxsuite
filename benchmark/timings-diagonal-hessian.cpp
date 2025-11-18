@@ -3,13 +3,13 @@
 //
 #include <iostream>
 #include <proxsuite/proxqp/dense/dense.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 
 using T = double;
 using I = long long;
 
 using namespace proxsuite;
-using namespace proxsuite::proxqp;
+using namespace proxsuite::common;
 
 int
 main(int /*argc*/, const char** /*argv*/)
@@ -20,23 +20,23 @@ main(int /*argc*/, const char** /*argv*/)
   T sparsity_factor = 0.75;
   T eps_abs = T(1e-9);
   T elapsed_time = 0.0;
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   std::cout << "Dense QP" << std::endl;
-  for (proxqp::isize dim = 100; dim <= 500; dim = dim + 100) {
+  for (isize dim = 100; dim <= 500; dim = dim + 100) {
 
-    proxqp::isize n_eq(dim / 2);
-    proxqp::isize n_in(dim / 2);
+    isize n_eq(dim / 2);
+    isize n_in(dim / 2);
     std::cout << "dim: " << dim << " n_eq: " << n_eq << " n_in: " << n_in
               << " box: " << dim << std::endl;
     T strong_convexity_factor(1.e-2);
 
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol =
-      utils::rand::vector_rand<T>(dim);
+      common::utils::rand::vector_rand<T>(dim);
     Eigen::Matrix<T, Eigen::Dynamic, 1> delta(n_in);
-    for (proxqp::isize i = 0; i < n_in; ++i) {
-      delta(i) = utils::rand::uniform_rand();
+    for (isize i = 0; i < n_in; ++i) {
+      delta(i) = common::utils::rand::uniform_rand();
     }
     qp_random.u = qp_random.C * x_sol + delta;
     qp_random.b = qp_random.A * x_sol;
@@ -44,8 +44,8 @@ main(int /*argc*/, const char** /*argv*/)
     u_box.setZero();
     Eigen::Matrix<T, Eigen::Dynamic, 1> l_box(dim);
     l_box.setZero();
-    for (proxqp::isize i = 0; i < dim; ++i) {
-      T shift = utils::rand::uniform_rand();
+    for (isize i = 0; i < dim; ++i) {
+      T shift = common::utils::rand::uniform_rand();
       u_box(i) = x_sol(i) + shift;
       l_box(i) = x_sol(i) - shift;
     }
@@ -69,12 +69,9 @@ main(int /*argc*/, const char** /*argv*/)
 
     elapsed_time = 0.0;
     timer.stop();
-    proxqp::dense::QP<T> qp{ dim,
-                             n_eq,
-                             n_in,
-                             true,
-                             proxsuite::proxqp::DenseBackend::PrimalDualLDLT,
-                             proxsuite::proxqp::HessianType::Diagonal };
+    proxqp::dense::QP<T> qp{
+      dim, n_eq, n_in, true, DenseBackend::PrimalDualLDLT, HessianType::Diagonal
+    };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
     // qp.settings.verbose = true;
@@ -107,12 +104,7 @@ main(int /*argc*/, const char** /*argv*/)
 
     elapsed_time = 0.0;
     proxqp::dense::QP<T> qp_compare{
-      dim,
-      n_eq,
-      n_in,
-      true,
-      proxsuite::proxqp::DenseBackend::PrimalDualLDLT,
-      proxsuite::proxqp::HessianType::Dense
+      dim, n_eq, n_in, true, DenseBackend::PrimalDualLDLT, HessianType::Dense
     };
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0;

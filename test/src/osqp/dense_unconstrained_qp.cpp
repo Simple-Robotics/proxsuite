@@ -1,0 +1,267 @@
+//
+// Copyright (c) 2025 INRIA
+//
+#include <iostream>
+#include <doctest.hpp>
+#include <Eigen/Core>
+#include <Eigen/Cholesky>
+#include <proxsuite/osqp/dense/dense.hpp>
+#include <proxsuite/linalg/veg/util/dbg.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
+
+using T = double;
+using namespace proxsuite;
+
+DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex unconstrained qp and "
+                  "increasing dimension")
+{
+
+  std::cout
+    << "---OSQP:  testing sparse random strongly convex qp with increasing "
+       "dimension---"
+    << std::endl;
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-5); // OSQP unit test
+  T eps_rel = 0;
+  for (int dim = 10; dim < 1000; dim += 100) {
+
+    int n_eq(0);
+    int n_in(0);
+    T strong_convexity_factor(1.e-2);
+    common::dense::Model<T> qp_random = common::utils::dense_unconstrained_qp(
+      dim, sparsity_factor, strong_convexity_factor);
+    osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = eps_rel;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u);
+    qp.solve();
+
+    T pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+                 qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z)
+                  .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(pri_res <= eps_abs);
+    DOCTEST_CHECK(dua_res <= eps_abs);
+
+    std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
+              << " nin: " << n_in << std::endl;
+    std::cout << "primal residual: " << pri_res << std::endl;
+    std::cout << "dual residual: " << dua_res << std::endl;
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
+              << std::endl;
+  }
+}
+
+DOCTEST_TEST_CASE(
+  "OSQP:  sparse random not strongly convex unconstrained qp and "
+  "increasing dimension")
+{
+
+  std::cout
+    << "---OSQP:  testing sparse random not strongly convex unconstrained qp "
+       "with increasing dimension---"
+    << std::endl;
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-5); // OSQP unit test
+  T eps_rel = 0;
+  for (int dim = 10; dim < 1000; dim += 100) {
+
+    int n_eq(0);
+    int n_in(0);
+    T strong_convexity_factor(0);
+    common::dense::Model<T> qp_random = common::utils::dense_unconstrained_qp(
+      dim, sparsity_factor, strong_convexity_factor);
+    auto x_sol = common::utils::rand::vector_rand<T>(dim);
+    qp_random.g =
+      -qp_random.H *
+      x_sol; // to be dually feasible g must be in the image space of H
+
+    osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = eps_rel;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u);
+    qp.solve();
+
+    T pri_res = std::max(
+      (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+                 qp_random.A.transpose() * qp.results.y +
+                 qp_random.C.transpose() * qp.results.z)
+                  .lpNorm<Eigen::Infinity>();
+    DOCTEST_CHECK(pri_res <= eps_abs);
+    DOCTEST_CHECK(dua_res <= eps_abs);
+
+    std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
+              << " nin: " << n_in << std::endl;
+    std::cout << "primal residual: " << pri_res << std::endl;
+    std::cout << "dual residual: " << dua_res << std::endl;
+    std::cout << "total number of iteration: " << qp.results.info.iter_ext
+              << std::endl;
+  }
+}
+
+DOCTEST_TEST_CASE("OSQP:  unconstrained qp with H = Id and g random")
+{
+
+  std::cout << "---OSQP:  unconstrained qp with H = Id and g random---"
+            << std::endl;
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-5); // OSQP unit test
+  T eps_rel = 0;
+
+  int dim(100);
+  int n_eq(0);
+  int n_in(0);
+  T strong_convexity_factor(1.E-2);
+  common::dense::Model<T> qp_random = common::utils::dense_unconstrained_qp(
+    dim, sparsity_factor, strong_convexity_factor);
+  qp_random.H.setZero();
+  qp_random.H.diagonal().array() += 1;
+
+  osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+  qp.settings.eps_abs = eps_abs;
+  qp.settings.eps_rel = eps_rel;
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.l,
+          qp_random.u);
+  qp.solve();
+
+  T pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+               qp_random.A.transpose() * qp.results.y +
+               qp_random.C.transpose() * qp.results.z)
+                .lpNorm<Eigen::Infinity>();
+  DOCTEST_CHECK(pri_res <= eps_abs);
+  DOCTEST_CHECK(dua_res <= eps_abs);
+
+  std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
+            << " nin: " << n_in << std::endl;
+  std::cout << "primal residual: " << pri_res << std::endl;
+  std::cout << "dual residual: " << dua_res << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter_ext
+            << std::endl;
+}
+
+DOCTEST_TEST_CASE("OSQP:  unconstrained qp with H = Id and g = 0")
+{
+
+  std::cout << "---OSQP:  unconstrained qp with H = Id and g = 0---"
+            << std::endl;
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-5); // OSQP unit test
+  T eps_rel = 0;
+
+  int dim(100);
+  int n_eq(0);
+  int n_in(0);
+  T strong_convexity_factor(1.E-2);
+  common::dense::Model<T> qp_random = common::utils::dense_unconstrained_qp(
+    dim, sparsity_factor, strong_convexity_factor);
+  qp_random.H.setZero();
+  qp_random.H.diagonal().array() += 1;
+  qp_random.g.setZero();
+
+  osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+  qp.settings.eps_abs = eps_abs;
+  qp.settings.eps_rel = eps_rel;
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.l,
+          qp_random.u);
+  qp.solve();
+
+  T pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+               qp_random.A.transpose() * qp.results.y +
+               qp_random.C.transpose() * qp.results.z)
+                .lpNorm<Eigen::Infinity>();
+  DOCTEST_CHECK(pri_res <= eps_abs);
+  DOCTEST_CHECK(dua_res <= eps_abs);
+
+  std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
+            << " nin: " << n_in << std::endl;
+  std::cout << "primal residual: " << pri_res << std::endl;
+  std::cout << "dual residual: " << dua_res << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter_ext
+            << std::endl;
+}
+
+DOCTEST_TEST_CASE("OSQP:  sparse random strongly convex unconstrained qp and "
+                  "increasing dimension "
+                  "with solution poslihing")
+{
+
+  std::cout
+    << "---OSQP:  testing sparse random strongly convex qp with increasing "
+       "dimension with solution poslihing to check that no active set  "
+       "is found---"
+    << std::endl;
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-5); // OSQP unit test
+  T eps_rel = 0;
+  for (int dim = 10; dim < 1000; dim += 100) {
+
+    int n_eq(0);
+    int n_in(0);
+    T strong_convexity_factor(1.e-2);
+    common::dense::Model<T> qp_random = common::utils::dense_unconstrained_qp(
+      dim, sparsity_factor, strong_convexity_factor);
+    osqp::dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
+    qp.settings.eps_abs = eps_abs;
+    qp.settings.eps_rel = eps_rel;
+    qp.settings.polish = true;
+    qp.init(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u);
+
+    DOCTEST_CHECK(qp.results.info.status_polish ==
+                  common::PolishOutput::POLISH_NOT_RUN); // not run before solve
+
+    qp.solve();
+
+    DOCTEST_CHECK(qp.results.info.status_polish ==
+                  common::PolishOutput::POLISH_SUCCEEDED);
+    // Note: Choice in the implemntation: Perform solution polishing on Hx = -g
+    // on unconstrained problems to make the dual residual vanish.
+    // It is done in the osqp wrapper from conda.
+  }
+}

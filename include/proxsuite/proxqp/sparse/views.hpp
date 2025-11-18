@@ -11,11 +11,11 @@
 #include <proxsuite/linalg/sparse/factorize.hpp>
 #include <proxsuite/linalg/sparse/update.hpp>
 #include <proxsuite/linalg/sparse/rowmod.hpp>
-#include <proxsuite/proxqp/dense/views.hpp>
-#include <proxsuite/proxqp/settings.hpp>
+#include <proxsuite/common/dense/views.hpp>
+#include <proxsuite/common/settings.hpp>
 #include <proxsuite/linalg/veg/vec.hpp>
 #include "proxsuite/proxqp/sparse/model.hpp"
-#include "proxsuite/proxqp/results.hpp"
+#include "proxsuite/common/results.hpp"
 
 #include <Eigen/IterativeLinearSolvers>
 #include <unsupported/Eigen/IterativeSolvers>

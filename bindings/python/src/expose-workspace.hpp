@@ -1,25 +1,27 @@
 //
-// Copyright (c) 2022-2024 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
+
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
-#include <proxsuite/proxqp/dense/workspace.hpp>
-#include <proxsuite/proxqp/dense/utils.hpp>
 
+#include <proxsuite/common/dense/workspace.hpp>
+#include <proxsuite/common/dense/utils.hpp>
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/eigen.hpp>
 #include <proxsuite/serialization/workspace.hpp>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace dense {
 namespace python {
+
 template<typename T>
 void
 exposeWorkspaceDense(nanobind::module_ m)
 {
-  ::nanobind::class_<proxsuite::proxqp::dense::Workspace<T>>(m, "workspace")
+  ::nanobind::class_<Workspace<T>>(m, "workspace")
     .def(::nanobind::init<i64, i64, i64>(),
          nanobind::arg("n") = 0,
          nanobind::arg("n_eq") = 0,
@@ -68,6 +70,11 @@ exposeWorkspaceDense(nanobind::module_ m)
             &Workspace<T>::proximal_parameter_update)
     .def_ro("is_initialized", &Workspace<T>::is_initialized)
     .def_ro("n_c", &Workspace<T>::n_c)
+    .def_ro("x_tilde", &Workspace<T>::x_tilde)
+    .def_ro("nu_eq", &Workspace<T>::nu_eq)
+    .def_ro("nu_in", &Workspace<T>::nu_in)
+    .def_ro("zeta_tilde_eq", &Workspace<T>::zeta_tilde_eq)
+    .def_ro("zeta_tilde_in", &Workspace<T>::zeta_tilde_in)
     .def("__getstate__",
          [](const Workspace<T>& workspace) {
            return proxsuite::serialization::saveToString(workspace);
@@ -81,5 +88,5 @@ exposeWorkspaceDense(nanobind::module_ m)
 }
 } // namespace python
 } // namespace dense
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite

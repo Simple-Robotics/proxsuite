@@ -3,13 +3,13 @@
 //
 #include <iostream>
 #include <proxsuite/proxqp/dense/dense.hpp>
-#include <proxsuite/proxqp/utils/random_qp_problems.hpp>
+#include <proxsuite/common/utils/random_qp_problems.hpp>
 
 using T = double;
 using I = long long;
 
 using namespace proxsuite;
-using namespace proxsuite::proxqp;
+using namespace proxsuite::common;
 
 int
 main(int /*argc*/, const char** /*argv*/)
@@ -20,10 +20,9 @@ main(int /*argc*/, const char** /*argv*/)
   T sparsity_factor = 0.75;
   T eps_abs = T(1e-9);
   T elapsed_time = 0.0;
-  proxqp::utils::rand::set_seed(1);
+  common::utils::rand::set_seed(1);
   std::cout << "Dense QP" << std::endl;
-  for (proxqp::isize dim = 10; dim <= 1000;
-       dim = (dim == 10) ? 100 : dim + 100) {
+  for (isize dim = 10; dim <= 1000; dim = (dim == 10) ? 100 : dim + 100) {
 
     if (dim == 10 || dim == 100) {
       smooth = 1000;
@@ -31,22 +30,22 @@ main(int /*argc*/, const char** /*argv*/)
       smooth = 100;
     }
 
-    proxqp::isize n_eq(dim / 2);
-    proxqp::isize n_in(dim / 2);
+    isize n_eq(dim / 2);
+    isize n_in(dim / 2);
     T strong_convexity_factor(1.e-2);
     std::cout << "dim: " << dim << " n_eq: " << n_eq << " n_in: " << n_in
               << std::endl;
 
-    proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    common::dense::Model<T> qp_random = common::utils::dense_strongly_convex_qp(
       dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
     qp_random.H.setZero();
-    auto y_sol = proxqp::utils::rand::vector_rand<T>(n_eq);
+    auto y_sol = common::utils::rand::vector_rand<T>(n_eq);
     qp_random.g = -qp_random.A.transpose() * y_sol;
 
     elapsed_time = 0.0;
     timer.stop();
     proxqp::dense::QP<T> qp{
-      dim, n_eq, n_in, false, proxqp::HessianType::Zero
+      dim, n_eq, n_in, false, common::HessianType::Zero
     };
     qp.settings.eps_abs = eps_abs;
     qp.settings.eps_rel = 0;
@@ -77,7 +76,7 @@ main(int /*argc*/, const char** /*argv*/)
 
     elapsed_time = 0.0;
     proxqp::dense::QP<T> qp_compare{
-      dim, n_eq, n_in, false, proxqp::HessianType::Dense
+      dim, n_eq, n_in, false, common::HessianType::Dense
     };
     qp_compare.settings.eps_abs = eps_abs;
     qp_compare.settings.eps_rel = 0;

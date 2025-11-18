@@ -5,16 +5,14 @@
 #ifndef PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 #define PROXSUITE_PROXQP_DENSE_LINESEARCH_HPP
 
-#include "proxsuite/proxqp/dense/views.hpp"
-#include "proxsuite/proxqp/dense/model.hpp"
-#include "proxsuite/proxqp/results.hpp"
-#include "proxsuite/proxqp/dense/workspace.hpp"
-#include "proxsuite/proxqp/settings.hpp"
+#include "proxsuite/proxqp/dense/aliases.hpp"
 #include <cmath>
+
 namespace proxsuite {
 namespace proxqp {
 namespace dense {
 namespace linesearch {
+
 ///
 /// @brief This class stores the results of the primal-dual line-search.
 ///

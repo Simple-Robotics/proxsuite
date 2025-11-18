@@ -1,19 +1,21 @@
 //
-// Copyright (c) 2022-2024 INRIA
+// Copyright (c) 2022-2025 INRIA
 //
+
 #include <nanobind/nanobind.h>
 #include <nanobind/eigen/dense.h>
 #include <nanobind/eigen/sparse.h>
 #include <nanobind/operators.h>
 
-#include <proxsuite/proxqp/settings.hpp>
-#include <proxsuite/proxqp/status.hpp>
+#include <proxsuite/common/settings.hpp>
+#include <proxsuite/common/status.hpp>
 #include <proxsuite/serialization/archive.hpp>
 #include <proxsuite/serialization/settings.hpp>
 
 namespace proxsuite {
-namespace proxqp {
+namespace common {
 namespace python {
+
 template<typename T>
 void
 exposeSettings(nanobind::module_ m)
@@ -40,10 +42,16 @@ exposeSettings(nanobind::module_ m)
     .value("MatrixFree", SparseBackend::MatrixFree)
     .value("SparseCholesky", SparseBackend::SparseCholesky)
     .export_values();
+
   ::nanobind::enum_<EigenValueEstimateMethodOption>(
     m, "EigenValueEstimateMethodOption")
     .value("PowerIteration", EigenValueEstimateMethodOption::PowerIteration)
     .value("ExactMethod", EigenValueEstimateMethodOption::ExactMethod)
+    .export_values();
+
+  ::nanobind::enum_<CheckSolvedStatus>(m, "CheckSolvedStatus")
+    .value("ITERATION_BASED", CheckSolvedStatus::ITERATION_BASED)
+    .value("INTERVAL_BASED", CheckSolvedStatus::INTERVAL_BASED)
     .export_values();
 
   ::nanobind::class_<Settings<T>>(m, "Settings")
@@ -84,12 +92,25 @@ exposeSettings(nanobind::module_ m)
     .def_rw("bcl_update", &Settings<T>::bcl_update)
     .def_rw("merit_function_type", &Settings<T>::merit_function_type)
     .def_rw("alpha_gpdal", &Settings<T>::alpha_gpdal)
+    .def_rw("check_solved_option", &Settings<T>::check_solved_option)
+    .def_rw("check_termination", &Settings<T>::check_termination)
     .def_rw("primal_infeasibility_solving",
             &Settings<T>::primal_infeasibility_solving)
     .def_rw("frequence_infeasibility_check",
             &Settings<T>::frequence_infeasibility_check)
     .def_rw("default_H_eigenvalue_estimate",
             &Settings<T>::default_H_eigenvalue_estimate)
+    .def_rw("alpha", &Settings<T>::alpha)
+    .def_rw("mu_max_eq", &Settings<T>::mu_max_eq)
+    .def_rw("mu_max_in", &Settings<T>::mu_max_in)
+    .def_rw("mu_min_eq_inv", &Settings<T>::mu_min_eq_inv)
+    .def_rw("mu_min_in_inv", &Settings<T>::mu_min_in_inv)
+    .def_rw("adaptive_mu", &Settings<T>::adaptive_mu)
+    .def_rw("adaptive_mu_interval", &Settings<T>::adaptive_mu_interval)
+    .def_rw("adaptive_mu_tolerance", &Settings<T>::adaptive_mu_tolerance)
+    .def_rw("polish", &Settings<T>::polish)
+    .def_rw("delta", &Settings<T>::delta)
+    .def_rw("polish_refine_iter", &Settings<T>::polish_refine_iter)
     .def(nanobind::self == nanobind::self)
     .def(nanobind::self != nanobind::self)
     .def("__getstate__",
@@ -103,5 +124,5 @@ exposeSettings(nanobind::module_ m)
   ;
 }
 } // namespace python
-} // namespace proxqp
+} // namespace common
 } // namespace proxsuite

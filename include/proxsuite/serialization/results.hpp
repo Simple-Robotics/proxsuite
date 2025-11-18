@@ -9,13 +9,13 @@
 #define PROXSUITE_SERIALIZATION_RESULTS_HPP
 
 #include <cereal/cereal.hpp>
-#include <proxsuite/proxqp/results.hpp>
+#include <proxsuite/common/results.hpp>
 
 namespace cereal {
 
 template<class Archive, typename T>
 void
-serialize(Archive& archive, proxsuite::proxqp::Info<T>& info)
+serialize(Archive& archive, proxsuite::common::Info<T>& info)
 {
   archive(CEREAL_NVP(info.mu_eq),
           CEREAL_NVP(info.mu_eq_inv),
@@ -41,7 +41,7 @@ serialize(Archive& archive, proxsuite::proxqp::Info<T>& info)
 
 template<class Archive, typename T>
 void
-serialize(Archive& archive, proxsuite::proxqp::Results<T>& results)
+serialize(Archive& archive, proxsuite::common::Results<T>& results)
 {
   archive(CEREAL_NVP(results.x),
           CEREAL_NVP(results.y),

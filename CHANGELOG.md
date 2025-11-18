@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Recursive stub generation for Python bindings ([#419](https://github.com/Simple-Robotics/proxsuite/pull/419))
+- Add OSQP solver and refactor code ([#415](https://github.com/Simple-Robotics/proxsuite/pull/415))
 
 ### Changed
 - Change the default branch to `devel` ([#395](https://github.com/Simple-Robotics/proxsuite/pull/395))

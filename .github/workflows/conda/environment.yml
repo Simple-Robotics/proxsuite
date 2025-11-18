@@ -18,3 +18,4 @@ dependencies:
   - libmatio
   - numpy
   - scipy
+  - osqp

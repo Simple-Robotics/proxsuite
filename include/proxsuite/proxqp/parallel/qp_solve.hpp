@@ -86,7 +86,7 @@ void
 qp_solve_backward_in_parallel(
   optional<const size_t> num_threads,
   std::vector<proxqp::dense::QP<T>>& qps,
-  std::vector<proxqp::dense::Vec<T>>& loss_derivatives,
+  std::vector<common::dense::Vec<T>>& loss_derivatives,
   T eps = 1.E-4,
   T rho_new = 1.E-6,
   T mu_new = 1.E-6)
@@ -114,7 +114,7 @@ void
 qp_solve_backward_in_parallel(
   optional<const size_t> num_threads,
   proxqp::dense::BatchQP<T>& qps,
-  std::vector<proxqp::dense::Vec<T>>& loss_derivatives,
+  std::vector<common::dense::Vec<T>>& loss_derivatives,
   T eps = 1.E-4,
   T rho_new = 1.E-6,
   T mu_new = 1.E-6)
