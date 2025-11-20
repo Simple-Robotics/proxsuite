@@ -1508,7 +1508,13 @@ qp_solve( //
           break;
         }
       } else {
-        qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+        if (qpsettings.primal_infeasibility_solving &&
+            qpresults.info.status == QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
+          qpresults.info.status =
+            QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
+        } else {
+          qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
+        }
         break;
       }
     }
@@ -1593,8 +1599,8 @@ qp_solve( //
       scaled_eps =
         infty_norm(qpwork.rhs.head(qpmodel.dim)) * qpsettings.eps_abs;
     }
-    T primal_feasibility_lhs_new(primal_feasibility_lhs);
 
+    T primal_feasibility_lhs_new(primal_feasibility_lhs);
     global_primal_residual(qpmodel,
                            qpresults,
                            qpsettings,
@@ -1607,63 +1613,24 @@ qp_solve( //
                            primal_feasibility_eq_lhs,
                            primal_feasibility_in_lhs);
 
-    is_primal_feasible =
-      primal_feasibility_lhs_new <=
-      (scaled_eps + qpsettings.eps_rel * std::max(primal_feasibility_eq_rhs_0,
-                                                  primal_feasibility_in_rhs_0));
+    T dual_feasibility_lhs_new(dual_feasibility_lhs);
+    global_dual_residual(qpresults,
+                         qpwork,
+                         qpmodel,
+                         box_constraints,
+                         ruiz,
+                         dual_feasibility_lhs_new,
+                         dual_feasibility_rhs_0,
+                         dual_feasibility_rhs_1,
+                         dual_feasibility_rhs_3,
+                         rhs_duality_gap,
+                         duality_gap,
+                         hessian_type);
+
     qpresults.info.pri_res = primal_feasibility_lhs_new;
-    if (is_primal_feasible) {
-      T dual_feasibility_lhs_new(dual_feasibility_lhs);
+    qpresults.info.dua_res = dual_feasibility_lhs_new;
+    qpresults.info.duality_gap = duality_gap;
 
-      global_dual_residual(qpresults,
-                           qpwork,
-                           qpmodel,
-                           box_constraints,
-                           ruiz,
-                           dual_feasibility_lhs_new,
-                           dual_feasibility_rhs_0,
-                           dual_feasibility_rhs_1,
-                           dual_feasibility_rhs_3,
-                           rhs_duality_gap,
-                           duality_gap,
-                           hessian_type);
-      qpresults.info.dua_res = dual_feasibility_lhs_new;
-      qpresults.info.duality_gap = duality_gap;
-
-      is_dual_feasible =
-        dual_feasibility_lhs_new <=
-        (qpsettings.eps_abs +
-         qpsettings.eps_rel *
-           std::max(
-             std::max(dual_feasibility_rhs_3, dual_feasibility_rhs_0),
-             std::max(dual_feasibility_rhs_1, qpwork.dual_feasibility_rhs_2)));
-
-      if (is_dual_feasible) {
-        if (qpsettings.check_duality_gap) {
-          if (std::fabs(qpresults.info.duality_gap) <=
-              qpsettings.eps_duality_gap_abs +
-                qpsettings.eps_duality_gap_rel * rhs_duality_gap) {
-            if (qpsettings.primal_infeasibility_solving &&
-                qpresults.info.status ==
-                  QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
-              qpresults.info.status =
-                QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
-            } else {
-              qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
-            }
-          }
-        } else {
-          if (qpsettings.primal_infeasibility_solving &&
-              qpresults.info.status ==
-                QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE) {
-            qpresults.info.status =
-              QPSolverOutput::PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE;
-          } else {
-            qpresults.info.status = QPSolverOutput::PROXQP_SOLVED;
-          }
-        }
-      }
-    }
     if (qpsettings.bcl_update) {
       bcl_update(qpsettings,
                  qpresults,
@@ -1690,24 +1657,8 @@ qp_solve( //
                       new_bcl_mu_in_inv,
                       new_bcl_mu_eq_inv);
     }
+
     // COLD RESTART
-
-    T dual_feasibility_lhs_new(dual_feasibility_lhs);
-
-    global_dual_residual(qpresults,
-                         qpwork,
-                         qpmodel,
-                         box_constraints,
-                         ruiz,
-                         dual_feasibility_lhs_new,
-                         dual_feasibility_rhs_0,
-                         dual_feasibility_rhs_1,
-                         dual_feasibility_rhs_3,
-                         rhs_duality_gap,
-                         duality_gap,
-                         hessian_type);
-    qpresults.info.dua_res = dual_feasibility_lhs_new;
-    qpresults.info.duality_gap = duality_gap;
 
     if (primal_feasibility_lhs_new >= primal_feasibility_lhs &&
         dual_feasibility_lhs_new >= dual_feasibility_lhs &&
