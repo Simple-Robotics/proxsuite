@@ -117,12 +117,11 @@ TEST_CASE("sparse maros meszaros using the API")
   const T eps_abs_with_duality_gap = 1e-5;
 
   for (auto const* file : files) {
-    auto qp_raw = load_qp(file);
+    auto qp_raw = load_qp(file, true);
     isize n = qp_raw.P.rows();
     isize n_eq_in = qp_raw.A.rows();
 
-    bool skip = (n > 1000 || n_eq_in > 1000);
-    if (skip) {
+    if (qp_raw.skip) {
       std::cout << " path: " << qp_raw.filename << " n: " << n
                 << " n_eq+n_in: " << n_eq_in << " - SKIPPING" << std::endl;
     } else {
@@ -130,7 +129,7 @@ TEST_CASE("sparse maros meszaros using the API")
                 << " n_eq+n_in: " << n_eq_in << std::endl;
     }
 
-    if (!skip) {
+    if (!qp_raw.skip) {
 
       auto preprocessed = preprocess_qp_sparse(VEG_FWD(qp_raw));
       auto& H = preprocessed.H;

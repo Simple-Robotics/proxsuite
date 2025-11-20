@@ -90,12 +90,11 @@ TEST_CASE("dense maros meszaros using the api")
   T elapsed_time = 0.0;
 
   for (auto const* file : files) {
-    auto qp = load_qp(file);
+    auto qp = load_qp(file, true);
     isize n = qp.P.rows();
     isize n_eq_in = qp.A.rows();
 
-    const bool skip = n > 1000 || n_eq_in > 1000;
-    if (skip) {
+    if (qp.skip) {
       std::cout << " path: " << qp.filename << " n: " << n
                 << " n_eq+n_in: " << n_eq_in << " - skipping" << std::endl;
     } else {
@@ -103,7 +102,7 @@ TEST_CASE("dense maros meszaros using the api")
                 << " n_eq+n_in: " << n_eq_in << std::endl;
     }
 
-    if (!skip) {
+    if (!qp.skip) {
 
       auto preprocessed = preprocess_qp(qp);
       auto& H = preprocessed.H;

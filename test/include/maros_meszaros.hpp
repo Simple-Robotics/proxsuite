@@ -16,10 +16,12 @@ struct MarosMeszarosQp
   Mat A;
   Vec l;
   Vec u;
+
+  bool skip = false;
 };
 
 auto
-load_qp(char const* filename) -> MarosMeszarosQp
+load_qp(char const* filename, bool check_size = false) -> MarosMeszarosQp
 {
   using Mat = MarosMeszarosQp::Mat;
   using Vec = MarosMeszarosQp::Vec;
@@ -29,6 +31,8 @@ load_qp(char const* filename) -> MarosMeszarosQp
   auto&& _mat_fp_cleanup =
     proxsuite::linalg::veg::defer([&] { Mat_Close(mat_fp); });
   proxsuite::linalg::veg::unused(_mat_fp_cleanup);
+
+  bool skip = false;
 
   auto load_mat = [&](char const* name) -> Mat {
     matvar_t* mat_var = Mat_VarRead(mat_fp, name);
@@ -44,27 +48,30 @@ load_qp(char const* filename) -> MarosMeszarosQp
 
     isize nrows = isize(mat_var->dims[0]);
     isize ncols = isize(mat_var->dims[1]);
-
-    auto optr = reinterpret_cast<mat_int32_t const*>(ptr->jc); // NOLINT
-    auto iptr = reinterpret_cast<mat_int32_t const*>(ptr->ir); // NOLINT
-    auto vptr = static_cast<double const*>(ptr->data);         // NOLINT
-
     Mat out;
-    out.resize(nrows, ncols);
-    out.reserve(ptr->nzmax);
-    for (isize j = 0; j < ncols; ++j) {
-      isize col_start = optr[j];
-      isize col_end = optr[j + 1];
 
-      for (isize p = col_start; p < col_end; ++p) {
+    if (!check_size || (nrows <= 1000 && ncols <= 1000)) {
+      auto optr = reinterpret_cast<mat_int32_t const*>(ptr->jc); // NOLINT
+      auto iptr = reinterpret_cast<mat_int32_t const*>(ptr->ir); // NOLINT
+      auto vptr = static_cast<double const*>(ptr->data);         // NOLINT
 
-        isize i = iptr[p];
-        double v = vptr[p];
+      out.resize(nrows, ncols);
+      out.reserve(ptr->nzmax);
+      for (isize j = 0; j < ncols; ++j) {
+        isize col_start = optr[j];
+        isize col_end = optr[j + 1];
 
-        out.insert(i, j) = v;
+        for (isize p = col_start; p < col_end; ++p) {
+
+          isize i = iptr[p];
+          double v = vptr[p];
+
+          out.insert(i, j) = v;
+        }
       }
+    } else {
+      skip = true;
     }
-
     return out;
   };
 
@@ -86,8 +93,8 @@ load_qp(char const* filename) -> MarosMeszarosQp
   };
 
   return {
-    filename,      load_mat("P"), load_vec("q"),
-    load_mat("A"), load_vec("l"), load_vec("u"),
+    filename,      load_mat("P"), load_vec("q"), load_mat("A"),
+    load_vec("l"), load_vec("u"), skip,
   };
 }
 
