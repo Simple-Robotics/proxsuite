@@ -1,14 +1,12 @@
 //
 // Copyright (c) 2022 INRIA
 //
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <maros_meszaros.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 
 using namespace proxsuite;
-
-#define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
 char const* files[] = {
   MAROS_MESZAROS_DIR "AUG2D.mat",    MAROS_MESZAROS_DIR "AUG2DC.mat",

@@ -2,7 +2,7 @@
 // Copyright (c) 2022 INRIA
 //
 #include <iostream>
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #include <proxsuite/serialization/archive.hpp>
@@ -78,7 +78,7 @@ generic_test(const T& object, const std::string& filename)
     loadFromXML(object_loaded, xml_filename);
 
     // Check
-    DOCTEST_CHECK(object_loaded == object);
+    CHECK(object_loaded == object);
   }
 
   // Load and save as json
@@ -90,7 +90,7 @@ generic_test(const T& object, const std::string& filename)
     loadFromJSON(object_loaded, json_filename);
 
     // Check
-    DOCTEST_CHECK(object_loaded == object);
+    CHECK(object_loaded == object);
   }
 
   // Load and save as binary
@@ -102,7 +102,7 @@ generic_test(const T& object, const std::string& filename)
     loadFromBinary(object_loaded, bin_filename);
 
     // Check
-    DOCTEST_CHECK(object_loaded == object);
+    CHECK(object_loaded == object);
   }
 }
 
@@ -110,7 +110,7 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 
-DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
+TEST_CASE("test serialization of qp model, results and settings")
 {
   std::cout << "--- serialization ---" << std::endl;
   double sparsity_factor = 0.15;
@@ -140,8 +140,7 @@ DOCTEST_TEST_CASE("test serialization of qp model, results and settings")
   generic_test(qp, TEST_SERIALIZATION_FOLDER "/qp_wrapper");
 }
 
-DOCTEST_TEST_CASE(
-  "test serialization of eigen matrices with different storage orders")
+TEST_CASE("test serialization of eigen matrices with different storage orders")
 {
   Eigen::Matrix<float, 2, 2, Eigen::RowMajor> row_matrix;
   Eigen::Matrix<float, 2, 2, Eigen::RowMajor> row_matrix_loaded;
@@ -153,6 +152,6 @@ DOCTEST_TEST_CASE(
   proxsuite::serialization::loadFromJSON(row_matrix_loaded, "row_matrix");
   proxsuite::serialization::loadFromJSON(col_matrix_loaded, "row_matrix");
 
-  DOCTEST_CHECK(row_matrix_loaded == row_matrix);
-  DOCTEST_CHECK(col_matrix_loaded == row_matrix);
+  CHECK(row_matrix_loaded == row_matrix);
+  CHECK(col_matrix_loaded == row_matrix);
 }

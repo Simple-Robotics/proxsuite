@@ -2,7 +2,7 @@
 // Copyright (c) 2022 INRIA
 //
 #include <iostream>
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <Eigen/Core>
 #include <proxsuite/proxqp/dense/dense.hpp>
 
@@ -19,7 +19,7 @@ using Mat =
 template<typename T>
 using Vec = Eigen::Matrix<T, Eigen::Dynamic, 1>;
 
-DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
+TEST_CASE("3 dim test case from cvxpy, check feasibility")
 {
 
   std::cout << "---3 dim test case from cvxpy, check feasibility " << std::endl;
@@ -48,8 +48,8 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
                 .lpNorm<Eigen::Infinity>();
   T dua_res =
     (H * results.x + g + C.transpose() * results.z).lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
@@ -58,7 +58,7 @@ DOCTEST_TEST_CASE("3 dim test case from cvxpy, check feasibility")
             << results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
+TEST_CASE("simple test case from cvxpy, check feasibility")
 {
 
   std::cout << "---simple test case from cvxpy, check feasibility "
@@ -90,9 +90,9 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
     (H * results.x + g + C.transpose() * results.z).lpNorm<Eigen::Infinity>();
   T x_sol = 0.5;
 
-  DOCTEST_CHECK((x_sol - results.x.coeff(0, 0)) <= eps_abs);
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK((x_sol - results.x.coeff(0, 0)) <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;
@@ -101,8 +101,8 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, check feasibility")
             << results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
-                  "solver stays there")
+TEST_CASE("simple test case from cvxpy, init with solution, check that "
+          "solver stays there")
 {
 
   std::cout << "---simple test case from cvxpy, init with solution, check that "
@@ -147,10 +147,10 @@ DOCTEST_TEST_CASE("simple test case from cvxpy, init with solution, check that "
   T dua_res = (H * qp.results.x + g + C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
 
-  DOCTEST_CHECK(qp.results.info.iter <= 0);
-  DOCTEST_CHECK((x_sol - qp.results.x.coeff(0, 0)) <= eps_abs);
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(qp.results.info.iter <= 0);
+  CHECK((x_sol - qp.results.x.coeff(0, 0)) <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "primal residual: " << pri_res << std::endl;
   std::cout << "dual residual: " << dua_res << std::endl;

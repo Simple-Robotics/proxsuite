@@ -2,7 +2,7 @@
 // Copyright (c) 2022 - 2024 INRIA
 //
 #include <iostream>
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
@@ -11,7 +11,7 @@
 
 using T = double;
 using namespace proxsuite;
-DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
+TEST_CASE("qp: start from solution using the wrapper framework")
 {
   proxqp::isize dim = 30;
   proxqp::isize n_eq = 6;
@@ -49,12 +49,12 @@ DOCTEST_TEST_CASE("qp: start from solution using the wrapper framework")
   qp.init(H, g, A, b, C, l, u);
   qp.solve(primal_solution, dual_solution, dual_init_in);
 
-  DOCTEST_CHECK((A * qp.results.x - b).lpNorm<Eigen::Infinity>() <= eps_abs);
-  DOCTEST_CHECK((H * qp.results.x + g + A.transpose() * qp.results.y)
-                  .lpNorm<Eigen::Infinity>() <= eps_abs);
+  CHECK((A * qp.results.x - b).lpNorm<Eigen::Infinity>() <= eps_abs);
+  CHECK((H * qp.results.x + g + A.transpose() * qp.results.y)
+          .lpNorm<Eigen::Infinity>() <= eps_abs);
 }
-DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
-                  "and increasing dimension with the wrapper API")
+TEST_CASE("sparse random strongly convex qp with equality constraints "
+          "and increasing dimension with the wrapper API")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality "
@@ -89,8 +89,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------using wrapper API solving qp with dim: " << dim
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -100,8 +100,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with equality constraints "
               << std::endl;
   }
 }
-DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
-                  "linar cost and increasing dimension using wrapper API")
+TEST_CASE("linear problem with equality  with equality constraints and "
+          "linar cost and increasing dimension using wrapper API")
 {
 
   std::cout << "---testing linear problem with equality constraints and "
@@ -143,8 +143,8 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------using wrapper API solving qp with dim: " << dim
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -155,9 +155,9 @@ DOCTEST_TEST_CASE("linear problem with equality  with equality constraints and "
   }
 }
 
-DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
-                  "linear cost and increasing dimension using wrapper API and  "
-                  "the dedicated LP interface")
+TEST_CASE("linear problem with equality with equality constraints and "
+          "linear cost and increasing dimension using wrapper API and  "
+          "the dedicated LP interface")
 {
 
   std::cout
@@ -202,8 +202,8 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------using wrapper API solving qp with dim: " << dim
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -214,7 +214,7 @@ DOCTEST_TEST_CASE("linear problem with equality with equality constraints and "
   }
 }
 
-DOCTEST_TEST_CASE("infeasible qp")
+TEST_CASE("infeasible qp")
 {
   // (x1- 9)^2 + (x2-6)^2
   // s.t.
@@ -251,6 +251,6 @@ DOCTEST_TEST_CASE("infeasible qp")
 
   qp.solve();
 
-  DOCTEST_CHECK(qp.results.info.status ==
-                proxsuite::proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
+  CHECK(qp.results.info.status ==
+        proxsuite::proxqp::QPSolverOutput::PROXQP_PRIMAL_INFEASIBLE);
 }

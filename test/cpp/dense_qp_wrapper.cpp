@@ -2,7 +2,7 @@
 // Copyright (c) 2022-2024 INRIA
 //
 #include <iostream>
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
@@ -13,7 +13,7 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 
-DOCTEST_TEST_CASE(
+TEST_CASE(
   "ProxQP::dense: sparse random strongly convex qp with inequality constraints"
   "and empty equality constraints")
 {
@@ -67,8 +67,8 @@ DOCTEST_TEST_CASE(
   T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -116,8 +116,8 @@ DOCTEST_TEST_CASE(
   dua_res = (qp_random.H * qp.results.x + qp_random.g +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -148,8 +148,8 @@ DOCTEST_TEST_CASE(
   dua_res = (qp_random.H * qp.results.x + qp_random.g +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -160,9 +160,8 @@ DOCTEST_TEST_CASE(
   std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
             << qp.results.info.solve_time << std::endl;
 }
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test update H")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test update H")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
                "inequality constraints: test update H---"
@@ -199,8 +198,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -243,8 +242,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -277,8 +276,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -291,9 +290,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test update A")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test update A")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -331,8 +329,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -377,8 +375,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -410,8 +408,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -424,9 +422,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test update C")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test update C")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -464,8 +461,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -510,8 +507,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -543,8 +540,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -557,9 +554,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test update b")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test update b")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -597,8 +593,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -643,8 +639,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -676,8 +672,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -690,9 +686,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test update u")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test update u")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -728,8 +723,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -779,8 +774,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -812,8 +807,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -826,9 +821,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test update g")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test update g")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -864,8 +858,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -911,8 +905,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -944,8 +938,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -958,9 +952,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and inequality "
-  "constraints: test update H and A and b and u and l")
+TEST_CASE("sparse random strongly convex qp with equality and inequality "
+          "constraints: test update H and A and b and u and l")
 {
 
   std::cout
@@ -997,8 +990,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -1059,8 +1052,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -1092,8 +1085,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -1106,9 +1099,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test update rho")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test update rho")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -1144,8 +1136,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -1184,8 +1176,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -1222,8 +1214,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -1236,9 +1228,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test update mu_eq and mu_in")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test update mu_eq and mu_in")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -1274,8 +1265,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -1317,8 +1308,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -1355,8 +1346,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -1369,9 +1360,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test warm starting")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test warm starting")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -1408,8 +1398,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -1439,8 +1429,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim after updating: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -1474,8 +1464,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------ conter factual check with another QP object starting at "
                "the updated model : "
@@ -1488,9 +1478,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test dense init")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test dense init")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -1532,13 +1521,12 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test with no initial guess")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test with no initial guess")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -1577,8 +1565,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with qp: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -1610,8 +1598,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with qp2: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -1622,7 +1610,7 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
+TEST_CASE(
   "sparse random strongly convex qp with equality and "
   "inequality constraints: test with equality constrained initial guess")
 {
@@ -1665,8 +1653,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with qp: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -1699,8 +1687,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with qp2: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -1711,9 +1699,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and "
-  "inequality constraints: test with warm start with previous result")
+TEST_CASE("sparse random strongly convex qp with equality and "
+          "inequality constraints: test with warm start with previous result")
 {
 
   std::cout
@@ -1754,8 +1741,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with qp: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -1822,8 +1809,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with qp2: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -1834,9 +1821,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test with cold start option")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test with cold start option")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -1876,8 +1862,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with qp: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -1944,8 +1930,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with cold start option: "
             << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -1956,7 +1942,7 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
+TEST_CASE(
   "sparse random strongly convex qp with equality and "
   "inequality constraints: test equilibration options at initialization")
 {
@@ -2000,8 +1986,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with qp with "
                "preconditioner derived: "
             << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -2037,8 +2023,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp without preconditioner derivation: "
             << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -2051,9 +2037,8 @@ DOCTEST_TEST_CASE(
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "sparse random strongly convex qp with equality and "
-  "inequality constraints: test equilibration options at update")
+TEST_CASE("sparse random strongly convex qp with equality and "
+          "inequality constraints: test equilibration options at update")
 {
 
   std::cout << "---testing sparse random strongly convex qp with equality and "
@@ -2093,8 +2078,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with dim with qp with "
                "preconditioner derived: "
             << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -2124,8 +2109,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp with preconditioner re derived "
                "after an update (should get exact same results): "
             << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -2179,8 +2164,8 @@ DOCTEST_TEST_CASE(
     nullopt,
     false); // use previous preconditioner: should get same result as well
   qp2.solve();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   std::cout << "------using API solving qp without preconditioner derivation: "
             << dim << " neq: " << n_eq << " nin: " << n_in << std::endl;
   std::cout << "primal residual: " << pri_res << std::endl;
@@ -2445,7 +2430,7 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
 
 TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
           "inequality constraints: test multiple solve at once with equality "
-          "constrained initial guess")
+          "constrained initial guess and warm start")
 {
 
   double sparsity_factor = 0.15;
@@ -2572,9 +2557,9 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
             << qp.results.info.solve_time << std::endl;
 }
 
-TEST_CASE(
-  "sparse random strongly convex qp with equality and "
-  "inequality constraints: test multiple solve at once with no initial guess")
+TEST_CASE("sparse random strongly convex qp with equality and "
+          "inequality constraints: test multiple solve at once with no initial "
+          "guess and warm start")
 {
 
   double sparsity_factor = 0.15;
@@ -3398,146 +3383,6 @@ TEST_CASE(
             qp_random.u,
             update_preconditioner);
   std::cout << "dirty workspace after update : " << qp.work.dirty << std::endl;
-  qp.solve();
-  pri_res = std::max(
-    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
-      .lpNorm<Eigen::Infinity>());
-  dua_res = (qp_random.H * qp.results.x + qp_random.g +
-             qp_random.A.transpose() * qp.results.y +
-             qp_random.C.transpose() * qp.results.z)
-              .lpNorm<Eigen::Infinity>();
-  CHECK(dua_res <= eps_abs);
-  CHECK(pri_res <= eps_abs);
-  std::cout << "Second solve " << std::endl;
-  std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in
-            << std::endl;
-  std::cout << "; dual residual " << dua_res << "; primal residual " << pri_res
-            << std::endl;
-  std::cout << "total number of iteration: " << qp.results.info.iter
-            << std::endl;
-  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
-            << qp.results.info.solve_time << std::endl;
-
-  std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
-  qp.solve();
-  pri_res = std::max(
-    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
-      .lpNorm<Eigen::Infinity>());
-  dua_res = (qp_random.H * qp.results.x + qp_random.g +
-             qp_random.A.transpose() * qp.results.y +
-             qp_random.C.transpose() * qp.results.z)
-              .lpNorm<Eigen::Infinity>();
-  CHECK(dua_res <= eps_abs);
-  CHECK(pri_res <= eps_abs);
-  std::cout << "Third solve " << std::endl;
-  std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in
-            << std::endl;
-  std::cout << "; dual residual " << dua_res << "; primal residual " << pri_res
-            << std::endl;
-  std::cout << "total number of iteration: " << qp.results.info.iter
-            << std::endl;
-  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
-            << qp.results.info.solve_time << std::endl;
-
-  std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
-  qp.solve();
-  pri_res = std::max(
-    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
-      .lpNorm<Eigen::Infinity>());
-  dua_res = (qp_random.H * qp.results.x + qp_random.g +
-             qp_random.A.transpose() * qp.results.y +
-             qp_random.C.transpose() * qp.results.z)
-              .lpNorm<Eigen::Infinity>();
-  CHECK(dua_res <= eps_abs);
-  CHECK(pri_res <= eps_abs);
-  std::cout << "Fourth solve " << std::endl;
-  std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in
-            << std::endl;
-  std::cout << "; dual residual " << dua_res << "; primal residual " << pri_res
-            << std::endl;
-  std::cout << "total number of iteration: " << qp.results.info.iter
-            << std::endl;
-  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
-            << qp.results.info.solve_time << std::endl;
-}
-
-TEST_CASE(
-  "sparse random strongly convex qp with equality and "
-  "inequality constraints: test multiple solve at once with no initial guess")
-{
-
-  double sparsity_factor = 0.15;
-  T eps_abs = T(1e-9);
-  utils::rand::set_seed(1);
-  dense::isize dim = 10;
-
-  dense::isize n_eq(dim / 4);
-  dense::isize n_in(dim / 4);
-  T strong_convexity_factor(1.e-2);
-  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
-    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-
-  dense::QP<T> qp(dim, n_eq, n_in);
-
-  qp.settings.eps_abs = eps_abs;
-  qp.settings.eps_rel = 0;
-  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
-
-  std::cout << "Test with warm start with previous result and first solve with "
-               "no initial guess"
-            << std::endl;
-  std::cout << "dirty workspace before any solving: " << qp.work.dirty
-            << std::endl;
-
-  qp.init(qp_random.H,
-          qp_random.g,
-          qp_random.A,
-          qp_random.b,
-          qp_random.C,
-          qp_random.l,
-          qp_random.u);
-  qp.solve();
-
-  T pri_res = std::max(
-    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
-    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
-     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
-      .lpNorm<Eigen::Infinity>());
-  T dua_res = (qp_random.H * qp.results.x + qp_random.g +
-               qp_random.A.transpose() * qp.results.y +
-               qp_random.C.transpose() * qp.results.z)
-                .lpNorm<Eigen::Infinity>();
-  CHECK(dua_res <= eps_abs);
-  CHECK(pri_res <= eps_abs);
-  std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in
-            << std::endl;
-  std::cout << "; dual residual " << dua_res << "; primal residual " << pri_res
-            << std::endl;
-  std::cout << "total number of iteration: " << qp.results.info.iter
-            << std::endl;
-  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
-            << qp.results.info.solve_time << std::endl;
-
-  qp.settings.initial_guess =
-    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
-  std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
-  qp_random.H *= 2.;
-  qp_random.g = utils::rand::vector_rand<T>(dim);
-  bool update_preconditioner = true;
-  qp.update(qp_random.H,
-            qp_random.g,
-            qp_random.A,
-            qp_random.b,
-            qp_random.C,
-            qp_random.l,
-            qp_random.u,
-            update_preconditioner);
   qp.solve();
   pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5049,10 +4894,9 @@ TEST_CASE("ProxQP::dense: Test g update for different warm start with previous "
             << qp2.results.info.solve_time << std::endl;
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test changing default settings "
-  "after updates using warm start with previous results")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test changing default settings "
+          "after updates using warm start with previous results")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
                "inequality constraints: test changing default settings after "
@@ -5074,8 +4918,8 @@ DOCTEST_TEST_CASE(
   bool compute_preconditioner = true;
 
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
-  DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5087,11 +4931,11 @@ DOCTEST_TEST_CASE(
           qp_random.u,
           compute_preconditioner,
           rho);
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5102,8 +4946,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   qp.update(nullopt,
             nullopt,
@@ -5117,11 +4961,11 @@ DOCTEST_TEST_CASE(
   qp.settings.initial_guess =
     proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
 
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5132,12 +4976,12 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
-  DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp2.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5150,13 +4994,13 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            nullopt,
            mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5167,13 +5011,13 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
-  DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp3.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -5186,17 +5030,17 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            rho,
            mu_eq);
-  DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
   qp3.solve();
-  DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5207,8 +5051,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp3.results.y +
              qp_random.C.transpose() * qp3.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   qp3.update(nullopt,
              nullopt,
              nullopt,
@@ -5221,11 +5065,11 @@ DOCTEST_TEST_CASE(
              1.e-3);
   qp3.settings.initial_guess =
     proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
   qp3.solve();
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5236,14 +5080,13 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp3.results.y +
              qp_random.C.transpose() * qp3.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test changing default settings "
-  "after updates using cold start with previous results")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test changing default settings "
+          "after updates using cold start with previous results")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
                "inequality constraints: test changing default settings after "
@@ -5267,8 +5110,8 @@ DOCTEST_TEST_CASE(
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess =
     proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  CHECK(qp.settings.initial_guess ==
+        proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5280,11 +5123,11 @@ DOCTEST_TEST_CASE(
           qp_random.u,
           compute_preconditioner,
           rho);
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5295,8 +5138,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   qp.update(nullopt,
             nullopt,
@@ -5307,11 +5150,11 @@ DOCTEST_TEST_CASE(
             nullopt,
             compute_preconditioner,
             1.e-6);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5322,14 +5165,14 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess =
     proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  CHECK(qp2.settings.initial_guess ==
+        proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5342,13 +5185,13 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            nullopt,
            mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5359,15 +5202,15 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess =
     proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  CHECK(qp3.settings.initial_guess ==
+        proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -5380,17 +5223,17 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            rho,
            mu_eq);
-  DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
   qp3.solve();
-  DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5401,8 +5244,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp3.results.y +
              qp_random.C.transpose() * qp3.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   qp3.update(nullopt,
              nullopt,
              nullopt,
@@ -5413,11 +5256,11 @@ DOCTEST_TEST_CASE(
              compute_preconditioner,
              1.e-6,
              1.e-3);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
   qp3.solve();
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5428,14 +5271,13 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp3.results.y +
              qp_random.C.transpose() * qp3.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test changing default settings "
-  "after updates using equality constrained initial guess")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test changing default settings "
+          "after updates using equality constrained initial guess")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
                "inequality constraints: test changing default settings after "
@@ -5459,8 +5301,8 @@ DOCTEST_TEST_CASE(
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess =
     proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5472,11 +5314,11 @@ DOCTEST_TEST_CASE(
           qp_random.u,
           compute_preconditioner,
           rho);
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5487,8 +5329,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   qp.update(nullopt,
             nullopt,
@@ -5499,11 +5341,11 @@ DOCTEST_TEST_CASE(
             nullopt,
             compute_preconditioner,
             1.e-6);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5514,14 +5356,14 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess =
     proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp2.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5534,13 +5376,13 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            nullopt,
            mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5551,15 +5393,15 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess =
     proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp3.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -5572,17 +5414,17 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            rho,
            mu_eq);
-  DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
   qp3.solve();
-  DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5593,8 +5435,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp3.results.y +
              qp_random.C.transpose() * qp3.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   qp3.update(nullopt,
              nullopt,
              nullopt,
@@ -5605,11 +5447,11 @@ DOCTEST_TEST_CASE(
              compute_preconditioner,
              1.e-6,
              1.e-3);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
   qp3.solve();
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5620,14 +5462,13 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp3.results.y +
              qp_random.C.transpose() * qp3.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test changing default settings "
-  "after updates using no initial guess")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test changing default settings "
+          "after updates using no initial guess")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
                "inequality constraints: test changing default settings after "
@@ -5650,8 +5491,8 @@ DOCTEST_TEST_CASE(
 
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  CHECK(qp.settings.initial_guess ==
+        proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5663,11 +5504,11 @@ DOCTEST_TEST_CASE(
           qp_random.u,
           compute_preconditioner,
           rho);
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5678,8 +5519,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   qp.update(nullopt,
             nullopt,
@@ -5690,11 +5531,11 @@ DOCTEST_TEST_CASE(
             nullopt,
             compute_preconditioner,
             1.e-6);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp.results.info.rho) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5705,13 +5546,13 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp.results.y +
              qp_random.C.transpose() * qp.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  CHECK(qp2.settings.initial_guess ==
+        proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5724,13 +5565,13 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            nullopt,
            mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5741,14 +5582,14 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp2.results.y +
              qp_random.C.transpose() * qp2.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  CHECK(qp3.settings.initial_guess ==
+        proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -5761,17 +5602,17 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            rho,
            mu_eq);
-  DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
   qp3.solve();
-  DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
 
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5782,8 +5623,8 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp3.results.y +
              qp_random.C.transpose() * qp3.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
   qp3.update(nullopt,
              nullopt,
              nullopt,
@@ -5794,11 +5635,11 @@ DOCTEST_TEST_CASE(
              compute_preconditioner,
              1.e-6,
              1.e-3);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
   qp3.solve();
   pri_res = std::max(
     (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5809,14 +5650,13 @@ DOCTEST_TEST_CASE(
              qp_random.A.transpose() * qp3.results.y +
              qp_random.C.transpose() * qp3.results.z)
               .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test changing default settings "
-  "after several solves using warm start with previous results")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test changing default settings "
+          "after several solves using warm start with previous results")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
                "inequality constraints: test changing default settings after "
@@ -5838,8 +5678,8 @@ DOCTEST_TEST_CASE(
   bool compute_preconditioner = true;
 
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
-  DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -5851,11 +5691,11 @@ DOCTEST_TEST_CASE(
           qp_random.u,
           compute_preconditioner,
           rho);
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -5866,15 +5706,15 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   qp.settings.initial_guess =
     proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
-    DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
-    DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
+    CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
+    CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
     pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -5884,8 +5724,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   qp.update(nullopt,
@@ -5899,8 +5739,8 @@ DOCTEST_TEST_CASE(
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
-    DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
+    CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
+    CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
     pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -5910,14 +5750,14 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
-  DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp2.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -5930,13 +5770,13 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            nullopt,
            mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   qp2.settings.initial_guess =
     proxsuite::proxqp::InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
@@ -5944,13 +5784,13 @@ DOCTEST_TEST_CASE(
     // warm start with previous result used, hence if the qp is small and
     // simple, the parameters should not changed during first solve, and also
     // after as we start at the solution
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     qp2.solve();
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp2.results.x - qp_random.u) +
@@ -5960,14 +5800,14 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp2.results.y +
                qp_random.C.transpose() * qp2.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
-  DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp3.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.settings.verbose = true;
@@ -5986,17 +5826,17 @@ DOCTEST_TEST_CASE(
     // warm start with previous result used, hence if the qp is small and
     // simple, the parameters should not changed during first solve, and also
     // after as we start at the solution
-    DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
-    DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp3.results.x - qp_random.u) +
@@ -6006,8 +5846,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp3.results.y +
                qp_random.C.transpose() * qp3.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   qp3.update(nullopt,
@@ -6024,17 +5864,17 @@ DOCTEST_TEST_CASE(
     // warm start with previous result used, hence if the qp is small and
     // simple, the parameters should not changed during first solve, and also
     // after as we start at the solution
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp3.results.x - qp_random.u) +
@@ -6044,15 +5884,14 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp3.results.y +
                qp_random.C.transpose() * qp3.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test changing default settings "
-  "after several solves using cold start with previous results")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test changing default settings "
+          "after several solves using cold start with previous results")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
                "inequality constraints: test changing default settings after "
@@ -6076,8 +5915,8 @@ DOCTEST_TEST_CASE(
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess =
     proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  CHECK(qp.settings.initial_guess ==
+        proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -6089,11 +5928,11 @@ DOCTEST_TEST_CASE(
           qp_random.u,
           compute_preconditioner,
           rho);
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -6104,13 +5943,13 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
-    DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
-    DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
+    CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
+    CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
     pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -6120,8 +5959,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   qp.update(nullopt,
@@ -6135,8 +5974,8 @@ DOCTEST_TEST_CASE(
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
-    DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
+    CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
+    CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
     pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -6146,16 +5985,16 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess =
     proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  CHECK(qp2.settings.initial_guess ==
+        proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -6168,22 +6007,22 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            nullopt,
            mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     qp2.solve();
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp2.results.x - qp_random.u) +
@@ -6193,16 +6032,16 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp2.results.y +
                qp_random.C.transpose() * qp2.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess =
     proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT;
-  DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
+  CHECK(qp3.settings.initial_guess ==
+        proxqp::InitialGuessStatus::COLD_START_WITH_PREVIOUS_RESULT);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -6217,17 +6056,17 @@ DOCTEST_TEST_CASE(
            mu_eq);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
-    DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp3.results.x - qp_random.u) +
@@ -6237,8 +6076,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp3.results.y +
                qp_random.C.transpose() * qp3.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   qp3.update(nullopt,
@@ -6252,17 +6091,17 @@ DOCTEST_TEST_CASE(
              1.e-6,
              1.e-3);
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp3.results.x - qp_random.u) +
@@ -6272,12 +6111,12 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp3.results.y +
                qp_random.C.transpose() * qp3.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 }
 
-DOCTEST_TEST_CASE(
+TEST_CASE(
   "sparse random strongly convex qp with equality and "
   "inequality constraints: test changing default settings after several solves "
   "using equality constrained initial guess")
@@ -6304,8 +6143,8 @@ DOCTEST_TEST_CASE(
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess =
     proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -6317,11 +6156,11 @@ DOCTEST_TEST_CASE(
           qp_random.u,
           compute_preconditioner,
           rho);
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -6332,13 +6171,13 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
-    DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
-    DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
+    CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
+    CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
     pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -6348,8 +6187,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   qp.update(nullopt,
@@ -6363,8 +6202,8 @@ DOCTEST_TEST_CASE(
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
-    DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
+    CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
+    CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
     pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -6374,16 +6213,16 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess =
     proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp2.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -6396,22 +6235,22 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            nullopt,
            mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     qp2.solve();
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp2.results.x - qp_random.u) +
@@ -6421,16 +6260,16 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp2.results.y +
                qp_random.C.transpose() * qp2.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess =
     proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS;
-  DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
+  CHECK(qp3.settings.initial_guess ==
+        proxqp::InitialGuessStatus::EQUALITY_CONSTRAINED_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -6445,17 +6284,17 @@ DOCTEST_TEST_CASE(
            mu_eq);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
-    DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp3.results.x - qp_random.u) +
@@ -6465,8 +6304,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp3.results.y +
                qp_random.C.transpose() * qp3.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   qp3.update(nullopt,
@@ -6480,17 +6319,17 @@ DOCTEST_TEST_CASE(
              1.e-6,
              1.e-3);
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp3.results.x - qp_random.u) +
@@ -6500,15 +6339,14 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp3.results.y +
                qp_random.C.transpose() * qp3.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 }
 
-DOCTEST_TEST_CASE(
-  "ProxQP::dense: sparse random strongly convex qp with equality and "
-  "inequality constraints: test changing default settings "
-  "after several solves using no initial guess")
+TEST_CASE("ProxQP::dense: sparse random strongly convex qp with equality and "
+          "inequality constraints: test changing default settings "
+          "after several solves using no initial guess")
 {
   std::cout << "---testing sparse random strongly convex qp with equality and "
                "inequality constraints: test changing default settings after "
@@ -6531,8 +6369,8 @@ DOCTEST_TEST_CASE(
 
   dense::QP<T> qp{ dim, n_eq, n_in }; // creating QP object
   qp.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(qp.settings.initial_guess ==
-                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  CHECK(qp.settings.initial_guess ==
+        proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   qp.settings.eps_abs = eps_abs;
   qp.settings.eps_rel = 0;
   qp.init(qp_random.H,
@@ -6544,11 +6382,11 @@ DOCTEST_TEST_CASE(
           qp_random.u,
           compute_preconditioner,
           rho);
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
   qp.solve();
-  DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.settings.default_rho) <= 1.E-9);
+  CHECK(std::abs(rho - qp.results.info.rho) <= 1.E-9);
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
@@ -6559,13 +6397,13 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
-    DOCTEST_CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
-    DOCTEST_CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
+    CHECK(std::abs(rho - qp.settings.default_rho) < 1.e-9);
+    CHECK(std::abs(rho - qp.results.info.rho) < 1.e-9);
     pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -6575,8 +6413,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   qp.update(nullopt,
@@ -6590,8 +6428,8 @@ DOCTEST_TEST_CASE(
             1.e-6);
   for (isize iter = 0; iter < 10; ++iter) {
     qp.solve();
-    DOCTEST_CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
+    CHECK(std::abs(1.e-6 - qp.settings.default_rho) < 1.e-9);
+    CHECK(std::abs(1.e-6 - qp.results.info.rho) < 1.e-9);
     pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -6601,15 +6439,15 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp2{ dim, n_eq, n_in }; // creating QP object
   qp2.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(qp2.settings.initial_guess ==
-                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  CHECK(qp2.settings.initial_guess ==
+        proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   qp2.settings.eps_abs = eps_abs;
   qp2.settings.eps_rel = 0;
   qp2.init(qp_random.H,
@@ -6622,22 +6460,22 @@ DOCTEST_TEST_CASE(
            compute_preconditioner,
            nullopt,
            mu_eq);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
   qp2.solve();
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-  DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+  CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+  CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     qp2.solve();
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp2.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp2.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp2.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp2.results.x - qp_random.u) +
@@ -6647,15 +6485,15 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp2.results.y +
                qp_random.C.transpose() * qp2.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   // conter factual check with another QP object starting at the updated model
   dense::QP<T> qp3{ dim, n_eq, n_in }; // creating QP object
   qp3.settings.initial_guess = proxqp::InitialGuessStatus::NO_INITIAL_GUESS;
-  DOCTEST_CHECK(qp3.settings.initial_guess ==
-                proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
+  CHECK(qp3.settings.initial_guess ==
+        proxqp::InitialGuessStatus::NO_INITIAL_GUESS);
   qp3.settings.eps_abs = eps_abs;
   qp3.settings.eps_rel = 0;
   qp3.init(qp_random.H,
@@ -6670,17 +6508,17 @@ DOCTEST_TEST_CASE(
            mu_eq);
 
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
-    DOCTEST_CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(rho - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(mu_eq - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(T(1) / mu_eq - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp3.results.x - qp_random.u) +
@@ -6690,8 +6528,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp3.results.y +
                qp_random.C.transpose() * qp3.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 
   qp3.update(nullopt,
@@ -6705,17 +6543,17 @@ DOCTEST_TEST_CASE(
              1.e-6,
              1.e-3);
   for (isize iter = 0; iter < 10; ++iter) {
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     qp3.solve();
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
-    DOCTEST_CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.settings.default_rho) <= 1.E-9);
+    CHECK(std::abs(1.e-6 - qp3.results.info.rho) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.settings.default_mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e-3 - qp3.results.info.mu_eq) <= 1.E-9);
+    CHECK(std::abs(1.e3 - qp3.results.info.mu_eq_inv) <= 1.E-9);
     pri_res = std::max(
       (qp_random.A * qp3.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp3.results.x - qp_random.u) +
@@ -6725,8 +6563,8 @@ DOCTEST_TEST_CASE(
                qp_random.A.transpose() * qp3.results.y +
                qp_random.C.transpose() * qp3.results.z)
                 .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
   }
 }
 
@@ -7204,8 +7042,8 @@ TEST_CASE("ProxQP::dense: test primal infeasibility solving")
                  qp_random.g + qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= scaled_eps);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= scaled_eps);
+    CHECK(dua_res <= eps_abs);
   }
 }
 
@@ -7249,8 +7087,7 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
             nullopt,
             estimate_minimal_eigen_value);
 
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 1) <=
-                  tol);
+    CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 1) <= tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7285,8 +7122,8 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
             nullopt,
             nullopt,
             estimate_minimal_eigen_value);
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
-                           minimal_eigenvalue) <= tol);
+    CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                   minimal_eigenvalue) <= tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7323,8 +7160,8 @@ TEST_CASE("ProxQP::dense: estimate of minimal eigenvalues using Eigen")
             nullopt,
             estimate_minimal_eigen_value);
 
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
-                           minimal_eigenvalue) <= tol);
+    CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                   minimal_eigenvalue) <= tol);
   }
 }
 
@@ -7365,8 +7202,7 @@ TEST_CASE(
             nullopt,
             -1);
 
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 1) <=
-                  tol);
+    CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 1) <= tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7397,8 +7233,8 @@ TEST_CASE(
             nullopt,
             nullopt,
             minimal_eigenvalue);
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
-                           minimal_eigenvalue) <= tol);
+    CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                   minimal_eigenvalue) <= tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7431,8 +7267,8 @@ TEST_CASE(
             nullopt,
             minimal_eigenvalue);
 
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
-                           minimal_eigenvalue) <= tol);
+    CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                   minimal_eigenvalue) <= tol);
   }
 }
 
@@ -7480,8 +7316,7 @@ TEST_CASE(
             nullopt,
             estimate_minimal_eigen_value);
 
-    DOCTEST_CHECK(
-      std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 0.5) <= tol);
+    CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate + 0.5) <= tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7519,8 +7354,8 @@ TEST_CASE(
             nullopt,
             nullopt,
             estimate_minimal_eigen_value);
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
-                           minimal_eigenvalue) <= tol);
+    CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                   minimal_eigenvalue) <= tol);
   }
   dim = 50;
   n_eq = dim;
@@ -7561,13 +7396,13 @@ TEST_CASE(
             nullopt,
             estimate_minimal_eigen_value);
 
-    DOCTEST_CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
-                           minimal_eigenvalue) <= tol);
+    CHECK(std::abs(qp.results.info.minimal_H_eigenvalue_estimate -
+                   minimal_eigenvalue) <= tol);
   }
 }
 
-DOCTEST_TEST_CASE("check that model.is_valid function for symmetric matrices "
-                  "works for epsilon precision")
+TEST_CASE("check that model.is_valid function for symmetric matrices "
+          "works for epsilon precision")
 {
   Eigen::Matrix<T, 3, 3> matrix = Eigen::Matrix<T, 3, 3>::Random();
   Eigen::Matrix<T, 3, 3> symmetric_mat = matrix + matrix.transpose();
@@ -7581,8 +7416,8 @@ DOCTEST_TEST_CASE("check that model.is_valid function for symmetric matrices "
   bool is_symmetric_with_tolerance = symmetric_mat.isApprox(
     symmetric_mat.transpose(),
     std::numeric_limits<typename decltype(symmetric_mat)::Scalar>::epsilon());
-  DOCTEST_CHECK(is_symmetric_without_tolerance == false);
-  DOCTEST_CHECK(is_symmetric_with_tolerance == true);
+  CHECK(is_symmetric_without_tolerance == false);
+  CHECK(is_symmetric_with_tolerance == true);
 
   // initialize a model with a symmetric matrix as Hessian, this runs
   // model.is_valid() that performs the check above
@@ -7652,15 +7487,15 @@ TEST_CASE("ProxQP::dense: sparse random strongly convex qp with"
           qp_random.u);
   qp.solve();
 
-  DOCTEST_CHECK(qp.results.info.mu_updates > 0);
+  CHECK(qp.results.info.mu_updates > 0);
 
   T pri_res = (helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
                 .lpNorm<Eigen::Infinity>();
   T dua_res = (qp_random.H * qp.results.x + qp_random.g +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------using API solving qp with dim: " << dim
             << " neq: " << n_eq << " nin: " << n_in << std::endl;

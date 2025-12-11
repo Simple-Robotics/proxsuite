@@ -2,7 +2,7 @@
 // Copyright (c) 2022 INRIA
 //
 #include <iostream>
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
@@ -11,7 +11,7 @@
 using T = double;
 using namespace proxsuite;
 
-DOCTEST_TEST_CASE(
+TEST_CASE(
   "sparse random strongly convex qp with equality and inequality constraints "
   "and increasing dimension using wrapper API")
 {
@@ -52,8 +52,8 @@ DOCTEST_TEST_CASE(
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------using API solving qp with dim: " << dim
               << " neq: " << n_eq << " nin: " << n_in << std::endl;
@@ -64,8 +64,8 @@ DOCTEST_TEST_CASE(
   }
 }
 
-DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
-                  "constraints and increasing dimension using the API")
+TEST_CASE("sparse random strongly convex qp with box inequality "
+          "constraints and increasing dimension using the API")
 {
 
   std::cout
@@ -102,8 +102,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
               << " nin: " << n_in << std::endl;
@@ -114,8 +114,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with box inequality "
   }
 }
 
-DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
-                  "constraints and increasing dimension using the API")
+TEST_CASE("sparse random not strongly convex qp with inequality "
+          "constraints and increasing dimension using the API")
 {
 
   std::cout
@@ -152,8 +152,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
               << " nin: " << n_in << std::endl;
@@ -164,8 +164,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex qp with inequality "
   }
 }
 
-DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
-                  "constraints and increasing dimension using the API")
+TEST_CASE("sparse random strongly convex qp with degenerate inequality "
+          "constraints and increasing dimension using the API")
 {
 
   std::cout
@@ -197,8 +197,7 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
             qp_random.l,
             qp_random.u);
     qp.solve();
-    DOCTEST_CHECK(qp.results.info.status ==
-                  proxqp::QPSolverOutput::PROXQP_SOLVED);
+    CHECK(qp.results.info.status == proxqp::QPSolverOutput::PROXQP_SOLVED);
     T pri_res = std::max(
       (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
       (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
@@ -208,8 +207,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
               << " nin: " << n_in << std::endl;
@@ -220,8 +219,8 @@ DOCTEST_TEST_CASE("sparse random strongly convex qp with degenerate inequality "
   }
 }
 
-DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
-                  "increasing dimension using the API")
+TEST_CASE("linear problem with equality inequality constraints and "
+          "increasing dimension using the API")
 {
   srand(1);
   std::cout << "---testing linear problem with inequality constraints and "
@@ -263,8 +262,8 @@ DOCTEST_TEST_CASE("linear problem with equality inequality constraints and "
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
               << " nin: " << n_in << std::endl;
