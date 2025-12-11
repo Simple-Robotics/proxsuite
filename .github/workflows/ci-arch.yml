@@ -17,12 +17,8 @@ jobs:
     container:
       image: archlinux/archlinux:base-devel
     steps:
-    - run: pacman -Syu --noconfirm cmake eigen git libmatio python-scipy simde
-
-    - uses: actions/checkout@v7
-      with:
-        submodules: recursive
-
-    - run: cmake -B build -S . -DBUILD_PYTHON_INTERFACE=ON
-    - run: cmake --build build
-    - run: cmake --build build -t test
+      - run: pacman -Syu --noconfirm cmake eigen libmatio python-scipy simde
+      - uses: actions/checkout@v7
+      - run: cmake -B build -S . -DBUILD_PYTHON_INTERFACE=ON
+      - run: cmake --build build
+      - run: cmake --build build -t test

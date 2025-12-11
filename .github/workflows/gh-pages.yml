@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          submodules: recursive
 
       - uses: conda-incubator/setup-miniconda@v4
         with:
@@ -38,7 +36,6 @@ jobs:
       - name: Configure
         shell: bash -l {0}
         run: |
-          git submodule update --init
           mkdir build
           cd build
           cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON_INTERFACE:BOOL=OFF -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DBUILD_TESTING:BOOL=OFF -DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=OFF
