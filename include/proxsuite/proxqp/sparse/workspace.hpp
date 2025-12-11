@@ -491,12 +491,12 @@ struct Workspace
         }
       }
 
-      auto lnnz = isize(zero_extend(ldl.col_ptrs[n_tot]));
+      const auto local_lnnz = isize(zero_extend(ldl.col_ptrs[n_tot]));
 
       // if ldlt is too sparse
-      // do_ldlt = !overflow && lnnz < (10000000);
+      // do_ldlt = !overflow && local_lnnz < (10000000);
       if (settings.sparse_backend == SparseBackend::Automatic) {
-        do_ldlt = !overflow && lnnz < 10000000;
+        do_ldlt = !overflow && local_lnnz < 10000000;
       } else if (settings.sparse_backend == SparseBackend::SparseCholesky) {
         do_ldlt = true;
       } else {
