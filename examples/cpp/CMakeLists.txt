@@ -1,20 +1,35 @@
-#
-# Copyright (c) 2022 INRIA
-#
+add_custom_target(proxsuite-examples-cpp)
 
-add_custom_target(${PROJECT_NAME}-example-cpp)
-
-function(ADD_PROXSUITE_CPP_EXAMPLE EXAMPLE)
-  get_filename_component(EXAMPLE_NAME ${EXAMPLE} NAME_WE)
-  set(EXAMPLE_TARGET "${PROJECT_NAME}-example-cpp-${EXAMPLE_NAME}")
-  ADD_UNIT_TEST(${EXAMPLE_TARGET} "${EXAMPLE}")
-  target_link_libraries(${EXAMPLE_TARGET} PRIVATE proxsuite-test-util)
-
-  add_dependencies(${PROJECT_NAME}-example-cpp ${EXAMPLE_TARGET})
+function(proxsuite_add_example name)
+  add_executable(proxsuite-example-${name} ${name}.cpp)
+  target_link_libraries(proxsuite-example-${name} PRIVATE proxsuite)
+  add_dependencies(proxsuite-examples-cpp proxsuite-example-${name})
 endfunction()
 
-file(GLOB_RECURSE ${PROJECT_NAME}_CPP_EXAMPLES *.cpp)
+proxsuite_add_example(estimate_nonconvex_eigenvalue)
+proxsuite_add_example(first_example_dense)
+proxsuite_add_example(first_example_sparse)
+proxsuite_add_example(init_dense_qp_with_box)
 
-foreach(EXAMPLE ${${PROJECT_NAME}_CPP_EXAMPLES})
-  add_proxsuite_cpp_example(${EXAMPLE})
-endforeach()
+proxsuite_add_example(init_dense_qp_with_other_options)
+proxsuite_add_example(init_dense_qp_with_timings)
+proxsuite_add_example(init_dense_qp)
+proxsuite_add_example(init_with_default_options)
+
+proxsuite_add_example(initializing_with_none_without_api)
+proxsuite_add_example(initializing_with_none)
+
+proxsuite_add_example(loading_dense_qp_with_box_ineq)
+proxsuite_add_example(loading_dense_qp_with_different_backend_choice)
+proxsuite_add_example(loading_dense_qp)
+proxsuite_add_example(loading_sparse_qp)
+
+proxsuite_add_example(overview-simple)
+proxsuite_add_example(solve_dense_qp_with_setting)
+proxsuite_add_example(solve_dense_qp)
+proxsuite_add_example(solve_without_api_and_option)
+proxsuite_add_example(solve_without_api)
+
+proxsuite_add_example(update_dense_qp_ws_previous_result)
+proxsuite_add_example(update_dense_qp)
+proxsuite_add_example(update_sparse_qp)
