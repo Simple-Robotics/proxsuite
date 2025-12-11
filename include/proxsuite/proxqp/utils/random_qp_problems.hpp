@@ -72,33 +72,48 @@ using proxqp::u64;
 is not available. Therefore, we use a random number generator from the stdlib
 instead of our custom Lehmer random number generator. The necessary lehmer
 functions used in in our code are remplaced with calls to the stdlib.*/
-std::mt19937 gen(1234);
-std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
-std::normal_distribution<double> normal_dist;
+inline auto
+get_gen() -> std::mt19937&
+{
+  static std::mt19937 gen(1234);
+  return gen;
+}
+inline auto
+get_uniform_dist() -> std::uniform_real_distribution<>&
+{
+  static std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
+  return uniform_dist;
+}
+inline auto
+get_normal_dist() -> std::normal_distribution<double>&
+{
+  static std::normal_distribution<double> normal_dist;
+  return normal_dist;
+}
 using u128 = u64;
 inline auto
 uniform_rand() -> double
 {
-  double output = double(uniform_dist(gen));
+  double output = double(get_uniform_dist()(get_gen()));
   return output;
 }
 inline auto
 lehmer_global() -> u128&
 {
-  static u64 output = gen();
+  static u64 output = get_gen()();
   return output;
 }
 
 inline void
 set_seed(u64 seed)
 {
-  gen.seed(seed);
+  get_gen().seed(seed);
 }
 
 inline auto
 normal_rand() -> double
 {
-  return normal_dist(gen);
+  return get_normal_dist()(get_gen());
 }
 #else
 using u128 = __uint128_t;
