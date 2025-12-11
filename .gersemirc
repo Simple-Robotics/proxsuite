@@ -1,4 +1,4 @@
-definitions: [./CMakeLists.txt,./cmake-module,./cmake-external,./bindings,./include]
-line_length: 80
+definitions: []
+line_length: 100
 indent: 2
 warn_about_unknown_commands: false
