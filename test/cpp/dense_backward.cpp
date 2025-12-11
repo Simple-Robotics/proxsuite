@@ -2,9 +2,7 @@
 // Copyright (c) 2023 INRIA
 //
 #include <iostream>
-#include <doctest.hpp>
-#include <Eigen/Core>
-#include <optional>
+#include <catch2/catch_test_macros.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #include <proxsuite/proxqp/dense/compute_ECJ.hpp>
@@ -13,7 +11,7 @@ using T = double;
 using namespace proxsuite;
 using namespace proxsuite::proxqp;
 
-DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
+TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
@@ -74,12 +72,12 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (feasible QP)")
   // Compare dx_dg_fd with the result from the backward function
   for (int i = 0; i < dim; i++) {
     for (int j = 0; j < dim; j++) {
-      DOCTEST_CHECK(std::abs(dx_dg_fd(i, j) - dx_dg(i, j)) < 1e-5);
+      CHECK(std::abs(dx_dg_fd(i, j) - dx_dg(i, j)) < 1e-5);
     }
   }
 }
 
-DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
+TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
@@ -140,13 +138,13 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for b (feasible QP)")
   // Compare dx_db_fd with the result from the backward function
   for (int i = 0; i < dim; i++) {
     for (int j = 0; j < n_eq; j++) {
-      DOCTEST_CHECK(std::abs(dx_db_fd(i, j) - dx_db(i, j)) < 1e-5);
+      CHECK(std::abs(dx_db_fd(i, j) - dx_db(i, j)) < 1e-5);
     }
   }
 }
 
-DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
-                  "saturating inequality constraints)")
+TEST_CASE("proxqp::dense: test compute backward for g (QP with "
+          "saturating inequality constraints)")
 {
   double sparsity_factor = 0.85;
   T eps_abs = T(1e-9);
@@ -216,7 +214,7 @@ DOCTEST_TEST_CASE("proxqp::dense: test compute backward for g (QP with "
   // Compare dx_dg_fd with the result from the backward function
   for (int i = 0; i < dim; i++) {
     for (int j = 0; j < dim; j++) {
-      DOCTEST_CHECK(std::abs(dx_dg_fd(i, j) - dx_dg(i, j)) < 1e-5);
+      CHECK(std::abs(dx_dg_fd(i, j) - dx_dg(i, j)) < 1e-5);
     }
   }
 }

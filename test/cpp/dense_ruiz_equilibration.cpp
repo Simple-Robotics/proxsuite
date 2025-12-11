@@ -2,7 +2,7 @@
 // Copyright (c) 2022-2023 INRIA
 //
 #include <iostream>
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
@@ -12,7 +12,7 @@
 using namespace proxsuite;
 using Scalar = double;
 
-DOCTEST_TEST_CASE("ruiz preconditioner")
+TEST_CASE("ruiz preconditioner")
 {
   int dim = 5;
   int n_eq = 6;
@@ -65,8 +65,8 @@ DOCTEST_TEST_CASE("ruiz preconditioner")
   auto A_new = (tail * A * head).eval();
   auto b_new = (tail * b).eval();
 
-  DOCTEST_CHECK((H_new - qp.work.H_scaled).norm() <= Scalar(1e-10));
-  DOCTEST_CHECK((g_new - qp.work.g_scaled).norm() <= Scalar(1e-10));
-  DOCTEST_CHECK((A_new - qp.work.A_scaled).norm() <= Scalar(1e-10));
-  DOCTEST_CHECK((b_new - qp.work.b_scaled).norm() <= Scalar(1e-10));
+  CHECK((H_new - qp.work.H_scaled).norm() <= Scalar(1e-10));
+  CHECK((g_new - qp.work.g_scaled).norm() <= Scalar(1e-10));
+  CHECK((A_new - qp.work.A_scaled).norm() <= Scalar(1e-10));
+  CHECK((b_new - qp.work.b_scaled).norm() <= Scalar(1e-10));
 }

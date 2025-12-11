@@ -3,13 +3,11 @@
 //
 
 #include <iostream>
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <maros_meszaros.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
 
 using namespace proxsuite;
-
-#define MAROS_MESZAROS_DIR PROBLEM_PATH "/data/maros_meszaros_data/"
 
 template<typename T>
 void

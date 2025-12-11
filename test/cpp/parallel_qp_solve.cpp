@@ -1,7 +1,7 @@
 //
 // Copyright (c) 2023 INRIA
 //
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 #include <proxsuite/proxqp/dense/dense.hpp>
 #include <proxsuite/proxqp/sparse/wrapper.hpp>
@@ -16,7 +16,7 @@ using T = double;
 using I = c_int;
 using namespace proxsuite::linalg::sparse::tags;
 
-DOCTEST_TEST_CASE("test parallel qp_solve for dense qps")
+TEST_CASE("test parallel qp_solve for dense qps")
 {
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -76,7 +76,7 @@ DOCTEST_TEST_CASE("test parallel qp_solve for dense qps")
   }
 }
 
-DOCTEST_TEST_CASE("test dense BatchQP and optional NUM_THREADS")
+TEST_CASE("test dense BatchQP and optional NUM_THREADS")
 {
   double sparsity_factor = 0.15;
   T eps_abs = T(1e-9);
@@ -132,7 +132,7 @@ DOCTEST_TEST_CASE("test dense BatchQP and optional NUM_THREADS")
   }
 }
 
-DOCTEST_TEST_CASE("test parallel qp_solve for sparse qps")
+TEST_CASE("test parallel qp_solve for sparse qps")
 {
   sparse::isize dim = 500;
   sparse::isize n_eq(10);
@@ -193,7 +193,7 @@ DOCTEST_TEST_CASE("test parallel qp_solve for sparse qps")
   }
 }
 
-DOCTEST_TEST_CASE("test sparse BatchQP")
+TEST_CASE("test sparse BatchQP")
 {
   sparse::isize dim = 500;
   sparse::isize n_eq(10);

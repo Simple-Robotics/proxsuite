@@ -2,7 +2,7 @@
 // Copyright (c) 2022 INRIA
 //
 #include <iostream>
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 #include <proxsuite/proxqp/dense/dense.hpp>
@@ -12,7 +12,7 @@ using namespace proxsuite;
 
 using T = double;
 
-DOCTEST_TEST_CASE(
+TEST_CASE(
   "sparse random strongly convex unconstrained qp and increasing dimension")
 {
 
@@ -48,8 +48,8 @@ DOCTEST_TEST_CASE(
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
               << " nin: " << n_in << std::endl;
@@ -60,8 +60,8 @@ DOCTEST_TEST_CASE(
   }
 }
 
-DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
-                  "increasing dimension")
+TEST_CASE("sparse random not strongly convex unconstrained qp and "
+          "increasing dimension")
 {
 
   std::cout << "---testing sparse random not strongly convex unconstrained qp "
@@ -101,8 +101,8 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
                  qp_random.A.transpose() * qp.results.y +
                  qp_random.C.transpose() * qp.results.z)
                   .lpNorm<Eigen::Infinity>();
-    DOCTEST_CHECK(pri_res <= eps_abs);
-    DOCTEST_CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK(dua_res <= eps_abs);
 
     std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
               << " nin: " << n_in << std::endl;
@@ -113,7 +113,7 @@ DOCTEST_TEST_CASE("sparse random not strongly convex unconstrained qp and "
   }
 }
 
-DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
+TEST_CASE("unconstrained qp with H = Id and g random")
 {
 
   std::cout << "---unconstrained qp with H = Id and g random---" << std::endl;
@@ -149,8 +149,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
             << " nin: " << n_in << std::endl;
@@ -160,7 +160,7 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g random")
             << std::endl;
 }
 
-DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
+TEST_CASE("unconstrained qp with H = Id and g = 0")
 {
 
   std::cout << "---unconstrained qp with H = Id and g = 0---" << std::endl;
@@ -197,8 +197,8 @@ DOCTEST_TEST_CASE("unconstrained qp with H = Id and g = 0")
                qp_random.A.transpose() * qp.results.y +
                qp_random.C.transpose() * qp.results.z)
                 .lpNorm<Eigen::Infinity>();
-  DOCTEST_CHECK(pri_res <= eps_abs);
-  DOCTEST_CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  CHECK(dua_res <= eps_abs);
 
   std::cout << "------solving qp with dim: " << dim << " neq: " << n_eq
             << " nin: " << n_in << std::endl;

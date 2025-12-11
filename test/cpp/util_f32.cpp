@@ -1,4 +1,4 @@
-#include "util_f64.hpp"
+#include "util_f32.hpp"
 
 namespace proxsuite {
 namespace proxqp {

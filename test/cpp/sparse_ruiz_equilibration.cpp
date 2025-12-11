@@ -5,7 +5,7 @@
 #include <proxsuite/proxqp/sparse/solver.hpp>
 #include <proxsuite/proxqp/dense/preconditioner/ruiz.hpp>
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
-#include <doctest.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <proxsuite/linalg/veg/util/dynstack_alloc.hpp>
 
 using namespace proxsuite;
