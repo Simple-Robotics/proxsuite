@@ -702,7 +702,7 @@ We highly encourage you to enable the vectorization of the underlying linear alg
 
 \code
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 make
 make install
 \endcode
