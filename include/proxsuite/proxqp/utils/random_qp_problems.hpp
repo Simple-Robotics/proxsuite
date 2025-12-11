@@ -12,6 +12,11 @@
 #include <proxsuite/proxqp/sparse/model.hpp>
 #include <map>
 #include <random>
+#include <cmath>
+
+#if defined(_MSC_VER)
+#include <proxsuite/proxqp/utils/uint128_msvc.hpp>
+#endif
 
 namespace proxsuite {
 namespace proxqp {
@@ -67,41 +72,11 @@ namespace rand {
 using proxqp::u32;
 using proxqp::u64;
 
-#ifdef _MSC_VER
-/* Using the MSCV compiler on Windows causes problems because the type uint128
-is not available. Therefore, we use a random number generator from the stdlib
-instead of our custom Lehmer random number generator. The necessary lehmer
-functions used in in our code are remplaced with calls to the stdlib.*/
-std::mt19937 gen(1234);
-std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
-std::normal_distribution<double> normal_dist;
-using u128 = u64;
-inline auto
-uniform_rand() -> double
-{
-  double output = double(uniform_dist(gen));
-  return output;
-}
-inline auto
-lehmer_global() -> u128&
-{
-  static u64 output = gen();
-  return output;
-}
-
-inline void
-set_seed(u64 seed)
-{
-  gen.seed(seed);
-}
-
-inline auto
-normal_rand() -> double
-{
-  return normal_dist(gen);
-}
+#if defined(_MSC_VER)
+using u128 = uint128_t;
 #else
 using u128 = __uint128_t;
+#endif
 
 constexpr u128 lehmer64_constant(0xda942042e4dd58b5);
 inline auto
@@ -145,7 +120,6 @@ normal_rand() -> double
 
   return sqrt * std::cos(pi2 * u2);
 }
-#endif
 
 template<typename Scalar>
 auto
@@ -297,7 +271,7 @@ sparse_positive_definite_rand_compressed(isize n, Scalar rho, Scalar p)
     H_dense.template selfadjointView<Eigen::Upper>().eigenvalues();
   Scalar min = eigh.minCoeff();
   for (isize i = 0; i < n; ++i) {
-    H.coeffRef(i, i) += (rho + abs(min));
+    H.coeffRef(i, i) += (rho + std::fabs(min));
   }
 
   H.makeCompressed();
@@ -328,7 +302,7 @@ sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, Scalar p)
   // H.array() /= 2.;
   Vec<Scalar> eigh = H.template selfadjointView<Eigen::Upper>().eigenvalues();
   Scalar min = eigh.minCoeff();
-  H.diagonal().array() += (rho + abs(min));
+  H.diagonal().array() += (rho + std::fabs(min));
 
   return H;
 }
