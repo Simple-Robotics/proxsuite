@@ -7,13 +7,7 @@ project(
   HOMEPAGE_URL "https://github.com/Simple-Robotics/proxsuite"
 )
 
-set(JRL_CMAKEMODULES_USE_V2 ON CACHE BOOL "Use jrl-cmakemodules v2")
-if(JRL_CMAKEMODULES_SOURCE_DIR)
-  message(STATUS "Using jrl-cmakemodules from source directory: ${JRL_CMAKEMODULES_SOURCE_DIR}")
-  add_subdirectory(${JRL_CMAKEMODULES_SOURCE_DIR} jrl-cmakemodules)
-else()
-  find_package(jrl-cmakemodules 0.2.0 CONFIG REQUIRED)
-endif()
+include(cmake/get-jrl-cmakemodules.cmake)
 
 jrl_configure_defaults()
 
