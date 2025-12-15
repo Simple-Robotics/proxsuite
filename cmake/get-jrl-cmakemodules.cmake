@@ -44,7 +44,7 @@ message(DEBUG "Fetching jrl-cmakemodules using FetchContent...")
 include(FetchContent)
 FetchContent_Declare(
   jrl-cmakemodules
-  GIT_REPOSITORY https://github.com/ahoarau/jrl-cmakemodules-v2
-  GIT_TAG main
+  GIT_REPOSITORY https://github.com/ahoarau/jrl-cmakemodules
+  GIT_TAG jrl-next
 )
 FetchContent_MakeAvailable(jrl-cmakemodules)
