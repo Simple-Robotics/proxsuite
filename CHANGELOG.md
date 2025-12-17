@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Upgraded nanobind dependency version (submodule) to v2.9.2 ([#418](https://github.com/Simple-Robotics/proxsuite/pull/418))
 - Better dynamic module handling ([#419](https://github.com/Simple-Robotics/proxsuite/pull/419))
 - Fix `SyntaxError` on importing `proxsuite.torch.qplayer` caused by invalid escape sequences in the `QPFunction` docstring ([#458](https://github.com/Simple-Robotics/proxsuite/pull/461))
+- Switch to [JRL CMake modules v2](https://github.com/jrl-umi3218/jrl-cmakemodules/pull/798) ([#28](https://github.com/Simple-Robotics/nanoeigenpy/pull/28))
 
 ### Fixed
 - Correction of the status update for `PROXQP_SOLVED_CLOSEST_PRIMAL_FEASIBLE` ([#432](https://github.com/Simple-Robotics/proxsuite/pull/432))
