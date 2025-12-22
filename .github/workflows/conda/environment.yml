@@ -19,3 +19,4 @@ dependencies:
   - libmatio
   - numpy
   - scipy
+  - catch2
