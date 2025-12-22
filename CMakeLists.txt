@@ -56,15 +56,13 @@ if(BUILD_TESTING)
     message(
       WARNING
       "[proxsuite] Catch2 version >= 3.0 is required for testing.
-    Found version ${Catch2_VERSION}.
-    Falling back to FetchContent to get Catch2 v3.11.0"
+      Falling back to FetchContent to get Catch2 v3.11.0"
     )
     include(FetchContent)
     FetchContent_Declare(
       catch2
       URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.11.0.zip
       URL_HASH MD5=ce96600812f04d19694f488ed2de75c5
-      SYSTEM
       EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(catch2)
