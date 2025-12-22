@@ -18,7 +18,7 @@ jobs:
     container:
       image: archlinux/archlinux:base-devel
     steps:
-      - run: pacman -Syu --noconfirm cmake ninja catch2 git eigen cereal libmatio python-scipy simde
+      - run: pacman -Syu --noconfirm cmake ninja catch2 git eigen cereal libmatio nanobind python-scipy simde
       - uses: actions/checkout@v7
       - run: cmake -G Ninja -B build -S . -DBUILD_PYTHON_INTERFACE=ON
       - run: cmake --build build
