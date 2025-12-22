@@ -38,6 +38,7 @@ jobs:
       VERBOSE_TESTS: true
       ROS_DISTRO: ${{ matrix.env.ROS_DISTRO }}
       CMAKE_BUILD_TYPE: ${{ matrix.env.CMAKE_BUILD_TYPE }}
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
