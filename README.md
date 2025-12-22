@@ -81,6 +81,23 @@ This approach is available on Linux, Windows and Mac OS X.
 ```
 This approach is available on Linux and Mac OS X.
 
+### Develop with `pixi`:
+
+Install [pixi](https://pixi.prefix.dev/latest), then build with:
+
+```bash
+pixi run build
+```
+
+To run the tests:
+
+```bash
+pixi run test
+```
+
+This approach is available on Linux, Windows, and MacOS (Intel and Apple Silicon).
+
+
 ### Alternative approaches
 
 Installation from source is presented [here](https://github.com/Simple-Robotics/proxsuite/blob/devel/doc/5-installation.md).
