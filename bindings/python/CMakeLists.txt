@@ -96,12 +96,11 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
 endif()
 
 if(GENERATE_PYTHON_STUBS)
-  set(simd_lib "")
-  if(TARGET proxsuite_pywrap_avx2)
-    set(simd_lib proxsuite_pywrap_avx2)
+  if(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
+    set(avx2_lib proxsuite_pywrap_avx2)
   endif()
-  if(TARGET proxsuite_pywrap_avx512)
-    set(simd_lib proxsuite_pywrap_avx512)
+  if(BUILD_BINDINGS_WITH_AVX512_SUPPORT)
+    set(avx512_lib proxsuite_pywrap_avx512)
   endif()
 
   nanobind_add_stub(
@@ -117,7 +116,7 @@ if(GENERATE_PYTHON_STUBS)
       proxqp/sparse.pyi
     RECURSIVE
     PYTHON_PATH ${CMAKE_BINARY_DIR}/lib/site-packages
-    DEPENDS proxsuite_pywrap ${simd_lib}
+    DEPENDS proxsuite_pywrap ${avx2_lib} ${avx512_lib}
   )
 endif()
 
