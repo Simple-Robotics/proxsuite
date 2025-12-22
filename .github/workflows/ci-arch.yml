@@ -18,8 +18,8 @@ jobs:
     container:
       image: archlinux/archlinux:base-devel
     steps:
-      - run: pacman -Syu --noconfirm cmake eigen libmatio python-scipy simde
+      - run: pacman -Syu --noconfirm cmake ninja git eigen libmatio python-scipy simde
       - uses: actions/checkout@v7
-      - run: cmake -B build -S . -DBUILD_PYTHON_INTERFACE=ON
+      - run: cmake -G Ninja -B build -S . -DBUILD_PYTHON_INTERFACE=ON
       - run: cmake --build build
-      - run: cmake --build build -t test
+      - run: ctest --test-dir build --output-on-failure
