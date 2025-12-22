@@ -5,56 +5,28 @@ on:
       - published
 
 jobs:
-  build:
+  build_doc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
-      - uses: conda-incubator/setup-miniconda@v4
+      - name: Install Pixi
+        uses: prefix-dev/setup-pixi@v0.9.3
         with:
-          miniforge-version: latest
-          activate-environment: doc
-          channels: conda-forge
-          conda-remove-defaults: "true"
-
-      - name: Dependencies
-        shell: bash -l {0}
-        run: |
-          # Compilation related dependencies
-          conda install cmake make pkg-config doxygen graphviz
-
-          # Main dependencies
-          conda install eigen
-
-      - name: Print environment
-        shell: bash -l {0}
-        run: |
-          conda info
-          conda list
-          env
-
-      - name: Configure
-        shell: bash -l {0}
-        run: |
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON_INTERFACE:BOOL=OFF -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DBUILD_TESTING:BOOL=OFF -DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=OFF
+          pixi-version: latest
 
       - name: Build documentation
-        shell: bash -l {0}
-        run: |
-          cd build
-          cmake --build . --config Release --target doc
+        run: pixi run doc
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v7
         with:
           name: site
-          path: build/doc/doxygen-html
+          path: build/doc/html
 
   deploy:
-    runs-on: ubuntu-22.04
-    needs: [build]
+    runs-on: ubuntu-latest
+    needs: [build_doc]
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v8
