@@ -12,7 +12,7 @@ set(
 # Option 1: pass -DJRL_CMAKEMODULES_SOURCE_DIR=... to cmake command line
 if(JRL_CMAKEMODULES_SOURCE_DIR)
   message(
-    DEBUG
+    STATUS
     "JRL_CMAKEMODULES_SOURCE_DIR variable set, adding jrl-cmakemodules from source directory: ${JRL_CMAKEMODULES_SOURCE_DIR}"
   )
   add_subdirectory(${JRL_CMAKEMODULES_SOURCE_DIR} jrl-cmakemodules)
@@ -22,25 +22,36 @@ endif()
 # Option 2: use JRL_CMAKEMODULES_SOURCE_DIR environment variable (pixi might unset it, prefer option 1)
 if(ENV{JRL_CMAKEMODULES_SOURCE_DIR})
   message(
-    DEBUG
-    "JRL_CMAKEMODULES_SOURCE_DIR environement variable set, adding jrl-cmakemodules from source directory: ${JRL_CMAKEMODULES_SOURCE_DIR}"
+    STATUS
+    "JRL_CMAKEMODULES_SOURCE_DIR environement variable set, adding jrl-cmakemodules from source directory: $ENV{JRL_CMAKEMODULES_SOURCE_DIR}"
   )
-  add_subdirectory(${JRL_CMAKEMODULES_SOURCE_DIR} jrl-cmakemodules)
+  add_subdirectory($ENV{JRL_CMAKEMODULES_SOURCE_DIR} jrl-cmakemodules)
   return()
 endif()
 
-# Try to look for the installed package
-message(DEBUG "Looking for jrl-cmakemodules package...")
-find_package(jrl-cmakemodules 2.0.0 CONFIG QUIET)
+# Option 3: Try to look for the installed package
+message(STATUS "Looking for jrl-cmakemodules (version: >=1.1.2) package...")
+find_package(jrl-cmakemodules 1.1.2 CONFIG QUIET)
 
-# If we have the package, we are done.
+# Verify that the v2 directory exists (might not have been released yet)
 if(jrl-cmakemodules_FOUND)
-  message(DEBUG "Found jrl-cmakemodules package.")
+  if(NOT EXISTS ${jrl-cmakemodules_DIR}/../../jrl-cmakemodules/v2)
+    message(
+      WARNING
+      "jrl-cmakemodules found (version: ${jrl-cmakemodules_VERSION}) at '${jrl-cmakemodules_DIR}', but v2 directory is missing. Ignoring this installation."
+    )
+    unset(jrl-cmakemodules_FOUND)
+  endif()
+endif()
+
+# If we have the package, we are done here.
+if(jrl-cmakemodules_FOUND)
+  message(STATUS "Found jrl-cmakemodules (version: ${jrl-cmakemodules_VERSION}) package.")
   return()
 endif()
 
-# Fallback to FetchContent if not found
-message(DEBUG "Fetching jrl-cmakemodules using FetchContent...")
+# Option 4: Fallback to FetchContent
+message(STATUS "Fetching jrl-cmakemodules using FetchContent...")
 include(FetchContent)
 FetchContent_Declare(
   jrl-cmakemodules
