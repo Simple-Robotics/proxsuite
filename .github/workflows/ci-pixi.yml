@@ -1,6 +1,12 @@
 name: Pixi CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - devel
+  pull_request:
+    paths-ignore:
+      - CHANGELOG.md
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
