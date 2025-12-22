@@ -89,9 +89,9 @@ if(BUILD_WITH_SERIALIZATION)
     )
     FetchContent_MakeAvailable(cereal)
     add_library(cereal::cereal INTERFACE IMPORTED)
-    set_target_properties(
+    target_include_directories(
       cereal::cereal
-      PROPERTIES INTERFACE_SYSTEM_INCLUDE_DIRECTORIES ${cereal_SOURCE_DIR}/include
+      SYSTEM INTERFACE ${cereal_SOURCE_DIR}/include
     )
   endif()
 endif()
