@@ -26,6 +26,7 @@
   <build_depend>git</build_depend>
   <build_depend>doxygen</build_depend>
   <build_depend>libcereal-dev</build_depend>
+  <build_depend>graphviz</build_depend>
   <depend>eigen</depend>
   <depend>simde</depend>
   <depend condition="$ROS_PYTHON_VERSION == 2">python-numpy</depend>
