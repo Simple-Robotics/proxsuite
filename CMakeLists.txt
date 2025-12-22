@@ -103,13 +103,13 @@ if(BUILD_PYTHON_INTERFACE)
   if(NOT nanobind_FOUND)
     message(
       WARNING
-      "[proxsuite] nanobind library not found. Falling back to FetchContent to get nanobind v2.10.2"
+      "[proxsuite] nanobind library not found. Falling back to FetchContent to get nanobind v2.9.2"
     )
     include(FetchContent)
     FetchContent_Declare(
       nanobind
       GIT_REPOSITORY https://github.com/wjakob/nanobind.git
-      GIT_TAG v2.10.2
+      GIT_TAG v2.9.2
       EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(nanobind)
