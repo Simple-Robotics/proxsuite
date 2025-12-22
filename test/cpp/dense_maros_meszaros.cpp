@@ -2,7 +2,7 @@
 // Copyright (c) 2022 INRIA
 //
 #include <catch2/catch_test_macros.hpp>
-#include <maros_meszaros.hpp>
+#include "maros_meszaros.hpp"
 #include <proxsuite/proxqp/utils/random_qp_problems.hpp>
 #include <proxsuite/proxqp/dense/dense.hpp>
 
