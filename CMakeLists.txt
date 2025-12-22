@@ -91,7 +91,7 @@ if(BUILD_WITH_SERIALIZATION)
     add_library(cereal::cereal INTERFACE IMPORTED)
     set_target_properties(
       cereal::cereal
-      PROPERTIES SYSTEM_INTERFACE_INCLUDE_DIRECTORIES ${cereal_SOURCE_DIR}/include
+      PROPERTIES INTERFACE_SYSTEM_INCLUDE_DIRECTORIES ${cereal_SOURCE_DIR}/include
     )
   endif()
 endif()
