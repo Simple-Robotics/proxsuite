@@ -40,37 +40,45 @@ file(COPY proxsuite DESTINATION ${CMAKE_BINARY_DIR}/lib/site-packages)
 create_python_target(proxsuite_pywrap LINK_LIBRARIES proxsuite)
 
 # Vectorized python binding targets
-if(
-  BUILD_WITH_VECTORIZATION_SUPPORT
-  AND ${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)"
-)
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set(AVX_COMPILE_OPTION "/arch:AVX")
-    set(AVX2_COMPILE_OPTION "/arch:AVX2")
-    set(FMA_COMPILE_OPTION "/fp:fast")
-    set(AVX512_COMPILE_OPTION "/arch:AVX512")
+if(BUILD_WITH_VECTORIZATION_SUPPORT)
+  if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+      set(AVX_COMPILE_OPTION "/arch:AVX")
+      set(AVX2_COMPILE_OPTION "/arch:AVX2")
+      set(FMA_COMPILE_OPTION "/fp:fast")
+      set(AVX512_COMPILE_OPTION "/arch:AVX512")
+    else()
+      set(AVX_COMPILE_OPTION "-mavx")
+      set(AVX2_COMPILE_OPTION "-mavx2")
+      set(FMA_COMPILE_OPTION "-mfma")
+      set(AVX512_COMPILE_OPTION "-mavx512f")
+    endif()
+
+    if(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
+      message(STATUS "[proxsuite] Building python bindings with AVX2 support")
+      create_python_target(
+        proxsuite_pywrap_avx2
+        COMPILE_OPTIONS
+          "${AVX2_COMPILE_OPTION}"
+          "${FMA_COMPILE_OPTION}"
+        LINK_LIBRARIES proxsuite-vectorized
+      )
+    endif()
+
+    if(BUILD_BINDINGS_WITH_AVX512_SUPPORT)
+      message(STATUS "[proxsuite] Building python bindings with AVX512 support")
+      create_python_target(
+        proxsuite_pywrap_avx512
+        COMPILE_OPTIONS
+          "${AVX512_COMPILE_OPTION}"
+          "${FMA_COMPILE_OPTION}"
+        LINK_LIBRARIES proxsuite-vectorized
+      )
+    endif()
   else()
-    set(AVX_COMPILE_OPTION "-mavx")
-    set(AVX2_COMPILE_OPTION "-mavx2")
-    set(FMA_COMPILE_OPTION "-mfma")
-    set(AVX512_COMPILE_OPTION "-mavx512f")
-  endif()
-
-  if(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
-    message(STATUS "[proxsuite] Building python bindings with AVX2 support")
-    create_python_target(
-      proxsuite_pywrap_avx2
-      COMPILE_OPTIONS "${AVX2_COMPILE_OPTION};${FMA_COMPILE_OPTION}"
-      LINK_LIBRARIES proxsuite-vectorized
-    )
-  endif()
-
-  if(BUILD_BINDINGS_WITH_AVX512_SUPPORT)
-    message(STATUS "[proxsuite] Building python bindings with AVX512 support")
-    create_python_target(
-      proxsuite_pywrap_avx512
-      COMPILE_OPTIONS "${AVX512_COMPILE_OPTION};${FMA_COMPILE_OPTION}"
-      LINK_LIBRARIES proxsuite-vectorized
+    message(
+      WARNING
+      "[proxsuite] AVX2 and AVX512 python bindings are only supported on x86_64. Current architecture is '${CMAKE_SYSTEM_PROCESSOR}'"
     )
   endif()
 endif()
@@ -96,10 +104,10 @@ if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
 endif()
 
 if(GENERATE_PYTHON_STUBS)
-  if(BUILD_BINDINGS_WITH_AVX2_SUPPORT)
+  if(TARGET proxsuite_pywrap_avx2)
     set(avx2_lib proxsuite_pywrap_avx2)
   endif()
-  if(BUILD_BINDINGS_WITH_AVX512_SUPPORT)
+  if(TARGET proxsuite_pywrap_avx512)
     set(avx512_lib proxsuite_pywrap_avx512)
   endif()
 
