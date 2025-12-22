@@ -84,7 +84,7 @@ jobs:
     - name: Activate ccache [Conda]
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ matrix.os }}-${{ matrix.type }}-${{ matrix.cxx_std }}
+        key: ${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_std }}
         max-size: 1G
 
     - name: Print environment [Conda]
