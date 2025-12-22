@@ -120,7 +120,10 @@ target_compile_definitions(
 
 target_link_libraries(
   proxsuite
-  INTERFACE Eigen3::Eigen $<$<BOOL:${BUILD_WITH_OPENMP_SUPPORT}>:OpenMP::OpenMP_CXX>
+  INTERFACE
+    Eigen3::Eigen
+    $<$<BOOL:${BUILD_WITH_OPENMP_SUPPORT}>:OpenMP::OpenMP_CXX>
+    $<$<BOOL:${BUILD_WITH_SERIALIZATION}>:cereal::cereal>
 )
 
 if(BUILD_PYTHON_INTERFACE)
@@ -130,16 +133,12 @@ endif()
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_library(proxsuite-vectorized INTERFACE)
   add_library(proxsuite::proxsuite-vectorized ALIAS proxsuite-vectorized)
-  target_link_libraries(proxsuite-vectorized INTERFACE proxsuite simde::simde)
+  target_link_libraries(
+    proxsuite-vectorized
+    INTERFACE proxsuite simde::simde $<$<BOOL:${BUILD_WITH_SERIALIZATION}>:cereal::cereal>
+  )
   target_compile_definitions(proxsuite-vectorized INTERFACE PROXSUITE_VECTORIZE)
 endif()
-
-target_link_libraries(proxsuite INTERFACE $<$<BOOL:${BUILD_WITH_SERIALIZATION}>:cereal::cereal>)
-
-target_link_libraries(
-  proxsuite-vectorized
-  INTERFACE $<$<BOOL:${BUILD_WITH_SERIALIZATION}>:cereal::cereal>
-)
 
 if(BUILD_TESTING)
   message(STATUS "[proxsuite] Building tests")
