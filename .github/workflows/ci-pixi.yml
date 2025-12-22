@@ -10,6 +10,14 @@ jobs:
   pixi-ci:
     name: Pixi CI - ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+    env:
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_COMPRESS: true
+      CCACHE_COMPRESSLEVEL: 6
+      # Since pixi will install a compiler, the compiler mtime will be changed.
+      # This can invalidate the cache (https://ccache.dev/manual/latest.html#config_compiler_check)
+      CCACHE_COMPILERCHECK: content
     strategy:
       fail-fast: false
       matrix:
@@ -34,6 +42,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-pixi-${{ matrix.os }}-${{ github.sha }}
+          restore-keys: ccache-pixi-${{ matrix.os }}-
 
       - name: Install Pixi
         uses: prefix-dev/setup-pixi@v0.9.3
