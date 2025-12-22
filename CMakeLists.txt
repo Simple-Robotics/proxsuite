@@ -49,8 +49,27 @@ jrl_find_package(Eigen3 CONFIG REQUIRED)
 
 # Catch2
 if(BUILD_TESTING)
-  jrl_find_package(Catch2 CONFIG REQUIRED)
-  include(Catch)
+  jrl_find_package(Catch2 3.0 CONFIG QUIET)
+  if(Catch2_FOUND)
+    include(Catch)
+  else()
+    message(
+      WARNING
+      "[proxsuite] Catch2 version >= 3.0 is required for testing.
+    Found version ${Catch2_VERSION}.
+    Falling back to FetchContent to get Catch2 v3.11.0"
+    )
+    include(FetchContent)
+    FetchContent_Declare(
+      catch2
+      URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.11.0.zip
+      URL_HASH MD5=ce96600812f04d19694f488ed2de75c5
+      SYSTEM
+      EXCLUDE_FROM_ALL
+    )
+    FetchContent_MakeAvailable(catch2)
+    include(${catch2_SOURCE_DIR}/extras/Catch.cmake)
+  endif()
 endif()
 
 # cereal (Serialization)
