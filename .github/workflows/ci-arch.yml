@@ -2,7 +2,8 @@ name: CI - ArchLinux
 
 on:
   push:
-    branches: devel
+    branches:
+      - devel
   pull_request:
     paths-ignore:
       - CHANGELOG.md
@@ -13,7 +14,7 @@ concurrency:
 
 jobs:
   build-with-arch:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     container:
       image: archlinux/archlinux:base-devel
     steps:
