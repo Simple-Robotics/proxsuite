@@ -72,7 +72,7 @@ endif()
 
 # cereal (Serialization)
 if(BUILD_WITH_SERIALIZATION)
-  jrl_find_package(cereal 12.0 CONFIG QUIET)
+  jrl_find_package(cereal CONFIG QUIET)
   if(NOT cereal_FOUND)
     message(
       WARNING
