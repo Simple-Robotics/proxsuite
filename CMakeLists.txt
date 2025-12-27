@@ -13,7 +13,7 @@ include(cmake/get-jrl-cmakemodules.cmake)
 
 jrl_configure_defaults()
 
-jrl_option(BUILD_TESTING "Build the tests" ON)
+jrl_option(BUILD_TESTING "Build the tests" OFF)
 jrl_option(BUILD_EXAMPLES "Build the examples" OFF)
 jrl_option(BUILD_BENCHMARK "Build the benchmarks" OFF)
 jrl_option(BUILD_DOCUMENTATION "Build the documentation." OFF)
