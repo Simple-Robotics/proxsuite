@@ -87,6 +87,9 @@ cmd = [
 depends-on = ["build"]
 cmd = ["cmake", "--install", "build"]
 
+[tasks.uninstall]
+depends-on = ["install"]
+cmd = ["cmake", "--build", "build", "--target", "uninstall"]
 
 [tasks._test-packaging-configure]
 depends-on = ["install"]
