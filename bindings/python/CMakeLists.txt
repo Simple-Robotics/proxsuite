@@ -37,7 +37,7 @@ endfunction()
 file(COPY proxsuite DESTINATION ${CMAKE_BINARY_DIR}/lib/site-packages)
 
 # The main python binding target
-create_python_target(proxsuite_pywrap LINK_LIBRARIES proxsuite)
+create_python_target(proxsuite_pywrap LINK_LIBRARIES proxsuite LINK_LIBRARIES $<$<BOOL:LINK_PYTHON_INTERFACE_TO_OPENMP>:OpenMP::OpenMP_CXX>)
 
 # Vectorized python binding targets
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
