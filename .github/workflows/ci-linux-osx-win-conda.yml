@@ -100,9 +100,7 @@ jobs:
       run: |
         echo $(whereis ccache)
         echo $(which ccache)
-        mkdir build
-        cd build
-        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=OFF -DOpenMP_ROOT=$CONDA_PREFIX
+        cmake -B build -S . -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=OFF -DOpenMP_ROOT=$CONDA_PREFIX
 
     - name: Configure [Conda/macOS-debug/CheckMalloc]
       if: contains(matrix.os, 'macos-latest') && contains(matrix.build_type, 'Debug')
@@ -110,46 +108,39 @@ jobs:
       run: |
         echo $(whereis ccache)
         echo $(which ccache)
-        cd build
-        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCHECK_RUNTIME_MALLOC:BOOL=ON -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=OFF -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON -DOpenMP_ROOT=$CONDA_PREFIX
+        cmake -B build -S . -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCHECK_RUNTIME_MALLOC:BOOL=ON -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_EXECUTABLE=$(which python3) -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON -DTEST_JULIA_INTERFACE:BOOL=OFF -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON -DOpenMP_ROOT=$CONDA_PREFIX
 
     - name: Configure [Conda/Windows]
       if: contains(matrix.os, 'windows-')
       # It's better to use CMD to have all VS variables setup
       shell: cmd /C CALL {0}
       run: |
-        mkdir build
-        cd build
         set CC=${{ matrix.compiler }}
         set CXX=${{ matrix.compiler }}
-        cmake .. -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%/Library -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_SITELIB=%CONDA_PREFIX%/Lib/site-packages -DPYTHON_EXECUTABLE=%CONDA_PREFIX%/python.exe -DOpenMP_ROOT=%CONDA_PREFIX% -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP:BOOL=ON -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON
+        cmake -B build -S . -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%/Library -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE:BOOL=ON -DPYTHON_SITELIB=%CONDA_PREFIX%/Lib/site-packages -DPYTHON_EXECUTABLE=%CONDA_PREFIX%/python.exe -DOpenMP_ROOT=%CONDA_PREFIX% -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP:BOOL=ON -DBUILD_DOCUMENTATION:BOOL=ON -DINSTALL_DOCUMENTATION:BOOL=ON
 
     - name: Build [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos-') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
-        cd build
-        cmake --build . --config ${{ matrix.build_type }} -v -j 1
+        cmake --build build --config ${{ matrix.build_type }} -v -j 1
 
     - name: Build [Conda/Windows]
       if: contains(matrix.os, 'windows-')
       # It's better to use CMD to have all VS variables setup
       shell: cmd /C CALL {0}
       run: |
-        cd build
-        cmake --build . --config ${{ matrix.build_type }} -v -j 1
+        cmake --build build --config ${{ matrix.build_type }} -v -j 1
 
     - name: Build documentation [Conda]
       shell: bash -l {0}
       run: |
-        cd build
-        cmake --build . --config ${{ matrix.build_type }} --target doc
+        cmake --build build --config ${{ matrix.build_type }} --target doc
 
     - name: Install [Conda]
       shell: bash -l {0}
       run: |
-        cd build
-        cmake --install . --config ${{ matrix.build_type }}
+        cmake --install build --config ${{ matrix.build_type }}
 
     - name: Test [Conda]
       continue-on-error: ${{ matrix.continue_on_error }}
@@ -157,8 +148,7 @@ jobs:
       run: |
         find $CONDA_PREFIX -name proxsuite*
         python -c "import proxsuite"
-        cd build
-        ctest --output-on-failure -C ${{ matrix.build_type }}
+        ctest --test-dir build --output-on-failure -C ${{ matrix.build_type }}
     # - name: Test pkg-config [Conda]
     #   shell: bash -l {0}
     #   run: |
@@ -173,29 +163,26 @@ jobs:
       shell: bash -l {0}
       run: |
         cd test/packaging/external
-        mkdir build && cd build
         export PROXSUITE_GIT_REPOSITORY="file://"$GITHUB_WORKSPACE
         export PROXSUITE_GIT_TAG="test-external-"$(git rev-parse --short HEAD)
         git tag $PROXSUITE_GIT_TAG
-        cmake ..  -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        cmake --build . --config ${{ matrix.build_type }} --target all
-        ./run-proxqp
+        cmake -B build -S . -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        cmake --build build --config ${{ matrix.build_type }} --target all
+        ./build/bin/run-proxqp
 
     - name: Test CMake packaging [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
         cd test/packaging/cmake
-        mkdir build && cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}  -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  -DPACKAGE_PREFIX_DIR=${CONDA_PREFIX}
-        cmake --build . --config ${{ matrix.build_type }} --target all
-        ./run-proxqp
+        cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}  -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  -DPACKAGE_PREFIX_DIR=${CONDA_PREFIX}
+        cmake --build build --config ${{ matrix.build_type }} --target all
+        ./build/bin/run-proxqp
 
     - name: Uninstall [Conda]
       shell: bash -l {0}
       run: |
-        cd build
-        cmake --build . --config ${{ matrix.build_type }} --target uninstall
+        cmake --build build --config ${{ matrix.build_type }} --target uninstall
 
     - name: Display ccache statistics [Conda]
       shell: bash -l {0}
