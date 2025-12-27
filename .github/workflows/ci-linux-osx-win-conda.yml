@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build-with-conda:
-    name: '[conda:${{ matrix.os }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'
+    name: '[conda:${{ matrix.name }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'
     runs-on: ${{ matrix.os }}
     # https://github.com/conda-incubator/setup-miniconda?tab=readme-ov-file#important
     defaults:
@@ -105,7 +105,7 @@ jobs:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
         CMAKE_CXX_COMPILER_LAUNCHER: ccache
-      shell: cmd /C CALL {0}
+      shell: pwsh
       run: |
         cmake -B build -S . -G Ninja -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX/Library" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_OPENMP_SUPPORT=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 
