@@ -16,5 +16,4 @@ repository = "https://github.com/Simple-Robotics/proxsuite.git"
 
 [tool.ruff.lint]
 ignore = [ "E741" ]
-extend-select = ["W605"]
-exclude = [ "cmake-module/*", "bindings/python/external/nanobind/*" ]
+extend-select = [ "W605" ]
