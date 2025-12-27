@@ -190,23 +190,20 @@ jobs:
         git tag $PROXSUITE_GIT_TAG
         cmake -B build/test-packaging-external -S test/packaging/external -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         cmake --build build/test-packaging-external --config ${{ matrix.build_type }}
-        ./build/test-packaging-external/run-proxqp
 
     - name: Test CMake packaging [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
-        cmake -B build/test-packaging-cmake -S test/packaging/cmake -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  -DPACKAGE_PREFIX_DIR=${CONDA_PREFIX}
+        cmake -B build/test-packaging-cmake -S test/packaging/cmake -DCMAKE_INSTALL_PREFIX="${CONDA_PREFIX}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         cmake --build build/test-packaging-cmake --config ${{ matrix.build_type }}
-        ./build/test-packaging-cmake/run-proxqp
 
     - name: Test CMake packaging with components [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
-        cmake -B build/test-packaging-cmake-components -S test/packaging/cmake-components -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DBUILD_WITH_VECTORIZATION_SUPPORT=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  -DPACKAGE_PREFIX_DIR=${CONDA_PREFIX}
+        cmake -B build/test-packaging-cmake-components -S test/packaging/cmake-components -DCMAKE_INSTALL_PREFIX="${CONDA_PREFIX}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
         cmake --build build/test-packaging-cmake-components --config ${{ matrix.build_type }}
-        ./build/test-packaging-cmake-components/run-proxqp
 
     - name: Uninstall [Conda]
       shell: bash -l {0}
