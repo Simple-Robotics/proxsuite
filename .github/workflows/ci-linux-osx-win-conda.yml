@@ -2,7 +2,7 @@ name: CI - Linux/OSX/Windows - Conda
 
 on:
   push:
-    branches: 
+    branches:
       - devel
   pull_request:
     paths-ignore:
