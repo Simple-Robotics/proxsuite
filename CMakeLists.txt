@@ -1,6 +1,6 @@
 # Copyright (c) 2022-2026 Inria
 
-cmake_minimum_required(VERSION 3.22...4.2)
+cmake_minimum_required(VERSION 3.22)
 
 project(
   proxsuite
