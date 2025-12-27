@@ -16,6 +16,10 @@ jobs:
   build-with-conda:
     name: '[conda:${{ matrix.os }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'
     runs-on: ${{ matrix.os }}
+    # https://github.com/conda-incubator/setup-miniconda?tab=readme-ov-file#important
+    defaults:
+      run:
+        shell: bash -el {0}
 
     strategy:
       fail-fast: false
