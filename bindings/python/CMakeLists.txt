@@ -37,10 +37,12 @@ endfunction()
 file(COPY proxsuite DESTINATION ${CMAKE_BINARY_DIR}/lib/site-packages)
 
 # The main python binding target
-create_python_target(proxsuite_pywrap LINK_LIBRARIES
-  proxsuite
-  $<$<BOOL:LINK_PYTHON_INTERFACE_TO_OPENMP>:OpenMP::OpenMP_CXX>
-)
+create_python_target(proxsuite_pywrap LINK_LIBRARIES proxsuite)
+
+if(LINK_PYTHON_INTERFACE_TO_OPENMP)
+  message(STATUS "[proxsuite] Linking python bindings to OpenMP")
+  target_link_libraries(proxsuite_pywrap PRIVATE OpenMP::OpenMP_CXX)
+endif()
 
 # Vectorized python binding targets
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
