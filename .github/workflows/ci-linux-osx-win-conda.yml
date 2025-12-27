@@ -109,8 +109,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DBUILD_PYTHON_INTERFACE:BOOL=ON \
           -DBUILD_DOCUMENTATION:BOOL=ON \
-          -DINSTALL_DOCUMENTATION:BOOL=ON \
-          -DTEST_JULIA_INTERFACE:BOOL=OFF
+          -DINSTALL_DOCUMENTATION:BOOL=ON
 
     - name: Configure [Conda/macOS-debug/CheckMalloc]
       if: contains(matrix.os, 'macos-latest') && contains(matrix.build_type, 'Debug')
@@ -128,8 +127,8 @@ jobs:
           -DBUILD_PYTHON_INTERFACE:BOOL=ON \
           -DBUILD_DOCUMENTATION:BOOL=ON \
           -DINSTALL_DOCUMENTATION:BOOL=ON \
-          -DTEST_JULIA_INTERFACE:BOOL=OFF \
           -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON \
+          -DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON
 
     - name: Configure [Conda/Windows]
       if: contains(matrix.os, 'windows-')
@@ -148,7 +147,8 @@ jobs:
           -DBUILD_WITH_OPENMP_SUPPORT:BOOL=ON ^
           -DLINK_PYTHON_INTERFACE_TO_OPENMP:BOOL=ON ^
           -DBUILD_DOCUMENTATION:BOOL=ON ^
-          -DINSTALL_DOCUMENTATION:BOOL=ON
+          -DINSTALL_DOCUMENTATION:BOOL=ON ^
+          -DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON
 
     - name: Build [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos-') || contains(matrix.os, 'ubuntu')
