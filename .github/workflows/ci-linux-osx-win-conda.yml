@@ -2,7 +2,8 @@ name: CI - Linux/OSX/Windows - Conda
 
 on:
   push:
-    branches: devel
+    branches: 
+      - devel
   pull_request:
     paths-ignore:
       - CHANGELOG.md
@@ -162,11 +163,11 @@ jobs:
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
-        cd test/packaging/external
         export PROXSUITE_GIT_REPOSITORY="file://"$GITHUB_WORKSPACE
         export PROXSUITE_GIT_TAG="test-external-"$(git rev-parse --short HEAD)
         git tag $PROXSUITE_GIT_TAG
-        cmake -B build -S . -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        cmake -E remove_directory build
+        cmake -B build -S test/packaging/external -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         cmake --build build --config ${{ matrix.build_type }} --target all
         ./build/bin/run-proxqp
 
@@ -174,8 +175,17 @@ jobs:
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
       shell: bash -l {0}
       run: |
-        cd test/packaging/cmake
-        cmake -B build -S . -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX}  -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  -DPACKAGE_PREFIX_DIR=${CONDA_PREFIX}
+        cmake -E remove_directory build
+        cmake -B build -S test/packaging/cmake -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  -DPACKAGE_PREFIX_DIR=${CONDA_PREFIX}
+        cmake --build build --config ${{ matrix.build_type }} --target all
+        ./build/bin/run-proxqp
+
+    - name: Test CMake packaging with components [Conda/Linux&macOS]
+      if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+      shell: bash -l {0}
+      run: |
+        cmake -E remove_directory build
+        cmake -B build -S test/packaging/cmake-components -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} -DBUILD_WITH_VECTORIZATION_SUPPORT=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}  -DPACKAGE_PREFIX_DIR=${CONDA_PREFIX}
         cmake --build build --config ${{ matrix.build_type }} --target all
         ./build/bin/run-proxqp
 
