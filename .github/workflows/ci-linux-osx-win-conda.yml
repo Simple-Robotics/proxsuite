@@ -94,10 +94,10 @@ jobs:
 
     - name: Configure [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos-') || contains(matrix.os, 'ubuntu')
+      env:
+        CMAKE_CXX_COMPILER_LAUNCHER: ccache
       run: |
-        cmake -B build -S . -GNinja \
-          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+        cmake -B build -S . -G Ninja \
           -DCMAKE_INSTALL_PREFIX="${CONDA_PREFIX}" \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} \
@@ -111,18 +111,18 @@ jobs:
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
+        CMAKE_CXX_COMPILER_LAUNCHER: ccache
+      shell: pwsh
       run: |
-        cmake -B build -S . -GNinja ^
-          -DCMAKE_C_COMPILER_LAUNCHER=ccache ^
-          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ^
-          -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%/Library ^
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ^
-          -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} ^
-          -DBUILD_PYTHON_INTERFACE=ON ^
-          -DBUILD_WITH_OPENMP_SUPPORT=ON ^
-          -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON ^
-          -DBUILD_DOCUMENTATION=ON ^
-          -DINSTALL_DOCUMENTATION=ON ^
+        cmake -B build -S . -G Ninja `
+          -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX/Library" `
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
+          -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} `
+          -DBUILD_PYTHON_INTERFACE=ON `
+          -DBUILD_WITH_OPENMP_SUPPORT=ON `
+          -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON `
+          -DBUILD_DOCUMENTATION=ON `
+          -DINSTALL_DOCUMENTATION=ON `
           -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 
     - name: Build [Conda/Linux&macOS]
