@@ -17,8 +17,8 @@ jobs:
     name: '[conda:${{ matrix.name }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'
     runs-on: ${{ matrix.os }}
     env:
-      CC: ${{ matrix.compiler }}
-      CXX: ${{ matrix.compiler }}
+      CMAKE_C_COMPILER: ${{ matrix.compiler }}
+      CMAKE_CXX_COMPILER: ${{ matrix.compiler }}
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
     strategy:
       fail-fast: false
