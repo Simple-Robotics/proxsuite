@@ -20,7 +20,8 @@ jobs:
     defaults:
       run:
         shell: bash -el {0}
-
+    env:
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
     strategy:
       fail-fast: false
       matrix:
@@ -94,20 +95,21 @@ jobs:
 
     - name: Configure [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos-') || contains(matrix.os, 'ubuntu')
-      env:
-        CMAKE_CXX_COMPILER_LAUNCHER: ccache
       run: |
-        cmake -B build -S . -G Ninja -DCMAKE_INSTALL_PREFIX="${CONDA_PREFIX}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
+        cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="${CONDA_PREFIX}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 
-    - name: Configure [Conda/Windows]
+    - name: Configure [Conda/Windows/MSVC]
       if: contains(matrix.os, 'windows-')
-      env:
-        CC: ${{ matrix.compiler }}
-        CXX: ${{ matrix.compiler }}
-        CMAKE_CXX_COMPILER_LAUNCHER: ccache
-      shell: pwsh
       run: |
-        cmake -B build -S . -G Ninja -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX/Library" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_OPENMP_SUPPORT=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
+        cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX/Library" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_OPENMP_SUPPORT=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
+
+    - name: Configure [Conda/Windows/ClangCl]
+      if: contains(matrix.os, 'windows-latest') && matrix.compiler == 'clang-cl'
+      env:
+        CC: clang-cl
+        CXX: clang-cl
+      run: |
+        cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX/Library" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_OPENMP_SUPPORT=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 
     - name: Build [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos-') || contains(matrix.os, 'ubuntu')
