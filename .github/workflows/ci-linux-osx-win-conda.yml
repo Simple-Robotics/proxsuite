@@ -16,11 +16,9 @@ jobs:
   build-with-conda:
     name: '[conda:${{ matrix.name }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'
     runs-on: ${{ matrix.os }}
-    # https://github.com/conda-incubator/setup-miniconda?tab=readme-ov-file#important
-    defaults:
-      run:
-        shell: bash -el {0}
     env:
+      CC: ${{ matrix.compiler }}
+      CXX: ${{ matrix.compiler }}
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
     strategy:
       fail-fast: false
@@ -95,29 +93,25 @@ jobs:
 
     - name: Configure [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos-') || contains(matrix.os, 'ubuntu')
+      shell: bash -el {0}
       run: |
         cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="${CONDA_PREFIX}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 
     - name: Configure [Conda/Windows/MSVC]
       if: contains(matrix.os, 'windows-')
-      run: |
-        cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX/Library" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_OPENMP_SUPPORT=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
-
-    - name: Configure [Conda/Windows/ClangCl]
-      if: contains(matrix.os, 'windows-latest') && matrix.compiler == 'clang-cl'
-      env:
-        CC: clang-cl
-        CXX: clang-cl
+      shell: pwsh
       run: |
         cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX/Library" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_OPENMP_SUPPORT=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 
     - name: Build [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos-') || contains(matrix.os, 'ubuntu')
+      shell: bash -el {0}
       run: |
         cmake --build build --config ${{ matrix.build_type }} -v -j 1
 
     - name: Build [Conda/Windows]
       if: contains(matrix.os, 'windows-')
+      shell: pwsh
       run: |
         cmake --build build --config ${{ matrix.build_type }} -v -j 1
 
@@ -136,6 +130,7 @@ jobs:
 
     - name: Test FetchContent packaging [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+      shell: bash -el {0}
       run: |
         export PROXSUITE_GIT_REPOSITORY="file://"$GITHUB_WORKSPACE
         export PROXSUITE_GIT_TAG="test-external-"$(git rev-parse --short HEAD)
@@ -145,12 +140,14 @@ jobs:
 
     - name: Test CMake packaging [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+      shell: bash -el {0}
       run: |
         cmake -B build/test-packaging-cmake -S test/packaging/cmake -DCMAKE_INSTALL_PREFIX="${CONDA_PREFIX}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         cmake --build build/test-packaging-cmake --config ${{ matrix.build_type }}
 
     - name: Test CMake packaging with components [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos') || contains(matrix.os, 'ubuntu')
+      shell: bash -el {0}
       run: |
         cmake -B build/test-packaging-cmake-components -S test/packaging/cmake-components -DCMAKE_INSTALL_PREFIX="${CONDA_PREFIX}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
         cmake --build build/test-packaging-cmake-components --config ${{ matrix.build_type }}
