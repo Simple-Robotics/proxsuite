@@ -5,7 +5,7 @@ channels:
 dependencies:
   - python-gil
   - cmake
-  - cxx-compilers
+  - cxx-compiler
   - make
   - pkg-config
   - doxygen
