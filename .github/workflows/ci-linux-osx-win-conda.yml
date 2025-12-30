@@ -17,8 +17,8 @@ jobs:
     name: '[conda:${{ matrix.name }}:${{ matrix.build_type }}:c++${{ matrix.cxx_std }}]'
     runs-on: ${{ matrix.os }}
     env:
-      CMAKE_C_COMPILER: ${{ matrix.compiler }}
-      CMAKE_CXX_COMPILER: ${{ matrix.compiler }}
+      CC: ${{ matrix.compiler }}
+      CXX: ${{ matrix.compiler }}
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
     strategy:
       fail-fast: false
@@ -111,6 +111,7 @@ jobs:
 
     - name: Build [Conda/Windows]
       if: contains(matrix.os, 'windows-')
+      shell: cmd /C CALL {0}
       run: |
         cmake --build build --config ${{ matrix.build_type }} -v -j 1
 
