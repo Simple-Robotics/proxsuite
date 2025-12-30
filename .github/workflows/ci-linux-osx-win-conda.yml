@@ -65,10 +65,6 @@ jobs:
     steps:
     - uses: actions/checkout@v7
 
-    - name: Setup MSVC [Conda/Windows]
-      uses: ilammy/msvc-dev-cmd@v1
-      if: contains(matrix.os, 'windows-')
-
     - uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: proxsuite
@@ -103,9 +99,9 @@ jobs:
 
     - name: Configure [Conda/Windows/MSVC]
       if: contains(matrix.os, 'windows-')
-      shell: pwsh
+      shell: cmd /C CALL {0}
       run: |
-        cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX/Library" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_OPENMP_SUPPORT=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
+        cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="%CONDA_PREFIX%/Library" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_OPENMP_SUPPORT=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 
     - name: Build [Conda/Linux&macOS]
       if: contains(matrix.os, 'macos-') || contains(matrix.os, 'ubuntu')
@@ -115,7 +111,6 @@ jobs:
 
     - name: Build [Conda/Windows]
       if: contains(matrix.os, 'windows-')
-      shell: pwsh
       run: |
         cmake --build build --config ${{ matrix.build_type }} -v -j 1
 
