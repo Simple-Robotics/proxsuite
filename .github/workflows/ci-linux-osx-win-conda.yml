@@ -95,14 +95,14 @@ jobs:
       run: |
         cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="${CONDA_PREFIX}" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 
-    - name: Configure [Conda/Windows/MSVC]
+    - name: Configure [Conda/Windows]
       if: contains(matrix.os, 'windows-')
       shell: cmd /C CALL {0}
       env:
-        CC: ${{ matrix.compiler }}
-        CXX: ${{ matrix.compiler }}
         CMAKE_CXX_COMPILER_LAUNCHER: ccache
       run: |
+        set CC=${{ matrix.compiler }}
+        set CXX=${{ matrix.compiler }}
         cmake -B build -S . -G Ninja -DCMAKE_CXX_SCAN_FOR_MODULES=OFF -DCMAKE_INSTALL_PREFIX="%CONDA_PREFIX%/Library" -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_WITH_OPENMP_SUPPORT=ON -DLINK_PYTHON_INTERFACE_TO_OPENMP=ON -DBUILD_DOCUMENTATION=ON -DINSTALL_DOCUMENTATION=ON -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 
     - name: Build [Conda/Linux&macOS]
