@@ -13,6 +13,23 @@ include(cmake/get-jrl-cmakemodules.cmake)
 
 jrl_configure_defaults()
 
+set(PROXSUITE_CXX_STANDARD 17 CACHE STRING "C++ standard to be used by proxsuite")
+if(PROXSUITE_CXX_STANDARD LESS 17)
+  message(
+    FATAL_ERROR
+    "[proxsuite] PROXSUITE_CXX_STANDARD must be at least 17.
+    Current value: ${PROXSUITE_CXX_STANDARD}"
+  )
+elseif(NOT PROXSUITE_CXX_STANDARD)
+  message(
+    DEBUG
+    "[proxsuite] PROXSUITE_CXX_STANDARD passed in the cmd line, but set to nothing.
+    Defaulting to C++17."
+  )
+  set(PROXSUITE_CXX_STANDARD 17)
+endif()
+message(STATUS "[proxsuite] PROXSUITE_CXX_STANDARD set to '${PROXSUITE_CXX_STANDARD}'")
+
 jrl_option(BUILD_TESTING "Build the tests" OFF)
 jrl_option(BUILD_EXAMPLES "Build the examples" OFF)
 jrl_option(BUILD_BENCHMARK "Build the benchmarks" OFF)
@@ -138,7 +155,7 @@ endif()
 add_library(proxsuite INTERFACE)
 add_library(proxsuite::proxsuite ALIAS proxsuite)
 set_target_properties(proxsuite PROPERTIES VERSION ${PROJECT_VERSION})
-target_compile_features(proxsuite INTERFACE cxx_std_17)
+target_compile_features(proxsuite INTERFACE cxx_std_${PROXSUITE_CXX_STANDARD})
 jrl_target_enforce_msvc_conformance(proxsuite INTERFACE)
 
 target_include_directories(
