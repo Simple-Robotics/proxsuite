@@ -45,7 +45,7 @@ jobs:
         run: ccache --show-stats --zero-stats --verbose
 
       - name: CMake Configure
-        run: /usr/bin/cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Release
+        run: /usr/bin/cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARKS=ON
 
       - name: CMake Build
         run: /usr/bin/cmake --build build
