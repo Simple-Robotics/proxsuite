@@ -24,6 +24,8 @@ jobs:
       # Since pixi will install a compiler, the compiler mtime will be changed.
       # This can invalidate the cache (https://ccache.dev/manual/latest.html#config_compiler_check)
       CCACHE_COMPILERCHECK: content
+      CMAKE_BUILD_TYPE: ${{ matrix.build_type }}
+      PROXSUITE_CXX_STANDARD: ${{ matrix.cxx_std }}
     strategy:
       fail-fast: false
       matrix:
@@ -48,9 +50,6 @@ jobs:
         run: pixi install
 
       - name: Configure & Build
-        env:
-          CMAKE_BUILD_TYPE: ${{ matrix.build_type }}
-          PROXSUITE_CXX_STANDARD: ${{ matrix.cxx_std }}
         run: pixi run build
 
       - name: Build documentation
