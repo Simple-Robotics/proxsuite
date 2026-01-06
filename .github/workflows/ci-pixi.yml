@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   pixi-ci:
-    name: Pixi CI - ${{ matrix.name }}
+    name: Pixi CI - ${{ matrix.os }} - ${{ matrix.build_type }} - C++${{ matrix.cxx_std }}
     runs-on: ${{ matrix.os }}
     env:
       CCACHE_BASEDIR: ${{ github.workspace }}
@@ -27,32 +27,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - name: Ubuntu 22.04
-            os: ubuntu-22.04
-
-          - name: Ubuntu 24.04
-            os: ubuntu-24.04
-
-          - name: macOS x86_64 (Intel)
-            os: macos-15-intel
-
-          - name: macOS ARM64 (Apple Silicon)
-            os: macos-26
-
-          - name: Windows Server 2022
-            os: windows-2022
-
-          - name: Windows Server 2025
-            os: windows-2025
+        build_type: [Release, Debug]
+        cxx_std: [17, 20]
+        os: [ubuntu-22.04, ubuntu-24.04, macos-15-intel, macos-26, windows-2022, windows-2025]
 
     steps:
       - uses: actions/checkout@v6
       - uses: actions/cache@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ccache-pixi-${{ matrix.os }}-${{ github.sha }}
-          restore-keys: ccache-pixi-${{ matrix.os }}-
+          key: ccache-pixi-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_std }}-${{ github.sha }}
+          restore-keys: ccache-pixi-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_std }}-
 
       - name: Install Pixi
         uses: prefix-dev/setup-pixi@v0.9.3
@@ -63,13 +48,29 @@ jobs:
         run: pixi install
 
       - name: Configure project
-        run: pixi run configure
+        run: pixi run configure -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }}
 
       - name: Build project
         run: pixi run build
 
+      - name: Build documentation
+        run: pixi run doc
+
+      - name: Install
+        run: pixi run install
+
+      - name: Uninstall
+        run: pixi run uninstall
+
       - name: Run tests
         run: pixi run test
 
-      - name: Run test packaging
+      - name: Run test packaging (find_package)
         run: pixi run test-packaging
+
+      - name: Run test packaging (find_package+components)
+        run: pixi run test-packaging-components
+
+      - name: Run test packaging (FetchContent)
+        run: pixi run test-packaging-fetchcontent
+
