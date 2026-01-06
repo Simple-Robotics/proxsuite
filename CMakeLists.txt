@@ -66,21 +66,33 @@ jrl_find_package(Eigen3 CONFIG REQUIRED)
 
 # Catch2
 if(BUILD_TESTING)
-  jrl_find_package(Catch2 3.0 CONFIG QUIET)
-  if(Catch2_FOUND)
-    include(Catch)
-  else()
-    message(
-      WARNING
-      "[proxsuite] Catch2 version >= 3.0 is required for testing.
-      Falling back to FetchContent to get Catch2 v3.11.0"
-    )
+  # pixi does not have debug symbols for Catch2 on Windows,
+  # So we force building from source via FetchContent.
+  if(WIN32)
+    set(Catch2_USE_FETCHCONTENT ON)
+  endif()
+
+  if(NOT Catch2_USE_FETCHCONTENT)
+    jrl_find_package(Catch2 3.0 CONFIG QUIET)
+    if(Catch2_FOUND)
+      include(Catch)
+    else()
+      message(
+        WARNING
+        "[proxsuite] Catch2 version >= 3.0 is required for testing.
+          Falling back to FetchContent to get Catch2 v3.12.0"
+      )
+      set(Catch2_USE_FETCHCONTENT ON)
+    endif()
+  endif()
+
+  if(Catch2_USE_FETCHCONTENT)
     include(FetchContent)
     FetchContent_Declare(
       catch2
-      URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.11.0.zip
-      URL_HASH MD5=ce96600812f04d19694f488ed2de75c5
-      EXCLUDE_FROM_ALL
+      URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.12.0.zip
+      URL_HASH MD5=f04aa334408d47e37aac534e34d1c861
+      DOWNLOAD_EXTRACT_TIMESTAMP EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(catch2)
     include(${catch2_SOURCE_DIR}/extras/Catch.cmake)
