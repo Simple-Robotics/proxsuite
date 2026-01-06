@@ -1,4 +1,4 @@
-name: gh-pages
+name: Github Pages Deployment
 on:
   release:
     types:

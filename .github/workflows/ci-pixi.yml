@@ -1,4 +1,4 @@
-name: Pixi CI
+name: CI - Pixi - Windows/Linux/macOS
 
 on:
   push:
