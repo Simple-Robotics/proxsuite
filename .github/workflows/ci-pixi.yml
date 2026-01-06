@@ -50,7 +50,7 @@ jobs:
         run: pixi install
 
       - name: Configure & Build
-        run: pixi run build --verbose
+        run: pixi run build --verbose --parallel 2
 
       - name: Build documentation
         run: pixi run doc
