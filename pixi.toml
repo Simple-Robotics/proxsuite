@@ -26,6 +26,7 @@ prek = ">=0.2.21,<0.3"      # for linting
 
 [activation.env]
 # Setup ccache
+CMAKE_C_COMPILER_LAUNCHER = "ccache"
 CMAKE_CXX_COMPILER_LAUNCHER = "ccache"
 # Create compile_commands.json for language server
 CMAKE_EXPORT_COMPILE_COMMANDS = "ON"
@@ -33,6 +34,8 @@ CMAKE_EXPORT_COMPILE_COMMANDS = "ON"
 CMAKE_COLOR_DIAGNOSTICS = "ON"
 # Help ccache manage generated files and PCH (https://ccache.dev/manual/latest.html#_precompiled_headers)
 CCACHE_SLOPPINESS = "include_file_ctime,include_file_mtime,pch_defines,time_macros"
+# Make build verbose
+CMAKE_VERBOSE_MAKEFILE = "ON"
 
 [tasks.configure]
 cmd = [
@@ -99,7 +102,6 @@ cmd = [
   "test/packaging/cmake",
   "-B",
   "build/test-packaging",
-  "-DCMAKE_VERBOSE_MAKEFILE=1",
 ]
 
 [tasks.test-packaging]
@@ -119,3 +121,36 @@ cmd = ["cmake", "--build", "build", "--target", "clean"]
 
 [tasks.lint]
 cmd = ["prek", "run", "-a"]
+
+[tasks._test-packaging-components-configure]
+depends-on = ["install"]
+cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-S",
+  "test/packaging/cmake-components",
+  "-B",
+  "build/test-packaging-components",
+  "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
+]
+
+[tasks.test-packaging-components]
+depends-on = ["_test-packaging-components-configure"]
+cmd = ["cmake", "--build", "build/test-packaging-components"]
+
+[tasks._test-packaging-fetchcontent-configure]
+cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-S",
+  "test/packaging/fetchcontent",
+  "-B",
+  "build/test-packaging-fetchcontent",
+  "-DPROXSUITE_FETCHCONTENT_SOURCE_DIR=$PIXI_PROJECT_ROOT",
+]
+
+[tasks.test-packaging-fetchcontent]
+depends-on = ["_test-packaging-fetchcontent-configure"]
+cmd = ["cmake", "--build", "build/test-packaging-fetchcontent"]
