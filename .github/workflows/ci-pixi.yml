@@ -48,7 +48,10 @@ jobs:
         run: pixi install
 
       - name: Configure & Build
-        run: pixi run build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }}
+        env:
+          CMAKE_BUILD_TYPE: ${{ matrix.build_type }}
+          CMAKE_CXX_STANDARD: ${{ matrix.cxx_std }}
+        run: pixi run build
 
       - name: Build documentation
         run: pixi run doc
