@@ -1,4 +1,4 @@
-name: CI - Linux - ROS
+name: CI - ROS - Linux
 on:
   push:
     branches:

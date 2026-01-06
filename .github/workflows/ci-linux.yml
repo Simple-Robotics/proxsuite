@@ -1,4 +1,4 @@
-name: CI - Linux via APT
+name: CI - Linux (APT)
 
 on:
   push:
