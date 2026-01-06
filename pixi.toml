@@ -34,8 +34,6 @@ CMAKE_EXPORT_COMPILE_COMMANDS = "ON"
 CMAKE_COLOR_DIAGNOSTICS = "ON"
 # Help ccache manage generated files and PCH (https://ccache.dev/manual/latest.html#_precompiled_headers)
 CCACHE_SLOPPINESS = "include_file_ctime,include_file_mtime,pch_defines,time_macros"
-# Make build verbose
-CMAKE_VERBOSE_MAKEFILE = "ON"
 
 [tasks.configure]
 cmd = [
