@@ -44,8 +44,6 @@ cmd = [
   "-G",
   "Ninja",
   "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
-  "--profiling-output=cmake-profiling.json",
-  "--profiling-format=google-trace",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=Release",
   "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
