@@ -47,11 +47,8 @@ jobs:
       - name: Install Pixi environment
         run: pixi install
 
-      - name: Configure project
-        run: pixi run configure -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }}
-
-      - name: Build project
-        run: pixi run build
+      - name: Configure & Build
+        run: pixi run build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }}
 
       - name: Build documentation
         run: pixi run doc
