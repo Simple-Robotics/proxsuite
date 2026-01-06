@@ -50,7 +50,7 @@ jobs:
       - name: Configure & Build
         env:
           CMAKE_BUILD_TYPE: ${{ matrix.build_type }}
-          CMAKE_CXX_STANDARD: ${{ matrix.cxx_std }}
+          PROXSUITE_CXX_STANDARD: ${{ matrix.cxx_std }}
         run: pixi run build
 
       - name: Build documentation
