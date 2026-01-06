@@ -92,7 +92,7 @@ if(BUILD_TESTING)
       catch2
       URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.12.0.zip
       URL_HASH MD5=f04aa334408d47e37aac534e34d1c861
-      DOWNLOAD_EXTRACT_TIMESTAMP EXCLUDE_FROM_ALL
+      EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(catch2)
     include(${catch2_SOURCE_DIR}/extras/Catch.cmake)
