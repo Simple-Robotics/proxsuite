@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22...4.1)
+cmake_minimum_required(VERSION 3.22)
 
 project(myproject)
 find_package(proxsuite CONFIG REQUIRED COMPONENTS proxsuite vectorized)
