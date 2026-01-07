@@ -115,11 +115,12 @@ cmd = [
   "test/packaging/cmake",
   "-B",
   "build/test-packaging",
+  "--log-level=DEBUG",
 ]
 
 [tasks.test-packaging]
 depends-on = ["_test-packaging-configure"]
-cmd = ["cmake", "--build", "build/test-packaging", "--verbose", "--log-level=DEBUG"]
+cmd = ["cmake", "--build", "build/test-packaging", "--verbose"]
 
 [tasks._test-packaging-components-configure]
 depends-on = ["install"]
@@ -131,11 +132,12 @@ cmd = [
   "test/packaging/cmake-components",
   "-B",
   "build/test-packaging-components",
+  "--log-level=DEBUG",
 ]
 
 [tasks.test-packaging-components]
 depends-on = ["_test-packaging-components-configure"]
-cmd = ["cmake", "--build", "build/test-packaging-components", "--verbose", "--log-level=DEBUG"]
+cmd = ["cmake", "--build", "build/test-packaging-components", "--verbose"]
 
 [tasks._test-packaging-fetchcontent-configure]
 cmd = [
@@ -147,8 +149,19 @@ cmd = [
   "-B",
   "build/test-packaging-fetchcontent",
   "-DPROXSUITE_FETCHCONTENT_SOURCE_DIR=$PIXI_PROJECT_ROOT",
+  "--log-level=DEBUG",
 ]
 
 [tasks.test-packaging-fetchcontent]
 depends-on = ["_test-packaging-fetchcontent-configure"]
-cmd = ["cmake", "--build", "build/test-packaging-fetchcontent", "--verbose", "--log-level=DEBUG"]
+cmd = ["cmake", "--build", "build/test-packaging-fetchcontent", "--verbose"]
+
+[feature.cpp20.activation.env]
+PROXSUITE_CXX_STANDARD = "20"
+
+[feature.cpp23.activation.env]
+PROXSUITE_CXX_STANDARD = "23"
+
+[environments]
+cpp20 = ["cpp20"]
+cpp23 = ["cpp23"]
