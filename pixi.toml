@@ -91,22 +91,6 @@ cmd = ["cmake", "--install", "build"]
 depends-on = ["install"]
 cmd = ["cmake", "--build", "build", "--target", "uninstall"]
 
-[tasks._test-packaging-configure]
-depends-on = ["install"]
-cmd = [
-  "cmake",
-  "-G",
-  "Ninja",
-  "-S",
-  "test/packaging/cmake",
-  "-B",
-  "build/test-packaging",
-]
-
-[tasks.test-packaging]
-depends-on = ["_test-packaging-configure"]
-cmd = ["cmake", "--build", "build/test-packaging"]
-
 [tasks.doc]
 depends-on = ["configure"]
 cmd = ["cmake", "--build", "build", "--target", "doc"]
@@ -121,6 +105,22 @@ cmd = ["cmake", "--build", "build", "--target", "clean"]
 [tasks.lint]
 cmd = ["prek", "run", "-a"]
 
+[tasks._test-packaging-configure]
+depends-on = ["install"]
+cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-S",
+  "test/packaging/cmake",
+  "-B",
+  "build/test-packaging",
+]
+
+[tasks.test-packaging]
+depends-on = ["_test-packaging-configure"]
+cmd = ["cmake", "--build", "build/test-packaging", "--verbose", "--log-level=DEBUG"]
+
 [tasks._test-packaging-components-configure]
 depends-on = ["install"]
 cmd = [
@@ -131,12 +131,11 @@ cmd = [
   "test/packaging/cmake-components",
   "-B",
   "build/test-packaging-components",
-  "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
 ]
 
 [tasks.test-packaging-components]
 depends-on = ["_test-packaging-components-configure"]
-cmd = ["cmake", "--build", "build/test-packaging-components"]
+cmd = ["cmake", "--build", "build/test-packaging-components", "--verbose", "--log-level=DEBUG"]
 
 [tasks._test-packaging-fetchcontent-configure]
 cmd = [
@@ -152,4 +151,4 @@ cmd = [
 
 [tasks.test-packaging-fetchcontent]
 depends-on = ["_test-packaging-fetchcontent-configure"]
-cmd = ["cmake", "--build", "build/test-packaging-fetchcontent"]
+cmd = ["cmake", "--build", "build/test-packaging-fetchcontent", "--verbose", "--log-level=DEBUG"]
