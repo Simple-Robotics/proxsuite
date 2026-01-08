@@ -13,13 +13,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ubuntu:
-    name: "Ubuntu ${{ matrix.ubuntu }}.04"
-    runs-on: "ubuntu-${{ matrix.ubuntu }}.04"
+  build_and_test:
+    name: CI - ${{ matrix.os }} - ${{ matrix.build_type }} (APT)
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        ubuntu: [22, 24]
+        os: [ubuntu-22.04, ubuntu-24.04]
+        build_type: [Release, Debug]
     env:
       CCACHE_BASEDIR: ${{ github.workspace }}
       CCACHE_DIR: ${{ github.workspace }}/.ccache
@@ -29,23 +30,25 @@ jobs:
       CMAKE_C_COMPILER_LAUNCHER: ccache
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
     steps:
-      - run: sudo apt-get update
-      - run: sudo apt-get install -y cmake ninja-build ccache graphviz libmatio-dev doxygen catch2 libeigen3-dev python3-numpy python3-dev python3-scipy
       - uses: actions/checkout@v6
       - name: Setup ccache
         uses: actions/cache@v4
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ${{ runner.os }}-ccache-${{ matrix.ubuntu }}-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-${{ matrix.ubuntu }}-
-            ${{ runner.os }}-ccache-
+          key: ccache-${{ runner.os }}-${{ matrix.os }}-${{ github.sha }}
+          restore-keys: ccache-${{ runner.os }}-${{ matrix.os }}-
+
+      - name: Update APT repositories
+        run: sudo apt-get update
+
+      - name: Install dependencies via APT
+        run: sudo apt-get install -y cmake ninja-build ccache graphviz libmatio-dev doxygen catch2 libeigen3-dev python3-numpy python3-dev python3-scipy
 
       - name: Clear ccache stats
         run: ccache --show-stats --zero-stats --verbose
 
       - name: CMake Configure
-        run: /usr/bin/cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARKS=ON
+        run: /usr/bin/cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARKS=ON
 
       - name: CMake Build
         run: /usr/bin/cmake --build build
@@ -64,7 +67,7 @@ jobs:
     name: check-linux
 
     needs:
-      - ubuntu
+      - build_and_test
 
     runs-on: Ubuntu-latest
 
