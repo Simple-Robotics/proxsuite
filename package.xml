@@ -23,6 +23,7 @@
   <url type="repository">https://github.com/Simple-Robotics/proxsuite</url>
   <url type="bugtracker">https://github.com/Simple-Robotics/proxsuite/issues</url>
 
+  <build_depend>python3-dev</build_depend>
   <build_depend>git</build_depend>
   <build_depend>doxygen</build_depend>
   <build_depend>libcereal-dev</build_depend>
