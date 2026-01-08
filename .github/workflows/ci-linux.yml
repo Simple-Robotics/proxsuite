@@ -26,7 +26,6 @@ jobs:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_COMPRESS: true
       CCACHE_COMPRESSLEVEL: 6
-      CMAKE_BUILD_PARALLEL_LEVEL: 2
       CMAKE_C_COMPILER_LAUNCHER: ccache
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
     steps:
@@ -51,7 +50,7 @@ jobs:
         run: /usr/bin/cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARKS=ON
 
       - name: CMake Build
-        run: /usr/bin/cmake --build build
+        run: /usr/bin/cmake --build build --verbose --parallel 2
 
       - name: Show ccache stats
         run: ccache --show-stats --verbose
