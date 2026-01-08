@@ -32,7 +32,7 @@ message(STATUS "[proxsuite] PROXSUITE_CXX_STANDARD set to '${PROXSUITE_CXX_STAND
 
 jrl_option(BUILD_TESTING "Build the tests" OFF)
 jrl_option(BUILD_EXAMPLES "Build the examples" OFF)
-jrl_option(BUILD_BENCHMARK "Build the benchmarks" OFF)
+jrl_option(BUILD_BENCHMARKS "Build the benchmarks" OFF)
 jrl_option(BUILD_DOCUMENTATION "Build the documentation." OFF)
 jrl_option(BUILD_MAROS_MESZAROS_TESTS "Build the Maros-Meszaros tests, needs matio library" OFF)
 jrl_option(ENABLE_WARNINGS "Enable warnings during compilation" OFF)
@@ -229,7 +229,7 @@ if(BUILD_EXAMPLES)
   add_subdirectory(examples)
 endif()
 
-if(BUILD_BENCHMARK)
+if(BUILD_BENCHMARKS)
   message(STATUS "[proxsuite] Building benchmarks")
   add_subdirectory(benchmark)
 endif()
