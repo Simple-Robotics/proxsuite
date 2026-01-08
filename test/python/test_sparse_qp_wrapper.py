@@ -4,6 +4,7 @@
 import proxsuite
 import numpy as np
 import scipy.sparse as spa
+import scipy.sparse.linalg as spla
 import unittest
 
 
@@ -4642,7 +4643,7 @@ class SparseqpWrapper(unittest.TestCase):
     #         qp.settings.estimate_method_option = (
     #             proxsuite.proxqp.EigenValueEstimateMethodOption.EigenRegularization
     #         )
-    #         vals, _ = spa.linalg.eigs(H, which="SR")
+    #         vals, _ = spla.eigs(H, which="SR")
     #         min_eigenvalue = float(np.min(vals))
     #         qp.init(
     #             H,
@@ -4676,7 +4677,7 @@ class SparseqpWrapper(unittest.TestCase):
             qp = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
             qp.settings.verbose = False
             qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
-            vals, _ = spa.linalg.eigs(H, which="SR")
+            vals, _ = spla.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
                 H,
@@ -4711,7 +4712,7 @@ class SparseqpWrapper(unittest.TestCase):
             estimate_minimal_eigen_value = proxsuite.proxqp.sparse.estimate_minimal_eigen_value_of_symmetric_matrix(
                 H, 1.0e-10, 100000
             )
-            vals, _ = spa.linalg.eigs(H, which="SR")
+            vals, _ = spla.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
                 H,
@@ -4723,7 +4724,7 @@ class SparseqpWrapper(unittest.TestCase):
                 np.asfortranarray(u),
                 manual_minimal_H_eigenvalue=estimate_minimal_eigen_value,
             )
-            # vals_bis, _ = spa.linalg.eigs(H, which="LM")
+            # vals_bis, _ = spla.eigs(H, which="LM")
             # print(f"{vals_bis}=")
             # print(f"{vals}=")
             # print(f"{min_eigenvalue=}")

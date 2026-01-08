@@ -4,6 +4,7 @@
 import proxsuite
 import numpy as np
 import scipy.sparse as spa
+import scipy.sparse.linalg as spla
 import unittest
 
 np.printoptions(precision=16)
@@ -4844,7 +4845,7 @@ class DenseqpWrapper(unittest.TestCase):
                     10000,
                 )
             )
-            vals, _ = spa.linalg.eigs(H, which="SR")
+            vals, _ = spla.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
                 H,
@@ -4876,7 +4877,7 @@ class DenseqpWrapper(unittest.TestCase):
             qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
             qp.settings.verbose = False
             qp.settings.initial_guess = proxsuite.proxqp.InitialGuess.NO_INITIAL_GUESS
-            vals, _ = spa.linalg.eigs(H, which="SR")
+            vals, _ = spla.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
                 H,
@@ -4917,7 +4918,7 @@ class DenseqpWrapper(unittest.TestCase):
                     10000,
                 )
             )
-            vals, _ = spa.linalg.eigs(H, which="SR")
+            vals, _ = spla.eigs(H, which="SR")
             min_eigenvalue = float(np.min(vals))
             qp.init(
                 H,
