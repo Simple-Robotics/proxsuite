@@ -16,33 +16,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        env:
-          # ROS2 Jazzy Jalisco (May 2024 - May 2029)
-          - {ROS_DISTRO: jazzy, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: OFF}
-          - {ROS_DISTRO: jazzy, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: OFF}
-          - {ROS_DISTRO: jazzy, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
-          - {ROS_DISTRO: jazzy, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
+        include:
           # ROS2 Humble Hawksbill (May 2022 - May 2027)
-          - {ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
-          - {ROS_DISTRO: humble, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
-          # - {name: "Humble / Pre-Release", ROS_DISTRO: humble, PRERELEASE: true}
+          - ROS_DISTRO: humble
+            os: Ubuntu 22.04 (Jammy)
+
+          # ROS2 Jazzy Jalisco (May 2024 - May 2029)
+          - ROS_DISTRO: jazzy
+            os: Ubuntu 24.04 (Noble)
+
           # ROS2 Rolling Ridley
-          - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Debug, VECTORIZATION_SUPPORT: ON}
-          - {ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release,  VECTORIZATION_SUPPORT: ON}
-          # - {name: "Rolling / Pre-Release", ROS_DISTRO: rolling, PRERELEASE: true}
-          # - {name: "Rolling / TSID-Downstream", ROS_DISTRO: rolling, CMAKE_BUILD_TYPE: Release, VECTORIZATION_SUPPORT: ON, DOWNSTREAM_WORKSPACE: "github:stack-of-tasks/tsid#devel github:stack-of-tasks/eiquadprog#devel", DOWNSTREAM_CMAKE_ARGS: -DBUILD_WITH_PROXQP=ON}
-    name: ROS ${{ matrix.env.ROS_DISTRO }} - ${{ matrix.env.CMAKE_BUILD_TYPE }} ${{ matrix.env.VECTORIZATION_SUPPORT == 'ON' && '- Vectorization' || '' }}
+          - ROS_DISTRO: rolling
+            os: Ubuntu 24.04 (Noble)
+
+    name: ROS ${{ matrix.ROS_DISTRO }} - ${{ matrix.os }}
     env:
-      CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since humble
+      CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=ON -DBUILD_WITH_SERIALIZATION=ON -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DBUILD_BENCHMARKS=ON
       VERBOSE_OUTPUT: true
       VERBOSE_TESTS: true
-      ROS_DISTRO: ${{ matrix.env.ROS_DISTRO }}
-      CMAKE_BUILD_TYPE: ${{ matrix.env.CMAKE_BUILD_TYPE }}
+      ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
       CCACHE_DIR: ${{ github.workspace }}/.ccache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      # Run industrial_ci
       - uses: 'ros-industrial/industrial_ci@master'
 
 
