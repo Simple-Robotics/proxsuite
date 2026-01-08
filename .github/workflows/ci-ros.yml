@@ -12,7 +12,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  CI:
+  ros:
+    name: ROS ${{ matrix.ROS_DISTRO }} - ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -25,13 +26,16 @@ jobs:
           - ROS_DISTRO: jazzy
             os: Ubuntu 24.04 (Noble)
 
+          # ROS2 Kilted Kayu (May 2025 - December 2026)
+          - ROS_DISTRO: kilted
+            os: Ubuntu 24.04 (Noble)
+
           # ROS2 Rolling Ridley
           - ROS_DISTRO: rolling
             os: Ubuntu 24.04 (Noble)
-
-    name: ROS ${{ matrix.ROS_DISTRO }} - ${{ matrix.os }}
     env:
       CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=ON -DBUILD_WITH_SERIALIZATION=ON -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DBUILD_BENCHMARKS=ON
+      PRERELEASE: true
       VERBOSE_OUTPUT: true
       VERBOSE_TESTS: true
       ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
@@ -39,6 +43,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/cache@v6
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ matrix.ROS_DISTRO }}-${{github.run_id}}
+          restore-keys: ccache-${{ matrix.ROS_DISTRO }}-
       - uses: 'ros-industrial/industrial_ci@master'
 
 
@@ -47,7 +56,7 @@ jobs:
     name: check-ci-linux-ros
 
     needs:
-    - CI
+    - ros
 
     runs-on: ubuntu-latest
     steps:
