@@ -16,11 +16,7 @@ function(proxsuite_add_test name)
   add_executable(proxsuite-test-cpp-${name} ${name}.cpp)
   target_link_libraries(
     proxsuite-test-cpp-${name}
-    PRIVATE
-      proxsuite-test-util
-      Catch2::Catch2WithMain
-      ${arg_LINK_LIBRARIES}
-      $<$<BOOL:${BUILD_WITH_SERIALIZATION}>:cereal::cereal>
+    PRIVATE proxsuite-test-util Catch2::Catch2WithMain ${arg_LINK_LIBRARIES}
   )
   target_compile_definitions(proxsuite-test-cpp-${name} PRIVATE ${arg_COMPILE_DEFINITIONS})
   add_test(
@@ -33,11 +29,7 @@ function(proxsuite_add_test name)
     add_executable(proxsuite-vectorized-test-cpp-${name} ${name}.cpp)
     target_link_libraries(
       proxsuite-vectorized-test-cpp-${name}
-      PRIVATE
-        proxsuite-test-util-vectorized
-        Catch2::Catch2WithMain
-        ${arg_LINK_LIBRARIES}
-        $<$<BOOL:${BUILD_WITH_SERIALIZATION}>:cereal::cereal>
+      PRIVATE proxsuite-test-util-vectorized Catch2::Catch2WithMain ${arg_LINK_LIBRARIES}
     )
     target_compile_definitions(
       proxsuite-vectorized-test-cpp-${name}
