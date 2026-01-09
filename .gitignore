@@ -1,5 +1,6 @@
 build*/
 install*/
+dist/
 .pytest_cache/
 .cache/
 .pixi/
@@ -12,5 +13,4 @@ Xcode*
 .ruff_cache
 .DS_Store
 compile_commands.json
-cmake-profiling.json
 cmake-profiling.json
