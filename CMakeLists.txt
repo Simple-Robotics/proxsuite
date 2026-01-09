@@ -325,6 +325,7 @@ jrl_target_headers(proxsuite INTERFACE
     include/proxsuite/proxqp/sparse/wrapper.hpp
     include/proxsuite/proxqp/utils/prints.hpp
     include/proxsuite/proxqp/utils/random_qp_problems.hpp
+    include/proxsuite/proxqp/utils/uint128_msvc.hpp
     include/proxsuite/proxqp/results.hpp
     include/proxsuite/proxqp/settings.hpp
     include/proxsuite/proxqp/status.hpp

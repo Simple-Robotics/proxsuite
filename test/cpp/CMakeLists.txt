@@ -51,6 +51,7 @@ function(proxsuite_add_test name)
   endif()
 endfunction()
 
+proxsuite_add_test(uint128)
 proxsuite_add_test(cvxpy)
 proxsuite_add_test(dense_backward)
 proxsuite_add_test(dense_qp_eq)
