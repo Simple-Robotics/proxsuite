@@ -13,6 +13,10 @@
 #include <map>
 #include <random>
 
+#if defined(_MSC_VER)
+#include <proxsuite/proxqp/utils/uint128_msvc.hpp>
+#endif
+
 namespace proxsuite {
 namespace proxqp {
 namespace utils {
@@ -67,56 +71,11 @@ namespace rand {
 using proxqp::u32;
 using proxqp::u64;
 
-#ifdef _MSC_VER
-/* Using the MSCV compiler on Windows causes problems because the type uint128
-is not available. Therefore, we use a random number generator from the stdlib
-instead of our custom Lehmer random number generator. The necessary lehmer
-functions used in in our code are remplaced with calls to the stdlib.*/
-inline auto
-get_gen() -> std::mt19937&
-{
-  static std::mt19937 gen(1234);
-  return gen;
-}
-inline auto
-get_uniform_dist() -> std::uniform_real_distribution<>&
-{
-  static std::uniform_real_distribution<> uniform_dist(0.0, 1.0);
-  return uniform_dist;
-}
-inline auto
-get_normal_dist() -> std::normal_distribution<double>&
-{
-  static std::normal_distribution<double> normal_dist;
-  return normal_dist;
-}
-using u128 = u64;
-inline auto
-uniform_rand() -> double
-{
-  double output = double(get_uniform_dist()(get_gen()));
-  return output;
-}
-inline auto
-lehmer_global() -> u128&
-{
-  static u64 output = get_gen()();
-  return output;
-}
-
-inline void
-set_seed(u64 seed)
-{
-  get_gen().seed(seed);
-}
-
-inline auto
-normal_rand() -> double
-{
-  return get_normal_dist()(get_gen());
-}
+#if defined(_MSC_VER)
+using u128 = uint128_t;
 #else
 using u128 = __uint128_t;
+#endif
 
 constexpr u128 lehmer64_constant(0xda942042e4dd58b5);
 inline auto
@@ -160,7 +119,6 @@ normal_rand() -> double
 
   return sqrt * std::cos(pi2 * u2);
 }
-#endif
 
 template<typename Scalar>
 auto
