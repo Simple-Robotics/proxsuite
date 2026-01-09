@@ -1,9 +1,12 @@
 add_custom_target(proxsuite-examples-cpp)
 
 function(proxsuite_add_example name)
-  add_executable(proxsuite-example-${name} ${name}.cpp)
-  target_link_libraries(proxsuite-example-${name} PRIVATE proxsuite)
-  add_dependencies(proxsuite-examples-cpp proxsuite-example-${name})
+  add_executable(proxsuite-example-cpp.${name} ${name}.cpp)
+  target_link_libraries(proxsuite-example-cpp.${name} PRIVATE proxsuite)
+  if(BUILD_TESTING)
+    add_test(NAME proxsuite-example-cpp.${name} COMMAND proxsuite-example-cpp.${name})
+  endif()
+  add_dependencies(proxsuite-examples-cpp proxsuite-example-cpp.${name})
 endfunction()
 
 proxsuite_add_example(estimate_nonconvex_eigenvalue)

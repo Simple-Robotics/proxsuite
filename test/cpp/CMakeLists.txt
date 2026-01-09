@@ -19,11 +19,7 @@ function(proxsuite_add_test name)
     PRIVATE proxsuite-test-util Catch2::Catch2WithMain ${arg_LINK_LIBRARIES}
   )
   target_compile_definitions(proxsuite-test-cpp-${name} PRIVATE ${arg_COMPILE_DEFINITIONS})
-  add_test(
-    NAME proxsuite-cpp.${name}
-    COMMAND proxsuite-test-cpp-${name}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  )
+  add_test(NAME proxsuite-test-cpp.${name} COMMAND proxsuite-test-cpp-${name})
 
   if(BUILD_WITH_VECTORIZATION_SUPPORT)
     add_executable(proxsuite-vectorized-test-cpp-${name} ${name}.cpp)
@@ -36,9 +32,8 @@ function(proxsuite_add_test name)
       PRIVATE ${arg_COMPILE_DEFINITIONS}
     )
     add_test(
-      NAME proxsuite-cpp.vectorized.${name}
+      NAME proxsuite-test-cpp.vectorized.${name}
       COMMAND proxsuite-vectorized-test-cpp-${name}
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
   endif()
 endfunction()

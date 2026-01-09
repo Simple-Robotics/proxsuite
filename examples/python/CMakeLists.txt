@@ -6,6 +6,16 @@ function(proxsuite_add_python_example name)
     COMMAND $<TARGET_FILE:Python::Interpreter> ${CMAKE_CURRENT_SOURCE_DIR}/${name}.py
     DEPENDS proxsuite_pywrap
   )
+  if(BUILD_TESTING)
+    add_test(
+      NAME proxsuite-example-python.${name}
+      COMMAND $<TARGET_FILE:Python::Interpreter> ${CMAKE_CURRENT_SOURCE_DIR}/${name}.py
+    )
+    set_tests_properties(
+      proxsuite-example-python.${name}
+      PROPERTIES ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:proxsuite_pywrap>/.." LABELS python
+    )
+  endif()
   add_dependencies(proxsuite-examples-python proxsuite-example-py-${name})
 endfunction()
 

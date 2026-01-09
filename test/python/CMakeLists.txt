@@ -1,14 +1,11 @@
 function(proxsuite_python_add_test name)
   add_test(
-    NAME proxsuite-python.${name}
+    NAME proxsuite-test-python.${name}
     COMMAND $<TARGET_FILE:Python::Interpreter> ${CMAKE_CURRENT_SOURCE_DIR}/${name}.py
   )
   set_tests_properties(
-    proxsuite-python.${name}
-    PROPERTIES
-      ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:proxsuite_pywrap>/.."
-      DEPENDS proxsuite_pywrap
-      LABELS "python"
+    proxsuite-test-python.${name}
+    PROPERTIES ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:proxsuite_pywrap>/.." LABELS python
   )
 endfunction()
 
