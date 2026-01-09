@@ -13,3 +13,4 @@ Xcode*
 compile_commands.json
 cmake-profiling.json
 *.whl
+dist/
