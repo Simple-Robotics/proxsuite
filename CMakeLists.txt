@@ -365,6 +365,7 @@ jrl_export_package()
 
 jrl_generate_ros2_package_files(
   INSTALL_CPP_PACKAGE_FILES [[NOT BUILD_STANDALONE_PYTHON_INTERFACE]]
+  INSTALL_PYTHON_PACKAGE_FILES [[BUILD_PYTHON_INTERFACE]]
 )
 
 jrl_print_dependencies_summary()
