@@ -105,7 +105,13 @@ cmd = ["cmake", "--build", "build", "--target", "clean"]
 [tasks.lint]
 cmd = ["prek", "run", "-a"]
 
-[tasks._test-packaging-configure]
+[feature.packaging.dependencies]
+ccache = ">=4.9.1"
+cmake = ">=3.22"
+cxx-compiler = ">=1.7.0"
+ninja = ">=1.11"
+
+[feature.packaging.tasks._test-packaging-configure]
 depends-on = ["install"]
 cmd = [
   "cmake",
@@ -114,15 +120,16 @@ cmd = [
   "-S",
   "test/packaging/cmake",
   "-B",
-  "build/test-packaging",
+  "build/packaging",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "--log-level=DEBUG",
 ]
 
-[tasks.test-packaging]
+[feature.packaging.tasks.packaging]
 depends-on = ["_test-packaging-configure"]
-cmd = ["cmake", "--build", "build/test-packaging", "--verbose"]
+cmd = ["cmake", "--build", "build/packaging", "--verbose"]
 
-[tasks._test-packaging-components-configure]
+[feature.packaging.tasks._test-packaging-components-configure]
 depends-on = ["install"]
 cmd = [
   "cmake",
@@ -131,15 +138,16 @@ cmd = [
   "-S",
   "test/packaging/cmake-components",
   "-B",
-  "build/test-packaging-components",
+  "build/packaging-components",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "--log-level=DEBUG",
 ]
 
-[tasks.test-packaging-components]
+[feature.packaging.tasks.packaging-components]
 depends-on = ["_test-packaging-components-configure"]
-cmd = ["cmake", "--build", "build/test-packaging-components", "--verbose"]
+cmd = ["cmake", "--build", "build/packaging-components", "--verbose"]
 
-[tasks._test-packaging-fetchcontent-configure]
+[feature.packaging.tasks._test-packaging-fetchcontent-configure]
 cmd = [
   "cmake",
   "-G",
@@ -147,14 +155,15 @@ cmd = [
   "-S",
   "test/packaging/fetchcontent",
   "-B",
-  "build/test-packaging-fetchcontent",
+  "build/packaging-fetchcontent",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "-DPROXSUITE_FETCHCONTENT_SOURCE_DIR=$PIXI_PROJECT_ROOT",
   "--log-level=DEBUG",
 ]
 
-[tasks.test-packaging-fetchcontent]
+[feature.packaging.tasks.packaging-fetchcontent]
 depends-on = ["_test-packaging-fetchcontent-configure"]
-cmd = ["cmake", "--build", "build/test-packaging-fetchcontent", "--verbose"]
+cmd = ["cmake", "--build", "build/packaging-fetchcontent", "--verbose"]
 
 [feature.cpp20.activation.env]
 PROXSUITE_CXX_STANDARD = "20"
@@ -165,3 +174,4 @@ PROXSUITE_CXX_STANDARD = "23"
 [environments]
 cpp20 = ["cpp20"]
 cpp23 = ["cpp23"]
+packaging-tests = { features = ["packaging"], no-default-feature = true }
