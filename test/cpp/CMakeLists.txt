@@ -60,9 +60,16 @@ endif()
 if(BUILD_WITH_SERIALIZATION)
   # We have to create the folder for the output data, tests don't do that.
   make_directory(${CMAKE_BINARY_DIR}/serialization-data)
-  proxsuite_add_test(serialization COMPILE_DEFINITIONS TEST_SERIALIZATION_FOLDER="${CMAKE_BINARY_DIR}/serialization-data")
+  proxsuite_add_test(
+    serialization
+    COMPILE_DEFINITIONS TEST_SERIALIZATION_FOLDER="${CMAKE_BINARY_DIR}/serialization-data"
+  )
 endif()
 
 if(BUILD_MAROS_MESZAROS_TESTS)
-  proxsuite_add_test(dense_maros_meszaros COMPILE_DEFINITIONS MAROS_MESZAROS_DIR="${MAROS_MESZAROS_DIR}" LINK_LIBRARIES matio::matio)
+  proxsuite_add_test(
+    dense_maros_meszaros
+    COMPILE_DEFINITIONS MAROS_MESZAROS_DIR="${MAROS_MESZAROS_DIR}"
+    LINK_LIBRARIES matio::matio
+  )
 endif()
