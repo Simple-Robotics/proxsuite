@@ -30,6 +30,7 @@ elseif(NOT PROXSUITE_CXX_STANDARD)
 endif()
 message(STATUS "[proxsuite] PROXSUITE_CXX_STANDARD set to '${PROXSUITE_CXX_STANDARD}'")
 
+jrl_option(PROXSUITE_EXPORT_PACKAGE "Generate the CMake export files" ${PROJECT_IS_TOP_LEVEL})
 jrl_option(BUILD_TESTING "Build the tests" OFF)
 jrl_option(BUILD_EXAMPLES "Build the examples" OFF)
 jrl_option(BUILD_BENCHMARKS "Build the benchmarks" OFF)
