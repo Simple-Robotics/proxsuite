@@ -33,7 +33,7 @@ message(STATUS "[proxsuite] PROXSUITE_CXX_STANDARD set to '${PROXSUITE_CXX_STAND
 jrl_option(BUILD_TESTING "Build the tests" OFF)
 jrl_option(BUILD_EXAMPLES "Build the examples" OFF)
 jrl_option(BUILD_BENCHMARKS "Build the benchmarks" OFF)
-jrl_option(BUILD_DOCUMENTATION "Build the documentation." OFF)
+jrl_option(BUILD_DOCUMENTATION "Build the documentation" OFF)
 jrl_option(BUILD_MAROS_MESZAROS_TESTS "Build the Maros-Meszaros tests, needs matio library" OFF)
 jrl_option(ENABLE_WARNINGS "Enable warnings during compilation" OFF)
 jrl_option(ENABLE_WARNINGS_AS_ERRORS "Treat all warnings as errors" OFF)
@@ -42,19 +42,13 @@ jrl_option(INSTALL_DOCUMENTATION "Install the documentation" OFF)
 jrl_option(INITIALIZE_EIGEN_WITH_NAN "Initialize Eigen objects with NAN values" OFF)
 jrl_option(CHECK_RUNTIME_MALLOC "Check if some memory allocations are performed at runtime" OFF)
 jrl_option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
-jrl_option(BUILD_WITH_VECTORIZATION_SUPPORT "Build the library with the support of modern SIMD instructions." OFF)
-jrl_cmake_dependent_option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support." ON BUILD_WITH_VECTORIZATION_SUPPORT OFF)
-jrl_cmake_dependent_option(BUILD_BINDINGS_WITH_AVX512_SUPPORT "Build the bindings with AVX512 support." ON BUILD_WITH_VECTORIZATION_SUPPORT OFF)
+jrl_option(BUILD_WITH_VECTORIZATION_SUPPORT "Build the library with the support of modern SIMD instructions" OFF)
+jrl_option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support" ON DEPENDS "BUILD_WITH_VECTORIZATION_SUPPORT")
+jrl_option(BUILD_BINDINGS_WITH_AVX512_SUPPORT "Build the bindings with AVX512 support" ON DEPENDS "BUILD_WITH_VECTORIZATION_SUPPORT")
 jrl_option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
 jrl_option(BUILD_WITH_OPENMP_SUPPORT "Build the library with the OpenMP support" OFF)
-jrl_cmake_dependent_option(
-  LINK_PYTHON_INTERFACE_TO_OPENMP
-  "Link OpenMP to the Python interface"
-  ON
-  BUILD_WITH_OPENMP_SUPPORT
-  OFF
-)
-jrl_cmake_dependent_option(BUILD_WITH_SERIALIZATION "Build with serialization support" ON BUILD_PYTHON_INTERFACE OFF)
+jrl_option(LINK_PYTHON_INTERFACE_TO_OPENMP "Link OpenMP to the Python interface" ON DEPENDS "BUILD_WITH_OPENMP_SUPPORT")
+jrl_option(BUILD_WITH_SERIALIZATION "Build with serialization support" ON DEPENDS "BUILD_PYTHON_INTERFACE")
 jrl_option(GENERATE_PYTHON_STUBS "Generate Python stubs" OFF)
 jrl_option(PYTHON_BINDING_CUSTOM_INSTALL_DIR "Override the default <current-python-install-sitelib>/<project-name>" "")
 jrl_option(PROXSUITE_DOXYGEN_USE_MATHJAX "Avoid latex at build time" OFF)
