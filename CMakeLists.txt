@@ -57,8 +57,22 @@ jrl_option(PROXSUITE_DOXYGEN_USE_MATHJAX "Avoid latex at build time" OFF)
 ############################################################
 
 # Eigen3
-if(NOT TARGET Eigen3::Eigen)
-  jrl_find_package(Eigen3 CONFIG REQUIRED)
+# NOTE: The fetchcontent support is meant for testing purposes
+# and when users include proxsuite with FetchContent.
+# We recommend that users install eigen via their package manager.
+jrl_find_package(Eigen3 CONFIG QUIET)
+if(NOT Eigen3_FOUND)
+  message(
+    WARNING
+    "[proxsuite] Eigen3 library not found. Falling back to FetchContent to get Eigen3 v5.0.1"
+  )
+  include(FetchContent)
+  FetchContent_Declare(
+    eigen
+    URL https://gitlab.com/libeigen/eigen/-/archive/5.0.1/eigen-5.0.1.zip
+    URL_HASH MD5=b8e2be4dcc4d9a455584af1b28323567
+  )
+  FetchContent_MakeAvailable(eigen)
 endif()
 
 # Catch2
