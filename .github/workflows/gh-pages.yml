@@ -13,10 +13,13 @@ jobs:
       - name: Install Pixi
         uses: prefix-dev/setup-pixi@v0.9.3
         with:
-          pixi-version: latest
+          environments: doc
 
       - name: Build documentation
-        run: pixi run doc
+        run: pixi run -e doc build_documentation
+
+      - name: Install documentation
+        run: pixi run -e doc install_documentation
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v7
