@@ -10,7 +10,7 @@ endif()
 function(proxsuite_add_test name)
   set(options)
   set(oneValueArgs)
-  set(multiValueArgs COMPILE_DEFINITIONS LINK_LIBRARIES)
+  set(multiValueArgs COMPILE_DEFINITIONS LINK_LIBRARIES LABELS)
   cmake_parse_arguments(arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   add_executable(proxsuite-test-cpp-${name} ${name}.cpp)
@@ -20,6 +20,10 @@ function(proxsuite_add_test name)
   )
   target_compile_definitions(proxsuite-test-cpp-${name} PRIVATE ${arg_COMPILE_DEFINITIONS})
   add_test(NAME proxsuite-test-cpp.${name} COMMAND proxsuite-test-cpp-${name})
+
+  if(arg_LABELS)
+    set_tests_properties(proxsuite-test-cpp.${name} PROPERTIES LABELS "${arg_LABELS}")
+  endif()
 
   if(BUILD_WITH_VECTORIZATION_SUPPORT)
     add_executable(proxsuite-vectorized-test-cpp-${name} ${name}.cpp)
@@ -35,6 +39,12 @@ function(proxsuite_add_test name)
       NAME proxsuite-test-cpp.vectorized.${name}
       COMMAND proxsuite-vectorized-test-cpp-${name}
     )
+    if(arg_LABELS)
+      set_tests_properties(
+        proxsuite-test-cpp.vectorized.${name}
+        PROPERTIES LABELS "vectorized;${arg_LABELS}"
+      )
+    endif()
   endif()
 endfunction()
 
@@ -71,5 +81,12 @@ if(BUILD_MAROS_MESZAROS_TESTS)
     dense_maros_meszaros
     COMPILE_DEFINITIONS MAROS_MESZAROS_DIR="${MAROS_MESZAROS_DIR}"
     LINK_LIBRARIES matio::matio
+    LABELS maros_meszaros
+  )
+  proxsuite_add_test(
+    sparse_maros_meszaros
+    COMPILE_DEFINITIONS MAROS_MESZAROS_DIR="${MAROS_MESZAROS_DIR}"
+    LINK_LIBRARIES matio::matio
+    LABELS maros_meszaros
   )
 endif()
