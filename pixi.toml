@@ -12,17 +12,6 @@ cxx-compiler = ">=1.7.0"
 ninja = ">=1.11"
 eigen = ">=3.4.0,<4"
 simde = ">=0.8.2,<0.9"
-python = ">=3.8, <3.13"     # for python bindings
-python_abi = ">=3.8, <3.13" # for python bindings
-numpy = ">=1.24.0,<2.4"     # for python bindings
-nanobind = ">=2.9.2,<3"     # for python bindings
-catch2 = ">=3.8.0,<4"       # for test
-cereal = ">=1.3.2,<2"       # for test
-libmatio = ">=1.2.0,<2"     # for test (maros meszaros)
-scipy = ">=1.16.3,<2"       # for test
-doxygen = ">=1.13.2,<2"     # for doc
-graphviz = ">=10.0.0,<14"   # for doc
-prek = ">=0.2.21,<0.3"      # for linting
 
 [activation.env]
 # Setup ccache
@@ -35,8 +24,8 @@ CMAKE_COLOR_DIAGNOSTICS = "ON"
 # Help ccache manage generated files and PCH (https://ccache.dev/manual/latest.html#_precompiled_headers)
 CCACHE_SLOPPINESS = "include_file_ctime,include_file_mtime,pch_defines,time_macros"
 
-[tasks.configure]
-cmd = [
+[tasks]
+configure = { cmd = [
   "cmake",
   "-S",
   ".",
@@ -46,74 +35,63 @@ cmd = [
   "Ninja",
   "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
-  "-DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE",
+  "-DCMAKE_BUILD_TYPE=Release",
   "-DPROXSUITE_CXX_STANDARD=$PROXSUITE_CXX_STANDARD",
   "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
-  "-DBUILD_WITH_SERIALIZATION=ON",
-  "-DBUILD_MAROS_MESZAROS_TESTS=OFF",
-  "-DENABLE_WARNINGS=OFF",
-  "-DENABLE_WARNINGS_AS_ERRORS=OFF",
-  "-DBUILD_TESTING=ON",
-  "-DBUILD_DOCUMENTATION=ON",
+  "-DBUILD_DOCUMENTATION=$BUILD_DOCUMENTATION",
+  "-DINSTALL_DOCUMENTATION=$INSTALL_DOCUMENTATION",
+  "-DBUILD_MAROS_MESZAROS_TESTS=$BUILD_MAROS_MESZAROS_TESTS",
   "-DBUILD_EXAMPLES=ON",
   "-DBUILD_BENCHMARKS=ON",
-  "-DBUILD_PYTHON_INTERFACE=ON",
-  "-DGENERATE_PYTHON_STUBS=ON",
-  "-DBUILD_WITH_OPENMP_SUPPORT=ON",
-  "-DBUILD_BINDINGS_WITH_AVX2_SUPPORT=ON",
-  "-DBUILD_BINDINGS_WITH_AVX512_SUPPORT=ON",
-]
+  "-DBUILD_TESTING=$BUILD_TESTING",
+  "-DBUILD_PYTHON_INTERFACE=$BUILD_PYTHON_INTERFACE",
+] }
+build = { depends-on = ["configure"], cmd = ["cmake", "--build", "build"] }
+install = { depends-on = ["build"], cmd = ["cmake", "--install", "build"] }
+uninstall = { depends-on = ["install"], cmd = ["cmake", "--build", "build", "--target", "uninstall"] }
+clean = { cmd = "rm -rf build" }
 
-[tasks.reconfigure]
-depends-on = ["clear", "configure"]
+# --- Features ---
+# Each feature groups optional dependencies and tasks.
+# They are composed together via environments (see [environments] below).
 
-[tasks.build]
-depends-on = ["configure"]
-cmd = ["cmake", "--build", "build"]
+# --- Python Feature ---
+# Adds Python bindings support with nanobind.
+# Enables building and testing Python wrappers for the C++ library.
+[feature.python.dependencies]
+python = ">=3.8, <3.13"
+python_abi = ">=3.8, <3.13"
+numpy = ">=1.24.0,<2.4"
+nanobind = ">=2.9.2,<3"
 
-[tasks.test]
-depends-on = ["build"]
-cmd = ["ctest", "--test-dir", "build", "--output-on-failure"]
+[feature.python.activation.env]
+BUILD_PYTHON_INTERFACE = "ON"
 
-[tasks.test-import-python]
-depends-on = ["install"]
-cmd = [
+[feature.python.tasks]
+test-import-python = { depends-on = ["install"], cmd = [
   "python",
   "-c",
   "import proxsuite; print(proxsuite.helpers.printVersion())",
-]
+] }
 
-[tasks.install]
-depends-on = ["build"]
-cmd = ["cmake", "--install", "build"]
+# --- Test Feature ---
+# Adds C++ testing dependencies and test runners.
+# Includes support for Maros-Meszaros benchmark tests (very slow, excluded by default).
+# Use `test` task for regular tests, `test_maros_meszaros` for benchmark tests.
+[feature.test.dependencies]
+catch2 = ">=3.8.0,<4"
+cereal = ">=1.3.2,<2"
+scipy = ">=1.16.3,<2"
+libmatio = ">=1.2.0,<2"
 
-[tasks.uninstall]
-depends-on = ["install"]
-cmd = ["cmake", "--build", "build", "--target", "uninstall"]
+[feature.test.activation.env]
+BUILD_TESTING = "ON"
+BUILD_MAROS_MESZAROS_TESTS = "ON"
 
-[tasks.doc]
-depends-on = ["configure"]
-cmd = ["cmake", "--build", "build", "--target", "doc"]
-
-[tasks.clear]
-cmd = ["cmake", "-E", "remove_directory", "build"]
-
-[tasks.clean]
-depends-on = ["configure"]
-cmd = ["cmake", "--build", "build", "--target", "clean"]
-
-[tasks.lint]
-cmd = ["prek", "run", "-a"]
-
-[feature.packaging.dependencies]
-ccache = ">=4.9.1"
-cmake = ">=3.22"
-cxx-compiler = ">=1.7.0"
-ninja = ">=1.11"
-
-[feature.packaging.tasks._test-packaging-configure]
-depends-on = ["install"]
-cmd = [
+[feature.test.tasks]
+test = { depends-on = ["build"], cmd = ["ctest", "--test-dir", "build", "-LE", "maros_meszaros", "--output-on-failure"] }
+test_maros_meszaros = { depends-on = ["build"], cmd = ["ctest", "--test-dir", "build", "-L", "maros_meszaros", "--output-on-failure"] }
+_test-packaging-simple-configure = { depends-on = ["install"], cmd = [
   "cmake",
   "-G",
   "Ninja",
@@ -123,15 +101,9 @@ cmd = [
   "build/packaging",
   "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "--log-level=DEBUG",
-]
-
-[feature.packaging.tasks.packaging]
-depends-on = ["_test-packaging-configure"]
-cmd = ["cmake", "--build", "build/packaging", "--verbose"]
-
-[feature.packaging.tasks._test-packaging-components-configure]
-depends-on = ["install"]
-cmd = [
+] }
+_test-packaging-simple = { depends-on = ["_test-packaging-simple-configure"], cmd = ["cmake", "--build", "build/packaging", "--verbose"] }
+_test-packaging-components-configure = { depends-on = ["install"], cmd = [
   "cmake",
   "-G",
   "Ninja",
@@ -141,14 +113,9 @@ cmd = [
   "build/packaging-components",
   "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "--log-level=DEBUG",
-]
-
-[feature.packaging.tasks.packaging-components]
-depends-on = ["_test-packaging-components-configure"]
-cmd = ["cmake", "--build", "build/packaging-components", "--verbose"]
-
-[feature.packaging.tasks._test-packaging-fetchcontent-configure]
-cmd = [
+] }
+_test-packaging-components = { depends-on = ["_test-packaging-components-configure"], cmd = ["cmake", "--build", "build/packaging-components", "--verbose"] }
+_test-packaging-fetchcontent-configure = { cmd = [
   "cmake",
   "-G",
   "Ninja",
@@ -159,19 +126,44 @@ cmd = [
   "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "-DPROXSUITE_FETCHCONTENT_SOURCE_DIR=$PIXI_PROJECT_ROOT",
   "--log-level=DEBUG",
-]
+] }
+_test-packaging-fetchcontent = { depends-on = ["_test-packaging-fetchcontent-configure"], cmd = ["cmake", "--build", "build/packaging-fetchcontent", "--verbose"] }
+test-packaging = { depends-on = [
+  "_test-packaging-simple",
+  "_test-packaging-components",
+  "_test-packaging-fetchcontent",
+] }
 
-[feature.packaging.tasks.packaging-fetchcontent]
-depends-on = ["_test-packaging-fetchcontent-configure"]
-cmd = ["cmake", "--build", "build/packaging-fetchcontent", "--verbose"]
+# --- Documentation Feature ---
+# Standalone environment for building documentation with Doxygen.
+# Use `build_documentation` to generate docs, `install_documentation` to install them.
+[feature.doc.dependencies]
+doxygen = ">=1.13.2,<2"
+graphviz = ">=10.0.0,<14"
 
-[feature.cpp20.activation.env]
-PROXSUITE_CXX_STANDARD = "20"
+[feature.doc.activation.env]
+BUILD_DOCUMENTATION = "ON"
+INSTALL_DOCUMENTATION = "ON"
 
-[feature.cpp23.activation.env]
-PROXSUITE_CXX_STANDARD = "23"
+[feature.doc.tasks]
+build_documentation = { depends-on = ["configure"], cmd = ["cmake", "--build", "build", "--target", "doc"] }
+install_documentation = { depends-on = ["build_documentation"], cmd = ["cmake", "--install", "build", "--component", "doc"] }
 
+# --- Lint Feature ---
+# Standalone linting environment using prek.
+# Minimal dependencies - only includes the linter itself.
+[feature.lint.dependencies]
+prek = ">=0.2.21,<0.3"
+
+[feature.lint.tasks]
+lint = { cmd = ["prek", "run", "-a"] }
+
+# --- Environments ---
+# Compose features on top of the default dependencies.
+# - default: Full development environment (Python + Testing)
+# - doc: Documentation build (includes default dependencies)
+# - lint: Linting-only environment (no-default-feature = true)
 [environments]
-cpp20 = ["cpp20"]
-cpp23 = ["cpp23"]
-packaging-tests = { features = ["packaging"], no-default-feature = true }
+default = { features = ["python", "test"] }
+doc = { features = ["doc"] }
+lint = { features = ["lint"], no-default-feature = true }
