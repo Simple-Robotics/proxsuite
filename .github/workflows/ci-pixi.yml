@@ -49,28 +49,39 @@ jobs:
       - name: Install Pixi environment
         run: pixi install
 
-      - name: Configure & Build
-        run: pixi run build --verbose --parallel 1
+      - name: Configure
+        run: pixi run configure --fresh --log-level=DEBUG
 
-      - name: Build documentation
-        run: pixi run doc
+      - name: Build
+        run: pixi run build --verbose --parallel 1
 
       - name: Install
         run: pixi run install
 
-      - name: Uninstall
-        run: pixi run uninstall
+      - name: Test Python import
+        run: pixi run test-import-python
 
-      - name: Run tests
+      - name: Run C++ tests
         if: ${{ !(startsWith(matrix.os, 'windows-') && matrix.build_type == 'Debug') }}
         run: pixi run test
 
-      - name: Run test packaging (find_package)
+      - name: Run packaging tests
         run: pixi run test-packaging
 
-      - name: Run test packaging (find_package+components)
-        run: pixi run test-packaging-components
+      - name: Uninstall
+        run: pixi run uninstall
 
-      - name: Run test packaging (FetchContent)
-        run: pixi run test-packaging-fetchcontent
+  pixi-lint:
+    name: Pixi Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Pixi
+        uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          environments: lint
+
+      - name: Lint
+        run: pixi run -e lint lint
 
