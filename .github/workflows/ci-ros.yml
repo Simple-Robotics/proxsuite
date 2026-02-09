@@ -46,7 +46,6 @@ jobs:
       - uses: ros-industrial/industrial_ci@ba2a3d0f830f8051b356711a8df2fedfc5d256cf
         env:
           CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=ON -DBUILD_WITH_SERIALIZATION=ON -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DBUILD_BENCHMARKS=ON
-          PRERELEASE: true
           VERBOSE_OUTPUT: true
           VERBOSE_TESTS: true
           ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
