@@ -1,6 +1,12 @@
-name: PyPI Wheel
+name: Release on PyPI (Wheel)
 
-on: [push, pull_request]
+on:
+  pull_request:
+    paths-ignore:
+      - CHANGELOG.md
+  release:
+    types:
+      - published
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -53,7 +59,6 @@ jobs:
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1.13
         with:
-          repository-url: https://test.pypi.org/legacy/
           verbose: true
           print-hash: true
 
