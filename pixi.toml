@@ -10,8 +10,8 @@ ccache = ">=4.9.1"
 cmake = ">=3.22"
 cxx-compiler = ">=1.7.0"
 ninja = ">=1.11"
-eigen = ">=3.4.0,<4"
-simde = ">=0.8.2,<0.9"
+eigen = ">=3.4.0"
+simde = ">=0.8.2"
 
 [activation.env]
 # Setup ccache
@@ -46,10 +46,35 @@ configure = { cmd = [
   "-DBUILD_TESTING=$BUILD_TESTING",
   "-DBUILD_PYTHON_INTERFACE=$BUILD_PYTHON_INTERFACE",
 ] }
-build = { depends-on = ["configure"], cmd = ["cmake", "--build", "build"] }
-install = { depends-on = ["build"], cmd = ["cmake", "--install", "build"] }
-uninstall = { depends-on = ["install"], cmd = ["cmake", "--build", "build", "--target", "uninstall"] }
+build = { depends-on = ["configure"], cmd = "cmake --build build" }
+install = { depends-on = ["build"], cmd = "cmake --install build" }
+uninstall = { depends-on = ["install"], cmd = "cmake --build build --target uninstall" }
 clean = { cmd = "rm -rf build" }
+
+# --- Wheel Tasks ---
+build-all-wheels = { depends-on = [
+  { task = "build-wheel", environment = "py310" },
+  { task = "build-wheel", environment = "py311" },
+  { task = "build-wheel", environment = "py312" },
+  { task = "build-wheel", environment = "py313" },
+  { task = "build-wheel", environment = "py314" },
+] }
+
+check-all-wheels = { depends-on = [
+  { task = "check-wheel", environment = "py310" },
+  { task = "check-wheel", environment = "py311" },
+  { task = "check-wheel", environment = "py312" },
+  { task = "check-wheel", environment = "py313" },
+  { task = "check-wheel", environment = "py314" },
+] }
+
+test-all-wheels = { depends-on = [
+  { task = "test-wheel", environment = "py310" },
+  { task = "test-wheel", environment = "py311" },
+  { task = "test-wheel", environment = "py312" },
+  { task = "test-wheel", environment = "py313" },
+  { task = "test-wheel", environment = "py314" },
+] }
 
 # --- Features ---
 # Each feature groups optional dependencies and tasks.
@@ -59,39 +84,72 @@ clean = { cmd = "rm -rf build" }
 # Adds Python bindings support with nanobind.
 # Enables building and testing Python wrappers for the C++ library.
 [feature.python.dependencies]
-python = ">=3.8, <3.13"
-python_abi = ">=3.8, <3.13"
-numpy = ">=1.24.0,<2.4"
-nanobind = ">=2.9.2,<3"
+python = ">=3.8"
+numpy = ">=1.24.0"
+nanobind = ">=2.4.0"
 
 [feature.python.activation.env]
 BUILD_PYTHON_INTERFACE = "ON"
 
 [feature.python.tasks]
-test-import-python = { depends-on = ["install"], cmd = [
+test-import-python = { depends-on = [
+  "install",
+], cmd = [
   "python",
   "-c",
   "import proxsuite; print(proxsuite.helpers.printVersion())",
 ] }
+
+# --- Python Version Features ---
+[feature.py310.dependencies]
+python = "3.10.*"
+[feature.py311.dependencies]
+python = "3.11.*"
+[feature.py312.dependencies]
+python = "3.12.*"
+[feature.py313.dependencies]
+python = "3.13.*"
+[feature.py314.dependencies]
+python = "3.14.*"
 
 # --- Test Feature ---
 # Adds C++ testing dependencies and test runners.
 # Includes support for Maros-Meszaros benchmark tests (very slow, excluded by default).
 # Use `test` task for regular tests, `test_maros_meszaros` for benchmark tests.
 [feature.test.dependencies]
-catch2 = ">=3.8.0,<4"
-cereal = ">=1.3.2,<2"
-scipy = ">=1.16.3,<2"
-libmatio = ">=1.2.0,<2"
+catch2 = ">=3.4.0"
+cereal = ">=1.3.0"
+scipy = ">=1.7.0"
+libmatio = ">=1.5.0"
 
 [feature.test.activation.env]
 BUILD_TESTING = "ON"
 BUILD_MAROS_MESZAROS_TESTS = "ON"
 
 [feature.test.tasks]
-test = { depends-on = ["build"], cmd = ["ctest", "--test-dir", "build", "-LE", "maros_meszaros", "--output-on-failure"] }
-test_maros_meszaros = { depends-on = ["build"], cmd = ["ctest", "--test-dir", "build", "-L", "maros_meszaros", "--output-on-failure"] }
-_test-packaging-simple-configure = { depends-on = ["install"], cmd = [
+test = { depends-on = [
+  "build",
+], cmd = [
+  "ctest",
+  "--test-dir",
+  "build",
+  "-LE",
+  "maros_meszaros",
+  "--output-on-failure",
+] }
+test_maros_meszaros = { depends-on = [
+  "build",
+], cmd = [
+  "ctest",
+  "--test-dir",
+  "build",
+  "-L",
+  "maros_meszaros",
+  "--output-on-failure",
+] }
+_test-packaging-simple-configure = { depends-on = [
+  "install",
+], cmd = [
   "cmake",
   "-G",
   "Ninja",
@@ -102,8 +160,17 @@ _test-packaging-simple-configure = { depends-on = ["install"], cmd = [
   "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "--log-level=DEBUG",
 ] }
-_test-packaging-simple = { depends-on = ["_test-packaging-simple-configure"], cmd = ["cmake", "--build", "build/packaging", "--verbose"] }
-_test-packaging-components-configure = { depends-on = ["install"], cmd = [
+_test-packaging-simple = { depends-on = [
+  "_test-packaging-simple-configure",
+], cmd = [
+  "cmake",
+  "--build",
+  "build/packaging",
+  "--verbose",
+] }
+_test-packaging-components-configure = { depends-on = [
+  "install",
+], cmd = [
   "cmake",
   "-G",
   "Ninja",
@@ -114,7 +181,14 @@ _test-packaging-components-configure = { depends-on = ["install"], cmd = [
   "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "--log-level=DEBUG",
 ] }
-_test-packaging-components = { depends-on = ["_test-packaging-components-configure"], cmd = ["cmake", "--build", "build/packaging-components", "--verbose"] }
+_test-packaging-components = { depends-on = [
+  "_test-packaging-components-configure",
+], cmd = [
+  "cmake",
+  "--build",
+  "build/packaging-components",
+  "--verbose",
+] }
 _test-packaging-fetchcontent-configure = { cmd = [
   "cmake",
   "-G",
@@ -127,7 +201,14 @@ _test-packaging-fetchcontent-configure = { cmd = [
   "-DPROXSUITE_FETCHCONTENT_SOURCE_DIR=$PIXI_PROJECT_ROOT",
   "--log-level=DEBUG",
 ] }
-_test-packaging-fetchcontent = { depends-on = ["_test-packaging-fetchcontent-configure"], cmd = ["cmake", "--build", "build/packaging-fetchcontent", "--verbose"] }
+_test-packaging-fetchcontent = { depends-on = [
+  "_test-packaging-fetchcontent-configure",
+], cmd = [
+  "cmake",
+  "--build",
+  "build/packaging-fetchcontent",
+  "--verbose",
+] }
 test-packaging = { depends-on = [
   "_test-packaging-simple",
   "_test-packaging-components",
@@ -138,25 +219,61 @@ test-packaging = { depends-on = [
 # Standalone environment for building documentation with Doxygen.
 # Use `build_documentation` to generate docs, `install_documentation` to install them.
 [feature.doc.dependencies]
-doxygen = ">=1.13.2,<2"
-graphviz = ">=10.0.0,<14"
+doxygen = ">=1.10.0"
+graphviz = ">=10.0.0"
 
 [feature.doc.activation.env]
 BUILD_DOCUMENTATION = "ON"
 INSTALL_DOCUMENTATION = "ON"
 
 [feature.doc.tasks]
-build_documentation = { depends-on = ["configure"], cmd = ["cmake", "--build", "build", "--target", "doc"] }
-install_documentation = { depends-on = ["build_documentation"], cmd = ["cmake", "--install", "build", "--component", "doc"] }
+build_documentation = { depends-on = [
+  "configure",
+], cmd = [
+  "cmake",
+  "--build",
+  "build",
+  "--target",
+  "doc",
+] }
+install_documentation = { depends-on = [
+  "build_documentation",
+], cmd = [
+  "cmake",
+  "--install",
+  "build",
+  "--component",
+  "doc",
+] }
 
 # --- Lint Feature ---
 # Standalone linting environment using prek.
 # Minimal dependencies - only includes the linter itself.
 [feature.lint.dependencies]
-prek = ">=0.2.21,<0.3"
+prek = ">=0.2.21"
 
 [feature.lint.tasks]
-lint = { cmd = ["prek", "run", "-a"] }
+lint = { cmd = "prek run -a" }
+
+[feature.build-wheel.dependencies]
+python-build = "*"
+twine = ">=6.0.0"
+ninja = ">=1.11"
+pip = "*"
+
+[feature.build-wheel.pypi-dependencies]
+cmeel = "*"
+
+[feature.build-wheel.tasks]
+build-wheel = { cmd = "pip wheel . -w dist --no-deps --verbose" }
+check-wheel = { depends-on = ["build-wheel"], cmd = "twine check --strict dist/*" }
+_install-wheel = { depends-on = [
+  "check-wheel",
+], cmd = "pip install --force-reinstall --no-index --no-deps --find-links dist proxsuite --verbose" }
+_import-wheel = { depends-on = [
+  "_install-wheel",
+], cmd = "python -c 'import proxsuite; print(proxsuite.helpers.printVersion())'" }
+test-wheel = { depends-on = ["_install-wheel", "_import-wheel"] }
 
 # --- Environments ---
 # Compose features on top of the default dependencies.
@@ -167,3 +284,8 @@ lint = { cmd = ["prek", "run", "-a"] }
 default = { features = ["python", "test"] }
 doc = { features = ["doc"] }
 lint = { features = ["lint"], no-default-feature = true }
+py310 = { features = ["python", "test", "build-wheel", "py310"] }
+py311 = { features = ["python", "test", "build-wheel", "py311"] }
+py312 = { features = ["python", "test", "build-wheel", "py312"] }
+py313 = { features = ["python", "test", "build-wheel", "py313"] }
+py314 = { features = ["python", "test", "build-wheel", "py314"] }
