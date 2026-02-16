@@ -125,18 +125,18 @@ endif()
 # - Ubuntu 24.04 ships an incompatible 1.9.2 version of nanobind via apt-get.
 # - Ubuntu 22.04 does not ship nanobind at all via apt-get.
 if(BUILD_PYTHON_INTERFACE)
-  jrl_find_python(3.8 REQUIRED COMPONENTS Interpreter Development.Module)
-  jrl_find_nanobind(2.4.0 CONFIG QUIET)
+  jrl_find_python(3.10 REQUIRED COMPONENTS Interpreter Development.Module)
+  jrl_find_nanobind(2.5.0 CONFIG QUIET)
   if(NOT nanobind_FOUND)
     message(
       WARNING
-      "[proxsuite] nanobind library not found. Falling back to FetchContent to get nanobind v2.9.2"
+      "[proxsuite] nanobind library not found. Falling back to FetchContent to get nanobind v2.11.0"
     )
     include(FetchContent)
     FetchContent_Declare(
       nanobind
       GIT_REPOSITORY https://github.com/wjakob/nanobind.git
-      GIT_TAG v2.9.2
+      GIT_TAG v2.11.0
       EXCLUDE_FROM_ALL
     )
     FetchContent_MakeAvailable(nanobind)
