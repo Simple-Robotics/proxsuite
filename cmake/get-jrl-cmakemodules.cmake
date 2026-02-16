@@ -22,7 +22,7 @@ endif()
 
 # Try to look for the installed package
 message(DEBUG "Looking for jrl-cmakemodules using find_package().")
-find_package(jrl-cmakemodules 1.1.2 CONFIG QUIET)
+find_package(jrl-cmakemodules 1.2.0 CONFIG QUIET)
 
 # If we have the package, we are done.
 if(jrl-cmakemodules_FOUND)
