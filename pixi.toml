@@ -84,9 +84,9 @@ test-all-wheels = { depends-on = [
 # Adds Python bindings support with nanobind.
 # Enables building and testing Python wrappers for the C++ library.
 [feature.python.dependencies]
-python = ">=3.8"
+python = ">=3.10"
 numpy = ">=1.24.0"
-nanobind = ">=2.4.0"
+nanobind = ">=2.5.0"
 
 [feature.python.activation.env]
 BUILD_PYTHON_INTERFACE = "ON"
