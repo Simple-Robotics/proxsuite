@@ -47,9 +47,6 @@ jobs:
         with:
           environments: default
 
-      - name: Install Pixi environment
-        run: pixi -e default install
-
       - name: Configure
         run: pixi run -e default configure --fresh --log-level=DEBUG
 
