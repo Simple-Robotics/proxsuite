@@ -1,4 +1,4 @@
-name: CI - Linux (APT)
+name: CI - Linux
 
 on:
   push:
@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build_and_test:
+  ubuntu:
     name: CI - ${{ matrix.os }} - ${{ matrix.build_type }} (APT)
     runs-on: ${{ matrix.os }}
     strategy:
@@ -61,14 +61,27 @@ jobs:
       - name: CMake Install
         run: /usr/bin/cmake --install build --prefix install
 
+  archlinux:
+    name: CI - ArchLinux
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux/archlinux:base-devel
+    steps:
+      - run: pacman -Syu --noconfirm cmake ninja catch2 git eigen cereal libmatio doxygen graphviz nanobind python-scipy simde
+      - uses: actions/checkout@v6
+      - run: cmake -G Ninja -B build -S . -DBUILD_PYTHON_INTERFACE=ON
+      - run: cmake --build build
+      - run: ctest --test-dir build --output-on-failure
+
   check:
     if: always()
     name: check-linux
 
     needs:
-      - build_and_test
+      - ubuntu
+      - archlinux
 
-    runs-on: Ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Decide whether the needed jobs succeeded or failed
