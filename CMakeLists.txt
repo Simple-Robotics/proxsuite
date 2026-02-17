@@ -13,6 +13,16 @@ include(cmake/get-jrl-cmakemodules.cmake)
 
 jrl_configure_defaults()
 
+# Requires macOS >=10.14 SDK (fixes build issues on macos-15-intel)
+# ref: https://github.com/wjakob/nanobind_example/blob/master/pyproject.toml#L43
+set(
+  CMAKE_OSX_DEPLOYMENT_TARGET
+  "10.14"
+  CACHE STRING
+  "Minimum macOS version supported by proxsuite"
+  FORCE
+)
+
 set(PROXSUITE_CXX_STANDARD 17 CACHE STRING "C++ standard to be used by proxsuite")
 if(PROXSUITE_CXX_STANDARD LESS 17)
   message(
