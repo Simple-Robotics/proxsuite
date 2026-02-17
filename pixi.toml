@@ -48,33 +48,10 @@ configure = { cmd = [
 ] }
 build = { depends-on = ["configure"], cmd = "cmake --build build" }
 install = { depends-on = ["build"], cmd = "cmake --install build" }
-uninstall = { depends-on = ["install"], cmd = "cmake --build build --target uninstall" }
+uninstall = { depends-on = [
+  "install",
+], cmd = "cmake --build build --target uninstall" }
 clean = { cmd = "rm -rf build" }
-
-# --- Wheel Tasks ---
-build-all-wheels = { depends-on = [
-  { task = "build-wheel", environment = "py310" },
-  { task = "build-wheel", environment = "py311" },
-  { task = "build-wheel", environment = "py312" },
-  { task = "build-wheel", environment = "py313" },
-  { task = "build-wheel", environment = "py314" },
-] }
-
-check-all-wheels = { depends-on = [
-  { task = "check-wheel", environment = "py310" },
-  { task = "check-wheel", environment = "py311" },
-  { task = "check-wheel", environment = "py312" },
-  { task = "check-wheel", environment = "py313" },
-  { task = "check-wheel", environment = "py314" },
-] }
-
-test-all-wheels = { depends-on = [
-  { task = "test-wheel", environment = "py310" },
-  { task = "test-wheel", environment = "py311" },
-  { task = "test-wheel", environment = "py312" },
-  { task = "test-wheel", environment = "py313" },
-  { task = "test-wheel", environment = "py314" },
-] }
 
 # --- Features ---
 # Each feature groups optional dependencies and tasks.
@@ -99,18 +76,6 @@ test-import-python = { depends-on = [
   "-c",
   "import proxsuite; print(proxsuite.helpers.printVersion())",
 ] }
-
-# --- Python Version Features ---
-[feature.py310.dependencies]
-python = "3.10.*"
-[feature.py311.dependencies]
-python = "3.11.*"
-[feature.py312.dependencies]
-python = "3.12.*"
-[feature.py313.dependencies]
-python = "3.13.*"
-[feature.py314.dependencies]
-python = "3.14.*"
 
 # --- Test Feature ---
 # Adds C++ testing dependencies and test runners.
@@ -246,46 +211,20 @@ install_documentation = { depends-on = [
   "doc",
 ] }
 
-# --- Lint Feature ---
-# Standalone linting environment using prek.
-# Minimal dependencies - only includes the linter itself.
-[feature.lint.dependencies]
+# --- Environments ---
+# Environments compose features together for different use cases.
+[environments.default]
+features = ["python", "doc", "test"]
+
+# --- Prek Feature ---
+# Standalone pre-commit environment using prek.
+# Minimal dependencies - only includes prek.
+[feature.prek.dependencies]
 prek = ">=0.2.21"
 
-[feature.lint.tasks]
-lint = { cmd = "prek run -a" }
+[feature.prek.tasks]
+prek = { cmd = "prek run -a" }
 
-[feature.build-wheel.dependencies]
-python-build = "*"
-twine = ">=6.0.0"
-ninja = ">=1.11"
-pip = "*"
-
-[feature.build-wheel.pypi-dependencies]
-cmeel = "*"
-
-[feature.build-wheel.tasks]
-build-wheel = { cmd = "pip wheel . -w dist --no-deps --verbose" }
-check-wheel = { depends-on = ["build-wheel"], cmd = "twine check --strict dist/*" }
-_install-wheel = { depends-on = [
-  "check-wheel",
-], cmd = "pip install --force-reinstall --no-index --no-deps --find-links dist proxsuite --verbose" }
-_import-wheel = { depends-on = [
-  "_install-wheel",
-], cmd = "python -c 'import proxsuite; print(proxsuite.helpers.printVersion())'" }
-test-wheel = { depends-on = ["_install-wheel", "_import-wheel"] }
-
-# --- Environments ---
-# Compose features on top of the default dependencies.
-# - default: Full development environment (Python + Testing)
-# - doc: Documentation build (includes default dependencies)
-# - lint: Linting-only environment (no-default-feature = true)
-[environments]
-default = { features = ["python", "test"] }
-doc = { features = ["doc"] }
-lint = { features = ["lint"], no-default-feature = true }
-py310 = { features = ["python", "test", "build-wheel", "py310"] }
-py311 = { features = ["python", "test", "build-wheel", "py311"] }
-py312 = { features = ["python", "test", "build-wheel", "py312"] }
-py313 = { features = ["python", "test", "build-wheel", "py313"] }
-py314 = { features = ["python", "test", "build-wheel", "py314"] }
+[environments.prek]
+features = ["prek"]
+no-default-feature = true
