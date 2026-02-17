@@ -3,6 +3,7 @@ install*/
 dist/
 .pytest_cache/
 .cache/
+*.conda
 .pixi/
 __pycache__/
 Xcode*
