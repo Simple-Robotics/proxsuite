@@ -38,8 +38,6 @@ configure = { cmd = [
   "-DCMAKE_BUILD_TYPE=Release",
   "-DPROXSUITE_CXX_STANDARD=$PROXSUITE_CXX_STANDARD",
   "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
-  "-DBUILD_DOCUMENTATION=$BUILD_DOCUMENTATION",
-  "-DINSTALL_DOCUMENTATION=$INSTALL_DOCUMENTATION",
   "-DBUILD_MAROS_MESZAROS_TESTS=$BUILD_MAROS_MESZAROS_TESTS",
   "-DBUILD_EXAMPLES=ON",
   "-DBUILD_BENCHMARKS=ON",
@@ -187,17 +185,27 @@ test-packaging = { depends-on = [
 doxygen = ">=1.10.0"
 graphviz = ">=10.0.0"
 
-[feature.doc.activation.env]
-BUILD_DOCUMENTATION = "ON"
-INSTALL_DOCUMENTATION = "ON"
-
 [feature.doc.tasks]
+_configure_documentation = { cmd = [
+  "cmake",
+  "-S",
+  ".",
+  "-B",
+  "build/doc_build",
+  "-G",
+  "Ninja",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
+  "-DCMAKE_INSTALL_PREFIX=build/doc_install",
+  "-DCMAKE_BUILD_TYPE=Release",
+  "-DBUILD_DOCUMENTATION=ON",
+  "-DINSTALL_DOCUMENTATION=ON",
+] }
 build_documentation = { depends-on = [
-  "configure",
+  "_configure_documentation",
 ], cmd = [
   "cmake",
   "--build",
-  "build",
+  "build/doc_build",
   "--target",
   "doc",
 ] }
@@ -206,7 +214,7 @@ install_documentation = { depends-on = [
 ], cmd = [
   "cmake",
   "--install",
-  "build",
+  "build/doc_build",
   "--component",
   "doc",
 ] }
@@ -214,7 +222,10 @@ install_documentation = { depends-on = [
 # --- Environments ---
 # Environments compose features together for different use cases.
 [environments.default]
-features = ["python", "doc", "test"]
+features = ["python", "test"]
+
+[environments.doc]
+features = ["doc"]
 
 # --- Prek Feature ---
 # Standalone pre-commit environment using prek.
