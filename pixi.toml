@@ -4,6 +4,7 @@ version = "0.7.2"
 description = "The Advanced Proximal Optimization Toolbox"
 channels = ["conda-forge"]
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+preview = ["pixi-build"]
 
 [dependencies]
 ccache = ">=4.9.1"
@@ -239,3 +240,37 @@ prek = { cmd = "prek run -a" }
 [environments.prek]
 features = ["prek"]
 no-default-feature = true
+
+# --- Pixi Build Feature ---
+# Standalone environment for building with Pixi.
+[package]
+name = { workspace = true }
+version = { workspace = true }
+
+[package.build]
+backend = { name = "pixi-build-cmake", version = "*" }
+
+[package.build.config]
+extra-args = [
+  "--log-level=DEBUG",
+  "-DCMAKE_BUILD_TYPE=Release",
+  "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
+  "-DBUILD_EXAMPLES=OFF",
+  "-DBUILD_BENCHMARKS=OFF",
+  "-DBUILD_TESTING=OFF",
+  "-DBUILD_MAROS_MESZAROS_TESTS=OFF",
+  "-DBUILD_PYTHON_INTERFACE=ON",
+]
+
+[package.build-dependencies]
+ccache = ">=4.9.1"
+cmake = ">=3.22"
+cxx-compiler = ">=1.7.0"
+ninja = ">=1.11"
+
+[package.host-dependencies]
+eigen = ">=3.4.0"
+simde = ">=0.8.2"
+python = ">=3.10"
+numpy = ">=1.24.0"
+nanobind = ">=2.5.0"
