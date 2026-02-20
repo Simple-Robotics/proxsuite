@@ -32,7 +32,7 @@ jobs:
         build_type: [Release, Debug]
         cxx_std: [17, 20]
         pixi_environment: [default]
-        os: [ubuntu-22.04, ubuntu-24.04, macos-15-intel, macos-26, windows-2022, windows-2025]
+        os: [ubuntu-24.04, macos-15-intel, macos-26, windows-2025]
 
     steps:
       - uses: actions/checkout@v6
@@ -74,7 +74,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-15-intel, macos-26, windows-2022, windows-2025]
+        os: [ubuntu-24.04, macos-15-intel, macos-26, windows-2025]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
