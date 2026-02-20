@@ -177,7 +177,6 @@ endif()
 
 add_library(proxsuite INTERFACE)
 add_library(proxsuite::proxsuite ALIAS proxsuite)
-set_target_properties(proxsuite PROPERTIES VERSION ${PROJECT_VERSION})
 target_compile_features(proxsuite INTERFACE cxx_std_${PROXSUITE_CXX_STANDARD})
 jrl_target_enforce_msvc_conformance(proxsuite INTERFACE)
 
@@ -188,7 +187,7 @@ target_include_directories(
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-jrl_target_generate_config_header(proxsuite INTERFACE)
+jrl_target_generate_config_header(proxsuite INTERFACE VERSION ${PROJECT_VERSION})
 
 if(ENABLE_WARNINGS)
   jrl_target_set_default_compile_options(proxsuite INTERFACE)
