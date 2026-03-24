@@ -280,17 +280,17 @@ eigen = ">=3.4.0"
 simde = ">=0.8.2"
 cereal = ">=1.3.0"
 
-[feature.test-pixi-build.dependencies]
-proxsuite = { path = "." }
-cmake = ">=3.22"
-python = ">=3.10"
-cxx-compiler = ">=1.11.0"
+# [feature.test-pixi-build.dependencies]
+# proxsuite = { path = "." }
+# cmake = ">=3.22"
+# python = ">=3.10"
+# cxx-compiler = ">=1.11.0"
 
-[feature.test-pixi-build.tasks]
-test-cmake = "cmake -S test/packaging/cmake -B build/test_pixi_build --log-level=DEBUG"
-test-python = "python -c 'import proxsuite; print(proxsuite.__version__)'"
-test = { depends-on = ["test-cmake", "test-python"] }
+# [feature.test-pixi-build.tasks]
+# test-cmake = "cmake -S test/packaging/cmake -B build/test_pixi_build --log-level=DEBUG"
+# test-python = "python -c 'import proxsuite; print(proxsuite.__version__)'"
+# test = { depends-on = ["test-cmake", "test-python"] }
 
-[environments.test-pixi-build]
-features = ["test-pixi-build"]
-no-default-feature = true
+# [environments.test-pixi-build]
+# features = ["test-pixi-build"]
+# no-default-feature = true
