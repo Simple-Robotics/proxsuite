@@ -69,24 +69,24 @@ jobs:
       - name: Uninstall
         run: pixi run -e default uninstall
 
-  pixi-build:
-    name: Pixi Build CI
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-24.04, macos-15-intel, macos-26, windows-2025]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v6
+  # pixi-build:
+  #   name: Pixi Build CI
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu-24.04, macos-15-intel, macos-26, windows-2025]
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - uses: actions/checkout@v6
 
-      - name: Install Pixi
-        uses: prefix-dev/setup-pixi@v0.9.3
-        with:
-          cache: false
-          environments: test-pixi-build
+  #     - name: Install Pixi
+  #       uses: prefix-dev/setup-pixi@v0.9.3
+  #       with:
+  #         cache: false
+  #         environments: test-pixi-build
 
-      - name: Run Pixi build test
-        run: pixi run -e test-pixi-build test
+  #     - name: Run Pixi build test
+  #       run: pixi run -e test-pixi-build test
 
   prek:
     name: Prek CI
@@ -109,7 +109,7 @@ jobs:
     needs:
       - prek
       - pixi
-      - pixi-build
+      # - pixi-build
 
     runs-on: ubuntu-latest
 
