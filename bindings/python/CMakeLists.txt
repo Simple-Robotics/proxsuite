@@ -79,6 +79,11 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
           "${FMA_COMPILE_OPTION}"
         LINK_LIBRARIES proxsuite-vectorized
       )
+      if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND Eigen3_VERSION VERSION_GREATER_EQUAL 5.0)
+        # BUG: Eigen5 introduced a new AVX512 GEMM kernel that causes extremely long compilation times on MSVC.
+        # Disabling it for now. ref: libeigen/eigen#3066
+        target_compile_definitions(proxsuite_pywrap_avx512 PRIVATE EIGEN_USE_AVX512_GEMM_KERNELS=0)
+      endif()
     endif()
   else()
     message(
