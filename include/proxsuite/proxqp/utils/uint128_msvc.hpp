@@ -6,19 +6,14 @@
 
 #include <cstdint>
 #include <immintrin.h>
+#include <stdexcept>
 
 class uint128_t
 {
 public:
-  uint64_t low;
-  uint64_t high;
+  uint64_t low = 0;
+  uint64_t high = 0;
 
-  // --- Constructors ---
-  constexpr uint128_t()
-    : low(0)
-    , high(0)
-  {
-  }
   constexpr uint128_t(uint64_t l)
     : low(l)
     , high(0)
@@ -31,18 +26,20 @@ public:
   }
 
   // --- Type Conversions ---
-  explicit operator bool() const { return low || high; }
-  explicit operator uint64_t() const { return low; }
-  explicit operator int64_t() const { return static_cast<int64_t>(low); }
+  constexpr explicit operator bool() const { return low || high; }
+  constexpr explicit operator uint64_t() const { return low; }
+  constexpr explicit operator int64_t() const
+  {
+    return static_cast<int64_t>(low);
+  }
 
   // --- Arithmetic Operators ---
 
-  // Addition
   uint128_t operator+(const uint128_t& rhs) const
   {
-    uint128_t result;
-    unsigned char carry = _addcarry_u64(0, low, rhs.low, &result.low);
-    _addcarry_u64(carry, high, rhs.high, &result.high);
+    uint128_t result = 0;
+    const unsigned char carry = _addcarry_u64(0, low, rhs.low, &result.low);
+    std::ignore = _addcarry_u64(carry, high, rhs.high, &result.high);
     return result;
   }
 
@@ -52,11 +49,10 @@ public:
     return *this;
   }
 
-  // Subtraction
   uint128_t operator-(const uint128_t& rhs) const
   {
-    uint128_t result;
-    unsigned char borrow = _subborrow_u64(0, low, rhs.low, &result.low);
+    uint128_t result = 0;
+    const unsigned char borrow = _subborrow_u64(0, low, rhs.low, &result.low);
     _subborrow_u64(borrow, high, rhs.high, &result.high);
     return result;
   }
@@ -67,16 +63,11 @@ public:
     return *this;
   }
 
-  // Multiplication
   uint128_t operator*(const uint128_t& rhs) const
   {
-    uint64_t product_high;
-    uint64_t product_low = _umul128(low, rhs.low, &product_high);
-
-    // The total high part is the high part of (low * rhs.low)
-    // plus the cross terms (low * rhs.high) and (high * rhs.low)
+    uint64_t product_high = 0;
+    const uint64_t product_low = _umul128(low, rhs.low, &product_high);
     product_high += (low * rhs.high) + (high * rhs.low);
-
     return uint128_t(product_low, product_high);
   }
 
@@ -86,37 +77,25 @@ public:
     return *this;
   }
 
-  // Division (Note: Full 128-bit division is complex to implement purely with
-  // intrinsics if the divisor is > 64 bits. This is a simplified version
-  // handling common cases). For production-grade full 128/128 division, usage
-  // of a library like Boost is strongly advised. However, if divisor fits in 64
-  // bits, we can use _udiv128.
+  // Division by a 64-bit divisor uses _udiv128. For a full 128-bit divisor,
+  // falls back to binary long division.
   uint128_t operator/(const uint128_t& rhs) const
   {
-    if (rhs.high == 0) {
-      // Optimization for 64-bit divisor
-      uint64_t remainder;
-      uint64_t quotient_high = 0; // High part of result
-      uint64_t quotient_low;
-
-      // If our high part is distinct, we divide the high part first
-      if (high > 0) {
-        // This is slightly tricky with _udiv128 directly as it does 128/64
-        // -> 64. Standard long division algorithm is safer here for the general
-        // implementation. For simplicity in this snippet, we will fallback to a
-        // naive loop or simple approximation OR promote strictly the 64-bit
-        // divisor case which is most common:
-
-        quotient_high = high / rhs.low;
-        uint64_t r_high = high % rhs.low;
-
-        quotient_low = _udiv128(r_high, low, rhs.low, &remainder);
-        return uint128_t(quotient_low, quotient_high);
-      } else {
-        return uint128_t(low / rhs.low, 0);
-      }
+    if (!rhs) {
+      throw std::domain_error("uint128 division by zero");
     }
-    // Fallback for full 128-bit divisor: Very slow basic binary long division
+    if (rhs.high == 0) {
+      if (high > 0) {
+        const uint64_t quotient_high = high / rhs.low;
+        const uint64_t r_high = high % rhs.low;
+        uint64_t remainder = 0;
+        const uint64_t quotient_low =
+          _udiv128(r_high, low, rhs.low, &remainder);
+        return uint128_t(quotient_low, quotient_high);
+      }
+      return uint128_t(low / rhs.low, 0);
+    }
+    // Binary long division for 128-bit divisor
     if (rhs > *this)
       return uint128_t(0);
     if (rhs == *this)
@@ -124,12 +103,7 @@ public:
 
     uint128_t temp = *this;
     uint128_t quot = 0;
-    uint128_t one = 1;
-
-    // This is slow O(N) division, acceptable for simple utility, bad for heavy
-    // math
     while (temp >= rhs) {
-      // Find shift
       uint128_t shift_rhs = rhs;
       uint128_t shift_count = 1;
       while ((shift_rhs.high & 0x8000000000000000) == 0 &&
@@ -143,7 +117,6 @@ public:
     return quot;
   }
 
-  // Modulus
   uint128_t operator%(const uint128_t& rhs) const
   {
     return *this - (*this / rhs) * rhs;
@@ -156,10 +129,9 @@ public:
   }
 
   // --- Bitwise Operators ---
-  uint128_t operator<<(int shift) const
+  constexpr uint128_t operator<<(int shift) const
   {
-    shift &= 127; // Mask the shift amount to imitate native hardware behavior
-                  // (modulo 128)
+    shift &= 127; // wrap modulo 128, matching hardware behavior
     if (shift == 0)
       return *this;
     if (shift >= 64) {
@@ -168,10 +140,9 @@ public:
     return uint128_t((low << shift), (high << shift) | (low >> (64 - shift)));
   }
 
-  uint128_t operator>>(int shift) const
+  constexpr uint128_t operator>>(int shift) const
   {
-    shift &= 127; // Mask the shift amount to imitate native hardware behavior
-                  // (modulo 128)
+    shift &= 127; // wrap modulo 128, matching hardware behavior
     if (shift == 0)
       return *this;
     if (shift >= 64) {
@@ -181,56 +152,72 @@ public:
   }
 
   // --- Shift by uint128_t Overloads ---
-  uint128_t operator>>(const uint128_t& shift) const
+  constexpr uint128_t operator>>(const uint128_t& shift) const
   {
-    // If shift amount is >= 128, the result behavior mimics hardware (modulo
-    // 128)
     return *this >> static_cast<int>(shift.low);
   }
 
-  uint128_t operator<<(const uint128_t& shift) const
+  constexpr uint128_t operator<<(const uint128_t& shift) const
   {
-    // If shift amount is >= 128, the result behavior mimics hardware (modulo
-    // 128)
     return *this << static_cast<int>(shift.low);
   }
 
-  uint128_t& operator<<=(int shift)
+  constexpr uint128_t& operator<<=(int shift)
   {
     *this = *this << shift;
     return *this;
   }
-  uint128_t& operator>>=(int shift)
+  constexpr uint128_t& operator>>=(int shift)
   {
     *this = *this >> shift;
     return *this;
   }
 
-  uint128_t operator|(const uint128_t& rhs) const
+  constexpr uint128_t& operator<<=(const uint128_t& shift)
+  {
+    *this = *this << shift;
+    return *this;
+  }
+  constexpr uint128_t& operator>>=(const uint128_t& shift)
+  {
+    *this = *this >> shift;
+    return *this;
+  }
+
+  constexpr uint128_t operator|(const uint128_t& rhs) const
   {
     return uint128_t(low | rhs.low, high | rhs.high);
   }
-  uint128_t operator&(const uint128_t& rhs) const
+  constexpr uint128_t operator&(const uint128_t& rhs) const
   {
     return uint128_t(low & rhs.low, high & rhs.high);
   }
-  uint128_t operator^(const uint128_t& rhs) const
+  constexpr uint128_t operator^(const uint128_t& rhs) const
   {
     return uint128_t(low ^ rhs.low, high ^ rhs.high);
   }
-  uint128_t operator~() const { return uint128_t(~low, ~high); }
+  constexpr uint128_t operator~() const { return uint128_t(~low, ~high); }
 
   // --- Comparison Operators ---
-  bool operator==(const uint128_t& rhs) const
+  constexpr bool operator==(const uint128_t& rhs) const
   {
     return low == rhs.low && high == rhs.high;
   }
-  bool operator!=(const uint128_t& rhs) const { return !(*this == rhs); }
-  bool operator<(const uint128_t& rhs) const
+  constexpr bool operator!=(const uint128_t& rhs) const
+  {
+    return !(*this == rhs);
+  }
+  constexpr bool operator<(const uint128_t& rhs) const
   {
     return high < rhs.high || (high == rhs.high && low < rhs.low);
   }
-  bool operator>(const uint128_t& rhs) const { return rhs < *this; }
-  bool operator<=(const uint128_t& rhs) const { return !(*this > rhs); }
-  bool operator>=(const uint128_t& rhs) const { return !(*this < rhs); }
+  constexpr bool operator>(const uint128_t& rhs) const { return rhs < *this; }
+  constexpr bool operator<=(const uint128_t& rhs) const
+  {
+    return !(*this > rhs);
+  }
+  constexpr bool operator>=(const uint128_t& rhs) const
+  {
+    return !(*this < rhs);
+  }
 };
