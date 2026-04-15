@@ -12,6 +12,38 @@ using u128 = uint128_t;
 #define MAKE_U128(low, high) u128(low, high)
 #define CHECK_HIGH(val, expected) CHECK((val).high == (expected))
 #define CHECK_LOW(val, expected) CHECK((val).low == (expected))
+
+// Compile-time checks: verify constexpr operators are truly constexpr
+static_assert(uint128_t(0) == uint128_t(0), "== must be constexpr");
+static_assert(uint128_t(1) != uint128_t(2), "!= must be constexpr");
+static_assert(uint128_t(1) < uint128_t(2), "<  must be constexpr");
+static_assert(uint128_t(2) > uint128_t(1), ">  must be constexpr");
+static_assert(uint128_t(1) <= uint128_t(1), "<= must be constexpr");
+static_assert(uint128_t(1) >= uint128_t(1), ">= must be constexpr");
+static_assert(static_cast<bool>(uint128_t(1)),
+              "operator bool must be constexpr");
+static_assert(!static_cast<bool>(uint128_t(0)),
+              "operator bool(0) must be constexpr");
+static_assert(static_cast<uint64_t>(uint128_t(42)) == 42,
+              "operator uint64_t must be constexpr");
+static_assert(static_cast<int64_t>(uint128_t(7)) == 7,
+              "operator int64_t must be constexpr");
+static_assert((uint128_t(0xFF) | uint128_t(0x100)) == uint128_t(0x1FF),
+              "| must be constexpr");
+static_assert((uint128_t(0xFF) & uint128_t(0x0F)) == uint128_t(0x0F),
+              "& must be constexpr");
+static_assert((uint128_t(0xFF) ^ uint128_t(0x0F)) == uint128_t(0xF0),
+              "^ must be constexpr");
+static_assert((~uint128_t(0)) ==
+                uint128_t(0xFFFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF),
+              "~ must be constexpr");
+static_assert((uint128_t(1) << 4) == uint128_t(16), "<< int must be constexpr");
+static_assert((uint128_t(16) >> 4) == uint128_t(1), ">> int must be constexpr");
+static_assert((uint128_t(1) << uint128_t(4)) == uint128_t(16),
+              "<< u128 must be constexpr");
+static_assert((uint128_t(16) >> uint128_t(4)) == uint128_t(1),
+              ">> u128 must be constexpr");
+
 #else
 using u128 = __uint128_t;
 #define MAKE_U128(low, high) ((u128(high) << 64) | low)
@@ -201,4 +233,102 @@ TEST_CASE("String Output (Decimal)", "[uint128][print]")
   u128 big = MAKE_U128(0, 1);
   ss << big;
   REQUIRE(ss.str() == "18446744073709551616");
+}
+
+TEST_CASE("Division by Zero Guard", "[uint128][division][error]")
+{
+#if defined(_MSC_VER)
+  u128 numerator(100);
+  u128 zero(0);
+
+  // Division by zero should throw std::domain_error
+  REQUIRE_THROWS_AS(numerator / zero, std::domain_error);
+
+  // Test with zero constructed from MAKE_U128
+  u128 zero_via_macro = MAKE_U128(0, 0);
+  REQUIRE_THROWS_AS(numerator / zero_via_macro, std::domain_error);
+
+  // Valid division should not throw
+  u128 ten(10);
+  REQUIRE_NOTHROW(numerator / ten);
+#endif
+}
+
+TEST_CASE("Compound Shift Operators with uint128_t",
+          "[uint128][shift][compound]")
+{
+  SECTION("Left Shift Compound Operator (uint128_t)")
+  {
+    u128 val = u128(1);
+    u128 shift_amt = u128(1);
+
+    // val <<= shift_amt
+    val <<= shift_amt;
+    REQUIRE(val == u128(2)); // 1 << 1 = 2
+
+    // Test crossing boundary
+    u128 val2 = u128(1);
+    u128 shift_64 = u128(64);
+    val2 <<= shift_64;
+    CHECK_HIGH(val2, 1);
+    CHECK_LOW(val2, 0);
+  }
+
+  SECTION("Right Shift Compound Operator (uint128_t)")
+  {
+    u128 val = MAKE_U128(0, 1); // high=1, low=0 (represents 2^64)
+    u128 shift_amt = u128(1);
+
+    // val >>= shift_amt
+    val >>= shift_amt;
+    CHECK_HIGH(val, 0);
+    CHECK_LOW(val, (1ULL << 63)); // 2^63
+
+    // Test crossing boundary with larger shift
+    u128 val2 = MAKE_U128(0, 1);
+    u128 shift_64 = u128(64);
+    val2 >>= shift_64;
+    CHECK_HIGH(val2, 0);
+    CHECK_LOW(val2, 1);
+  }
+
+  SECTION("Chained Shift Operations (uint128_t)")
+  {
+    u128 val = u128(1);
+    u128 shift1 = u128(3);
+    u128 shift2 = u128(2);
+
+    // (1 << 3) << 2 = 1 << 5 = 32
+    val <<= shift1;
+    val <<= shift2;
+    REQUIRE(val == u128(32));
+  }
+
+  SECTION("Large Shift via uint128_t")
+  {
+    u128 one(1);
+    u128 shift_100(100);
+
+    one <<= shift_100;
+    // 1 << 100 results in high bit (1 << (100-64)) = 1 << 36
+    CHECK_HIGH(one, (1ULL << 36));
+    CHECK_LOW(one, 0);
+  }
+
+  SECTION("Over-shift Behavior (uint128_t)")
+  {
+#if defined(_MSC_VER)
+    u128 pattern = MAKE_U128(0xFF, 0xFF);
+    u128 huge_shift(128);
+
+    // pattern <<= 128 should wrap (modulo 128)
+    pattern <<= huge_shift;
+    REQUIRE(pattern == MAKE_U128(0xFF, 0xFF)); // No effective change
+
+    // Test right shift over-shift
+    u128 pattern2 = MAKE_U128(0xFF, 0xFF);
+    pattern2 >>= huge_shift;
+    REQUIRE(pattern2 == MAKE_U128(0xFF, 0xFF)); // No effective change
+#endif
+  }
 }
