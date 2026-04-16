@@ -90,18 +90,15 @@ TEST_CASE("Constructors and Equality", "[uint128]")
 
 TEST_CASE("Bitwise Shifts with u128 (The Fix)", "[uint128][shift]")
 {
-  // This is the specific case you asked for: u128 >> u128
   u128 val = u128(0);
   u128 shift_amt = u128(64);
 
   REQUIRE((val >> shift_amt) == u128(0));
 
-  // Test shifting a real value by a u128
   u128 one(1);
   u128 two(2);
-  REQUIRE((one << one) == u128(2)); // 1 << 1 = 2
+  REQUIRE((one << one) == u128(2));
 
-  // Test large shift via u128
   u128 large_shift(100);
   u128 shifted = one << large_shift;
 
@@ -110,11 +107,8 @@ TEST_CASE("Bitwise Shifts with u128 (The Fix)", "[uint128][shift]")
   CHECK_LOW(shifted, 0);
 
 #if defined(_MSC_VER)
-  // Test over-shift (>= 128) via u128
-  // Now MSVC behaves like __uint128_t (modulo 128 shift)
   u128 huge_shift(128);
   u128 pattern = MAKE_U128(0xFF, 0xFF);
-  // pattern >> 128 is effectively pattern >> 0, which is pattern
   REQUIRE((pattern >> huge_shift) == pattern);
 #endif
 }
@@ -123,18 +117,15 @@ TEST_CASE("Standard Bitwise Shifts (int)", "[uint128][shift]")
 {
   u128 val = MAKE_U128(1, 0); // low=1, high=0
 
-  // Shift left crossing boundary
   u128 res = val << 64;
   CHECK_HIGH(res, 1);
   CHECK_LOW(res, 0);
 
-  // Shift right crossing boundary
   u128 high_val = MAKE_U128(0, 1); // low=0, high=1
   res = high_val >> 64;
   CHECK_HIGH(res, 0);
   CHECK_LOW(res, 1);
 
-  // Shift within high part
   u128 mix = MAKE_U128(0, 2);
   REQUIRE((mix << 1) == MAKE_U128(0, 4));
 }
@@ -146,8 +137,6 @@ TEST_CASE("Arithmetic Operations", "[uint128][math]")
     u128 max_low = MAKE_U128(0xFFFFFFFFFFFFFFFF, 0);
     u128 one(1);
     u128 result = max_low + one;
-
-    // Should carry over to high
     CHECK_HIGH(result, 1);
     CHECK_LOW(result, 0);
   }
@@ -157,8 +146,6 @@ TEST_CASE("Arithmetic Operations", "[uint128][math]")
     u128 zero = MAKE_U128(0, 0);
     u128 one(1);
     u128 result = zero - one;
-
-    // Underflow checks
     CHECK_HIGH(result, 0xFFFFFFFFFFFFFFFF);
     CHECK_LOW(result, 0xFFFFFFFFFFFFFFFF);
   }
@@ -169,9 +156,6 @@ TEST_CASE("Arithmetic Operations", "[uint128][math]")
     u128 b(3);
     REQUIRE((a * b) == u128(6));
 
-    // Test overflow into high
-    // 2^64 * 2 = 2^65
-    // Construct 2^64 using the struct (low=0, high=1)
     u128 two_64 = MAKE_U128(0, 1);
     u128 two(2);
     u128 res = two_64 * two;
@@ -222,13 +206,11 @@ TEST_CASE("String Output (Decimal)", "[uint128][print]")
   ss << val;
   REQUIRE(ss.str() == "12345");
 
-  ss.str(""); // Clear
+  ss.str("");
   u128 zero(0);
   ss << zero;
   REQUIRE(ss.str() == "0");
 
-  // Test value larger than uint64_t max (18446744073709551615)
-  // 18446744073709551616 is 2^64 (high=1, low=0)
   ss.str("");
   u128 big = MAKE_U128(0, 1);
   ss << big;
@@ -240,15 +222,11 @@ TEST_CASE("Division by Zero Guard", "[uint128][division][error]")
 #if defined(_MSC_VER)
   u128 numerator(100);
   u128 zero(0);
-
-  // Division by zero should throw std::domain_error
   REQUIRE_THROWS_AS(numerator / zero, std::domain_error);
 
-  // Test with zero constructed from MAKE_U128
   u128 zero_via_macro = MAKE_U128(0, 0);
   REQUIRE_THROWS_AS(numerator / zero_via_macro, std::domain_error);
 
-  // Valid division should not throw
   u128 ten(10);
   REQUIRE_NOTHROW(numerator / ten);
 #endif
@@ -278,11 +256,9 @@ TEST_CASE("Compound Shift Operators with uint128_t",
     u128 val = u128(1);
     u128 shift_amt = u128(1);
 
-    // val <<= shift_amt
     val <<= shift_amt;
-    REQUIRE(val == u128(2)); // 1 << 1 = 2
+    REQUIRE(val == u128(2));
 
-    // Test crossing boundary
     u128 val2 = u128(1);
     u128 shift_64 = u128(64);
     val2 <<= shift_64;
@@ -295,12 +271,10 @@ TEST_CASE("Compound Shift Operators with uint128_t",
     u128 val = MAKE_U128(0, 1); // high=1, low=0 (represents 2^64)
     u128 shift_amt = u128(1);
 
-    // val >>= shift_amt
     val >>= shift_amt;
     CHECK_HIGH(val, 0);
     CHECK_LOW(val, (1ULL << 63)); // 2^63
 
-    // Test crossing boundary with larger shift
     u128 val2 = MAKE_U128(0, 1);
     u128 shift_64 = u128(64);
     val2 >>= shift_64;
@@ -339,12 +313,11 @@ TEST_CASE("Compound Shift Operators with uint128_t",
 
     // pattern <<= 128 should wrap (modulo 128)
     pattern <<= huge_shift;
-    REQUIRE(pattern == MAKE_U128(0xFF, 0xFF)); // No effective change
+    REQUIRE(pattern == MAKE_U128(0xFF, 0xFF));
 
-    // Test right shift over-shift
     u128 pattern2 = MAKE_U128(0xFF, 0xFF);
     pattern2 >>= huge_shift;
-    REQUIRE(pattern2 == MAKE_U128(0xFF, 0xFF)); // No effective change
+    REQUIRE(pattern2 == MAKE_U128(0xFF, 0xFF));
 #endif
   }
 }
