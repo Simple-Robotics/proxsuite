@@ -254,6 +254,22 @@ TEST_CASE("Division by Zero Guard", "[uint128][division][error]")
 #endif
 }
 
+TEST_CASE("Shift by uint128_t with shift.low > INT_MAX",
+          "[uint128][shift][large_shift_amount]")
+{
+#if defined(_MSC_VER)
+  u128 one(1);
+  u128 shift_large(0x80000003ULL);
+  REQUIRE((one << shift_large) == u128(8));
+  REQUIRE((u128(8) >> shift_large) == u128(1));
+
+  u128 shift_zero_bits(0xFFFFFFFF80000000ULL);
+  u128 val = MAKE_U128(0x123456789ABCDEF0ULL, 0xFEDCBA9876543210ULL);
+  REQUIRE((val << shift_zero_bits) == val);
+  REQUIRE((val >> shift_zero_bits) == val);
+#endif
+}
+
 TEST_CASE("Compound Shift Operators with uint128_t",
           "[uint128][shift][compound]")
 {
