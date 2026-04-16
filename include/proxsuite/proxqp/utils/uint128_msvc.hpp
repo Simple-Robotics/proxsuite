@@ -129,7 +129,7 @@ public:
   }
 
   // --- Bitwise Operators ---
-  constexpr uint128_t operator<<(int shift) const
+  constexpr uint128_t operator<<(int32_t shift) const
   {
     shift &= 127; // wrap modulo 128, matching hardware behavior
     if (shift == 0)
@@ -140,7 +140,7 @@ public:
     return uint128_t((low << shift), (high << shift) | (low >> (64 - shift)));
   }
 
-  constexpr uint128_t operator>>(int shift) const
+  constexpr uint128_t operator>>(int32_t shift) const
   {
     shift &= 127; // wrap modulo 128, matching hardware behavior
     if (shift == 0)
@@ -154,20 +154,20 @@ public:
   // --- Shift by uint128_t Overloads ---
   constexpr uint128_t operator>>(const uint128_t& shift) const
   {
-    return *this >> static_cast<int>(shift.low);
+    return *this >> static_cast<int32_t>(shift.low & 127u);
   }
 
   constexpr uint128_t operator<<(const uint128_t& shift) const
   {
-    return *this << static_cast<int>(shift.low);
+    return *this << static_cast<int32_t>(shift.low & 127u);
   }
 
-  constexpr uint128_t& operator<<=(int shift)
+  constexpr uint128_t& operator<<=(int32_t shift)
   {
     *this = *this << shift;
     return *this;
   }
-  constexpr uint128_t& operator>>=(int shift)
+  constexpr uint128_t& operator>>=(int32_t shift)
   {
     *this = *this >> shift;
     return *this;
