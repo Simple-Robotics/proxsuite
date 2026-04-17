@@ -1,10 +1,12 @@
 build*/
 install*/
 dist/
+out/
 .pytest_cache/
 .cache/
 *.conda
 .pixi/
+.vs/
 __pycache__/
 Xcode*
 *.pyc
