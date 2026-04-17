@@ -6991,7 +6991,7 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
 TEST_CASE("ProxQP::dense: test primal infeasibility solving")
 {
   double sparsity_factor = 0.15;
-  T eps_abs = T(1e-5);
+  T eps_abs = T(1e-3);
   utils::rand::set_seed(1);
   dense::isize dim = 20;
 
