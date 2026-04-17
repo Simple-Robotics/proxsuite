@@ -4,7 +4,12 @@
 #error "This file is only compatible with the MSVC compiler"
 #endif
 
+#if !defined(_M_X64) && !defined(_M_AMD64)
+#error "This file requires x64 architecture"
+#endif
+
 #include <cstdint>
+#include <intrin.h>
 #include <immintrin.h>
 #include <stdexcept>
 
