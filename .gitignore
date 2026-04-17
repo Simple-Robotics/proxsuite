@@ -15,3 +15,5 @@ cmake-profiling.json
 *.whl
 dist/
 *.conda
+out/
+.vs/
