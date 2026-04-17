@@ -21,7 +21,7 @@ VEG_DEF_CONCEPT_FROM_BUILTIN_OR_STD(typename T, empty, T);
 
 VEG_DEF_CONCEPT(typename T,
                 nothrow_destructible,
-                noexcept(static_cast<T*>(nullptr)->~T()));
+                std::is_nothrow_destructible<T>::value);
 
 VEG_DEF_CONCEPT(typename T,
                 trivially_destructible,
