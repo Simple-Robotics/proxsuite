@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Recursive stub generation for Python bindings ([#419](https://github.com/Simple-Robotics/proxsuite/pull/419))
+- Wheels for Python 3.14 ([#462](https://github.com/Simple-Robotics/proxsuite/pull/462))
 
 ### Changed
 - Redefine the `load_qp` function in the Maros-Meszaros unit tests ([#433](https://github.com/Simple-Robotics/proxsuite/pull/433))
