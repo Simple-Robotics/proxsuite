@@ -69,8 +69,12 @@ option(BUILD_DOCUMENTATION "Build the documentation." OFF)
 option(BUILD_BENCHMARK "Build the benchmarks" OFF)
 option(INSTALL_DOCUMENTATION "Install the documentation" OFF)
 option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
-set(DOXYGEN_USE_MATHJAX YES)
+option(PROXSUITE_DOXYGEN_USE_MATHJAX "Avoid latex at build time" ON)
 set(DOXYGEN_USE_TEMPLATE_CSS YES)
+
+if(PROXSUITE_DOXYGEN_USE_MATHJAX)
+  set(DOXYGEN_USE_MATHJAX YES)
+endif()
 
 # install() DESTINATION paths are normalized (to remove in 3.31) (copied over
 # from Pinocchio)
