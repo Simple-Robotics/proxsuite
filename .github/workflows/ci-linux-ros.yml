@@ -34,7 +34,7 @@ jobs:
       CMAKE_ARGS: -DBUILD_WITH_VECTORIZATION_SUPPORT=${{ matrix.env.VECTORIZATION_SUPPORT }}  # Simde is available since humble
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
       # Run industrial_ci
