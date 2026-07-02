@@ -1,0 +1,7 @@
+[jrl-cmakemodules]
+url = "github:jrl-umi3218"
+
+[proxsuite]
+apt_deps = ["libeigen3-dev", "libmatio-dev", "libsimde-dev", "python3-numpy", "python3-scipy"]
+url = "."
+src_deps = ["jrl-cmakemodules"]
