@@ -228,17 +228,17 @@ features = ["python", "test"]
 [environments.doc]
 features = ["doc"]
 
-# --- Prek Feature ---
-# Standalone pre-commit environment using prek.
-# Minimal dependencies - only includes prek.
-[feature.prek.dependencies]
-prek = ">=0.2.21"
+# --- lint Feature ---
+# Standalone environment using lint.
+# Minimal dependencies - only includes lint.
+[feature.lint.dependencies]
+pre-commit = "*"
 
-[feature.prek.tasks]
-prek = { cmd = "prek run -a" }
+[feature.lint.tasks]
+lint = { cmd = "pre-commit run -a" }
 
-[environments.prek]
-features = ["prek"]
+[environments.lint]
+features = ["lint"]
 no-default-feature = true
 
 # --- Pixi Build Feature ---

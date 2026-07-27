@@ -88,8 +88,8 @@ jobs:
   #     - name: Run Pixi build test
   #       run: pixi run -e test-pixi-build test
 
-  prek:
-    name: Prek CI
+  lint:
+    name: Pre-Commit Linting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -97,17 +97,17 @@ jobs:
       - name: Install Pixi
         uses: prefix-dev/setup-pixi@v0.9.3
         with:
-          environments: prek
+          environments: lint
 
-      - name: Run Prek
-        run: pixi run -e prek prek
+      - name: Run pre-commit checks
+        run: pixi run -e lint lint
 
   check:
     if: always()
     name: check-linux
 
     needs:
-      - prek
+      - lint
       - pixi
       # - pixi-build
 
