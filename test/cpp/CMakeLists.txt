@@ -79,13 +79,13 @@ endif()
 if(BUILD_MAROS_MESZAROS_TESTS)
   proxsuite_add_test(
     dense_maros_meszaros
-    COMPILE_DEFINITIONS MAROS_MESZAROS_DIR="${MAROS_MESZAROS_DIR}"
+    COMPILE_DEFINITIONS MAROS_MESZAROS_DIR="${MAROS_MESZAROS_DIR}/"
     LINK_LIBRARIES matio::matio
     LABELS maros_meszaros
   )
   proxsuite_add_test(
     sparse_maros_meszaros
-    COMPILE_DEFINITIONS MAROS_MESZAROS_DIR="${MAROS_MESZAROS_DIR}"
+    COMPILE_DEFINITIONS MAROS_MESZAROS_DIR="${MAROS_MESZAROS_DIR}/"
     LINK_LIBRARIES matio::matio
     LABELS maros_meszaros
   )
