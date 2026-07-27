@@ -44,7 +44,7 @@ jobs:
         run: apt-get update
 
       - name: Install dependencies via APT
-        run: apt-get install -y git cmake g++ ninja-build ccache graphviz libmatio-dev doxygen catch2 libeigen3-dev python3-numpy python3-dev python3-scipy
+        run: apt-get install -y git cmake g++ ninja-build ccache graphviz libmatio-dev doxygen catch2 libeigen3-dev python3-numpy python3-dev python3-scipy libcereal-dev libsimde-dev
 
       - name: Clear ccache stats
         run: ccache --show-stats --zero-stats --verbose
