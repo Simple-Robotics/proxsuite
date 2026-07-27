@@ -2,21 +2,65 @@
 name = "proxsuite"
 version = "0.7.2"
 description = "The Advanced Proximal Optimization Toolbox"
-channels = ["conda-forge"]
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+channels = ["conda-forge"]
+license = "BSD-2-Clause"
+license-file = "LICENSE"
 preview = ["pixi-build"]
 
 [dependencies]
-ccache = ">=4.12.0"
+ccache = "*"
 cmake = ">=3.22"
-cxx-compiler = ">=1.11.0"
-ninja = ">=1.13.0"
+cxx-compiler = "*"
+ninja = "*"
 eigen = ">=3.4.0"
 simde = ">=0.8.2"
 
+[package]
+name = { workspace = true }
+version = { workspace = true }
+
+[package.build]
+backend = { name = "pixi-build-cmake", version = "*" }
+
+[package.build.config]
+extra-args = [
+  "--log-level=DEBUG",
+  "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
+  "-DBUILD_EXAMPLES=OFF",
+  "-DBUILD_BENCHMARKS=OFF",
+  "-DBUILD_TESTING=OFF",
+  "-DBUILD_MAROS_MESZAROS_TESTS=OFF",
+  "-DBUILD_PYTHON_INTERFACE=ON",
+]
+
+[package.build-dependencies]
+ccache = "*"
+cmake = ">=3.22"
+cxx-compiler = "*"
+ninja = "*"
+
+[package.host-dependencies]
+eigen = ">=3.4.0"
+simde = ">=0.8.2"
+python = ">=3.10"
+numpy = ">=1.24.0"
+nanobind = ">=2.5.0"
+cereal = ">=1.3.0"
+
+[package.run-dependencies]
+eigen = ">=3.4.0"
+simde = ">=0.8.2"
+cereal = ">=1.3.0"
+
+[target.unix.activation]
+scripts = ["development/scripts/pixi/activation.sh"]
+
+[target.win-64.activation]
+scripts = ["development/scripts/pixi/activation.bat"]
+
 [activation.env]
 # Setup ccache
-CMAKE_C_COMPILER_LAUNCHER = "ccache"
 CMAKE_CXX_COMPILER_LAUNCHER = "ccache"
 # Create compile_commands.json for language server
 CMAKE_EXPORT_COMPILE_COMMANDS = "ON"
@@ -27,47 +71,39 @@ CCACHE_SLOPPINESS = "include_file_ctime,include_file_mtime,pch_defines,time_macr
 
 [tasks]
 configure = { cmd = [
+  "CXXFLAGS=$PROXSUITE_CXX_FLAGS",
   "cmake",
-  "-S",
-  ".",
-  "-B",
-  "build",
   "-G",
   "Ninja",
+  "-B",
+  "build",
+  "-S",
+  ".",
   "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
-  "-DCMAKE_BUILD_TYPE=Release",
-  "-DPROXSUITE_CXX_STANDARD=$PROXSUITE_CXX_STANDARD",
-  "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
-  "-DBUILD_MAROS_MESZAROS_TESTS=$BUILD_MAROS_MESZAROS_TESTS",
+  "-DCMAKE_BUILD_TYPE=$PROXSUITE_BUILD_TYPE",
+  "-DBUILD_WITH_VECTORIZATION_SUPPORT=$PROXSUITE_BUILD_VECTORIZATION",
+  "-DBUILD_MAROS_MESZAROS_TESTS=$PROXSUITE_BUILD_MAROS_MESZAROS_TESTS",
   "-DBUILD_EXAMPLES=ON",
   "-DBUILD_BENCHMARKS=ON",
-  "-DBUILD_TESTING=$BUILD_TESTING",
-  "-DBUILD_PYTHON_INTERFACE=$BUILD_PYTHON_INTERFACE",
+  "-DBUILD_TESTING=$PROXSUITE_BUILD_TESTING",
+  "-DBUILD_PYTHON_INTERFACE=$PROXSUITE_BUILD_PYTHON_INTERFACE",
 ] }
-build = { depends-on = ["configure"], cmd = "cmake --build build" }
-install = { depends-on = ["build"], cmd = "cmake --install build" }
-uninstall = { depends-on = [
-  "install",
-], cmd = "cmake --build build --target uninstall" }
+build = { cmd = "cmake --build build", depends-on = ["configure"] }
 clean = { cmd = "rm -rf build" }
+test = { cmd = "ctest --test-dir build -LE maros_meszaros --output-on-failure", depends-on = [
+  "build",
+] }
+test_maros_meszaros = { cmd = "ctest --test-dir build -L maros_meszaros --output-on-failure", depends-on = [
+  "build",
+] }
+install = { cmd = "cmake --build build --target install", depends-on = [
+  "build",
+] }
+uninstall = { cmd = "cmake --build build --target uninstall", depends-on = [
+  "install",
+] }
 
-# --- Features ---
-# Each feature groups optional dependencies and tasks.
-# They are composed together via environments (see [environments] below).
-
-# --- Python Feature ---
-# Adds Python bindings support with nanobind.
-# Enables building and testing Python wrappers for the C++ library.
-[feature.python.dependencies]
-python = ">=3.10"
-numpy = ">=1.24.0"
-nanobind = ">=2.5.0"
-
-[feature.python.activation.env]
-BUILD_PYTHON_INTERFACE = "ON"
-
-[feature.python.tasks]
 test-import-python = { depends-on = [
   "install",
 ], cmd = [
@@ -76,41 +112,6 @@ test-import-python = { depends-on = [
   "import proxsuite; print(proxsuite.helpers.printVersion())",
 ] }
 
-# --- Test Feature ---
-# Adds C++ testing dependencies and test runners.
-# Includes support for Maros-Meszaros benchmark tests (very slow, excluded by default).
-# Use `test` task for regular tests, `test_maros_meszaros` for benchmark tests.
-[feature.test.dependencies]
-catch2 = ">=3.4.0"
-cereal = ">=1.3.0"
-scipy = ">=1.7.0"
-libmatio = ">=1.5.0"
-
-[feature.test.activation.env]
-BUILD_TESTING = "ON"
-BUILD_MAROS_MESZAROS_TESTS = "ON"
-
-[feature.test.tasks]
-test = { depends-on = [
-  "build",
-], cmd = [
-  "ctest",
-  "--test-dir",
-  "build",
-  "-LE",
-  "maros_meszaros",
-  "--output-on-failure",
-] }
-test_maros_meszaros = { depends-on = [
-  "build",
-], cmd = [
-  "ctest",
-  "--test-dir",
-  "build",
-  "-L",
-  "maros_meszaros",
-  "--output-on-failure",
-] }
 _test-packaging-simple-configure = { depends-on = [
   "install",
 ], cmd = [
@@ -179,9 +180,35 @@ test-packaging = { depends-on = [
   "_test-packaging-fetchcontent",
 ] }
 
+# --- Python Feature ---
+[feature.python.dependencies]
+python = ">=3.10"
+numpy = ">=1.24.0"
+nanobind = ">=2.5.0"
+
+[feature.python.activation.env]
+PROXSUITE_BUILD_PYTHON_INTERFACE = "ON"
+
+[feature.python-latest.dependencies]
+python = "3.14.*"
+
+[feature.python-oldest.dependencies]
+python = "3.10.*"
+
+# --- Test Feature ---
+[feature.test.dependencies]
+catch2 = ">=3.4.0"
+cereal = ">=1.3.0"
+scipy = ">=1.7.0"
+libmatio = ">=1.5.0"
+
+[feature.test.activation.env]
+PROXSUITE_BUILD_TESTING = "ON"
+
+[feature.maros-meszaros.activation.env]
+PROXSUITE_BUILD_MAROS_MESZAROS_TESTS = "ON"
+
 # --- Documentation Feature ---
-# Standalone environment for building documentation with Doxygen.
-# Use `build_documentation` to generate docs, `install_documentation` to install them.
 [feature.doc.dependencies]
 doxygen = ">=1.10.0"
 graphviz = ">=10.0.0"
@@ -220,77 +247,37 @@ install_documentation = { depends-on = [
   "doc",
 ] }
 
-# --- Environments ---
-# Environments compose features together for different use cases.
-[environments.default]
-features = ["python", "test"]
-
-[environments.doc]
-features = ["doc"]
-
-# --- lint Feature ---
-# Standalone environment using lint.
-# Minimal dependencies - only includes lint.
+# --- Lint Feature ---
 [feature.lint.dependencies]
 pre-commit = "*"
 
 [feature.lint.tasks]
-lint = { cmd = "pre-commit run -a" }
+lint = { cmd = "pre-commit run --all" }
 
-[environments.lint]
-features = ["lint"]
-no-default-feature = true
+# --- Clang Feature ---
+[feature.clang]
+activation = { env = { CC = "clang", CXX = "clang++" } }
+dependencies = { clangxx = "*", lld = "*" }
 
-# --- Pixi Build Feature ---
-# Standalone environment for building with Pixi.
-[package]
-name = { workspace = true }
-version = { workspace = true }
+[feature.clang.target.win-64.dependencies]
+llvm-tools = "*"
 
-[package.build]
-backend = { name = "pixi-build-cmake", version = "*" }
-
-[package.build.config]
-extra-args = [
-  "--log-level=DEBUG",
-  "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
-  "-DBUILD_EXAMPLES=OFF",
-  "-DBUILD_BENCHMARKS=OFF",
-  "-DBUILD_TESTING=OFF",
-  "-DBUILD_MAROS_MESZAROS_TESTS=OFF",
-  "-DBUILD_PYTHON_INTERFACE=ON",
-]
-
-[package.build-dependencies]
-ccache = ">=4.12.0"
-cmake = ">=3.22"
-cxx-compiler = ">=1.11.0"
-ninja = ">=1.13.0"
-
-[package.host-dependencies]
-eigen = ">=3.4.0"
-simde = ">=0.8.2"
-python = ">=3.10"
-numpy = ">=1.24.0"
-nanobind = ">=2.5.0"
-cereal = ">=1.3.0"
-
-[package.run-dependencies]
-eigen = ">=3.4.0"
-simde = ">=0.8.2"
-cereal = ">=1.3.0"
-
-# [feature.test-pixi-build.dependencies]
-# proxsuite = { path = "." }
-# cmake = ">=3.22"
-# python = ">=3.10"
-# cxx-compiler = ">=1.11.0"
-
-# [feature.test-pixi-build.tasks]
-# test-cmake = "cmake -S test/packaging/cmake -B build/test_pixi_build --log-level=DEBUG"
-# test-python = "python -c 'import proxsuite; print(proxsuite.__version__)'"
-# test = { depends-on = ["test-cmake", "test-python"] }
-
-# [environments.test-pixi-build]
-# features = ["test-pixi-build"]
-# no-default-feature = true
+# --- Environments ---
+[environments]
+default = { features = ["python", "test", "python-latest"], solve-group = "python-latest" }
+clang = { features = ["clang", "python", "test", "python-latest"] }
+all-clang = { features = [
+  "clang",
+  "python",
+  "test",
+  "python-latest",
+], solve-group = "python-latest" }
+lint = { features = ["lint"], solve-group = "python-latest" }
+python-oldest = { features = ["python", "test", "python-oldest"], solve-group = "python-oldest" }
+maros-meszaros = { features = [
+  "python",
+  "test",
+  "maros-meszaros",
+  "python-latest",
+], solve-group = "python-latest" }
+doc = { features = ["doc"] }
