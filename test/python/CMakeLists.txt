@@ -5,7 +5,9 @@ function(proxsuite_python_add_test name)
   )
   set_tests_properties(
     proxsuite-test-python.${name}
-    PROPERTIES ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:proxsuite_pywrap>/.." LABELS python
+    PROPERTIES
+      ENVIRONMENT_MODIFICATION "PYTHONPATH=path_list_prepend:$<TARGET_FILE_DIR:proxsuite_pywrap>/.."
+      LABELS python
   )
 endfunction()
 
