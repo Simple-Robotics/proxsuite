@@ -13,7 +13,10 @@ function(proxsuite_add_python_example name)
     )
     set_tests_properties(
       proxsuite-example-python.${name}
-      PROPERTIES ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:proxsuite_pywrap>/.." LABELS python
+      PROPERTIES
+        ENVIRONMENT_MODIFICATION
+          "PYTHONPATH=path_list_prepend:$<TARGET_FILE_DIR:proxsuite_pywrap>/.."
+        LABELS python
     )
   endif()
   add_dependencies(proxsuite-examples-python proxsuite-example-py-${name})
