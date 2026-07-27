@@ -33,8 +33,8 @@ else()
 endif()
 
 # Fallback to FetchContent if not found
-set(JRL_GIT_REPOSITORY "https://github.com/ahoarau/jrl-cmakemodules.git")
-set(JRL_GIT_TAG "jrl-next")
+set(JRL_GIT_REPOSITORY "https://github.com/jrl-umi3218/jrl-cmakemodules.git")
+set(JRL_GIT_TAG "master")
 
 message(
   DEBUG
