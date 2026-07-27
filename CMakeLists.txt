@@ -106,28 +106,8 @@ if(BUILD_TESTING)
 endif()
 
 # cereal (Serialization)
-# NOTE: We have to keep the FetchContent support because:
-# - Cereal is not available via CMeel
 if(BUILD_WITH_SERIALIZATION)
-  jrl_find_package(cereal CONFIG QUIET)
-  if(NOT cereal_FOUND)
-    message(
-      WARNING
-      "[proxsuite] cereal library not found. Falling back to FetchContent to get cereal v1.3.2"
-    )
-    include(FetchContent)
-    FetchContent_Declare(
-      cereal
-      URL https://github.com/USCiLab/cereal/archive/refs/tags/v1.3.2.zip
-      URL_HASH MD5=953a872cd3d78abf2e29212987a0ba71
-      SOURCE_SUBDIR
-      download_only
-      EXCLUDE_FROM_ALL
-    )
-    FetchContent_MakeAvailable(cereal)
-    add_library(cereal::cereal INTERFACE IMPORTED)
-    target_include_directories(cereal::cereal SYSTEM INTERFACE ${cereal_SOURCE_DIR}/include)
-  endif()
+  jrl_find_package(cereal CONFIG REQUIRED)
 endif()
 
 # nanobind (Python bindings)
