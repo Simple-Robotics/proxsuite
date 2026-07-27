@@ -45,29 +45,29 @@ jobs:
       - name: Install Pixi
         uses: prefix-dev/setup-pixi@v0.9.3
         with:
-          environments: default
+          environments: ${{ matrix.pixi_environment }}
 
       - name: Configure
-        run: pixi run -e default configure --fresh --log-level=DEBUG
+        run: pixi run -e ${{ matrix.pixi_environment }} configure --fresh --log-level=DEBUG
 
       - name: Build
-        run: pixi run -e default build --verbose --parallel 1
+        run: pixi run -e ${{ matrix.pixi_environment }} build --verbose --parallel 1
 
       - name: Install
-        run: pixi run -e default install
+        run: pixi run -e ${{ matrix.pixi_environment }} install
 
       - name: Test Python import
-        run: pixi run -e default test-import-python
+        run: pixi run -e ${{ matrix.pixi_environment }} test-import-python
 
       - name: Run C++ tests
         if: ${{ !(startsWith(matrix.os, 'windows-') && matrix.build_type == 'Debug') }}
-        run: pixi run -e default test
+        run: pixi run -e ${{ matrix.pixi_environment }} test
 
       - name: Run packaging tests
-        run: pixi run -e default test-packaging
+        run: pixi run -e ${{ matrix.pixi_environment }} test-packaging
 
       - name: Uninstall
-        run: pixi run -e default uninstall
+        run: pixi run -e ${{ matrix.pixi_environment }} uninstall
 
   # pixi-build:
   #   name: Pixi Build CI
