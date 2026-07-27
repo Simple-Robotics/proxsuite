@@ -1,3 +1,9 @@
+//
+// Copyright (c) 2026 INRIA
+//
+// This helper implements uint128 on msvc.
+// NOTE: Meant for testing purposes only, NOT for production use.
+
 #pragma once
 
 #if !defined(_MSC_VER)
