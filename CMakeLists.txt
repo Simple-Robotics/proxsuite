@@ -59,10 +59,18 @@ jrl_option(BUILD_BINDINGS_WITH_AVX512_SUPPORT "Build the bindings with AVX512 su
 jrl_option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
 jrl_option(BUILD_WITH_OPENMP_SUPPORT "Build the library with the OpenMP support" OFF)
 jrl_option(LINK_PYTHON_INTERFACE_TO_OPENMP "Link OpenMP to the Python interface" ON CONDITION "BUILD_WITH_OPENMP_SUPPORT" FALLBACK OFF)
-jrl_option(BUILD_WITH_SERIALIZATION "Build with serialization support" ON CONDITION "BUILD_PYTHON_INTERFACE" FALLBACK OFF)
+jrl_option(BUILD_WITH_SERIALIZATION "Build with serialization support" ON)
 jrl_option(GENERATE_PYTHON_STUBS "Generate Python stubs" OFF)
 jrl_option(PYTHON_BINDING_CUSTOM_INSTALL_DIR "Override the default <current-python-install-sitelib>/<project-name>" "")
 jrl_option(PROXSUITE_DOXYGEN_USE_MATHJAX "Avoid latex at build time" OFF)
+
+# Serialization is required to build the python bindings
+if(BUILD_PYTHON_INTERFACE AND NOT BUILD_WITH_SERIALIZATION)
+  message(
+    FATAL_ERROR
+    "[proxsuite] BUILD_WITH_SERIALIZATION must be ON to build the Python bindings."
+  )
+endif()
 
 ############################################################
 
@@ -105,11 +113,6 @@ if(BUILD_TESTING)
   endif()
 endif()
 
-# cereal (Serialization)
-if(BUILD_WITH_SERIALIZATION)
-  jrl_find_package(cereal CONFIG REQUIRED)
-endif()
-
 # nanobind (Python bindings)
 # NOTE: We have to keep the FetchContent support because:
 # - Ubuntu 24.04 ships an incompatible 1.9.2 version of nanobind via apt-get.
@@ -131,6 +134,11 @@ if(BUILD_PYTHON_INTERFACE)
     )
     FetchContent_MakeAvailable(nanobind)
   endif()
+endif()
+
+# cereal (Serialization)
+if(BUILD_WITH_SERIALIZATION)
+  jrl_find_package(cereal CONFIG REQUIRED)
 endif()
 
 # simde
