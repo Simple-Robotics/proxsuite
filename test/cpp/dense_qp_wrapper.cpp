@@ -2179,9 +2179,9 @@ TEST_CASE("sparse random strongly convex qp with equality and "
 }
 
 /////  TESTS ALL INITIAL GUESS OPTIONS FOR MULTIPLE SOLVES AT ONCE
-TEST_CASE(
-  "sparse random strongly convex qp with equality and "
-  "inequality constraints: test multiple solve at once with no initial guess")
+TEST_CASE("sparse random strongly convex qp with equality and "
+          "inequality constraints: test multiple solves at once with no "
+          "initial guess in dense wrapper")
 {
 
   double sparsity_factor = 0.15;
@@ -3383,6 +3383,145 @@ TEST_CASE(
             qp_random.u,
             update_preconditioner);
   std::cout << "dirty workspace after update : " << qp.work.dirty << std::endl;
+  qp.solve();
+  pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  dua_res = (qp_random.H * qp.results.x + qp_random.g +
+             qp_random.A.transpose() * qp.results.y +
+             qp_random.C.transpose() * qp.results.z)
+              .lpNorm<Eigen::Infinity>();
+  CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  std::cout << "Second solve " << std::endl;
+  std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in
+            << std::endl;
+  std::cout << "; dual residual " << dua_res << "; primal residual " << pri_res
+            << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter
+            << std::endl;
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
+
+  std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
+  qp.solve();
+  pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  dua_res = (qp_random.H * qp.results.x + qp_random.g +
+             qp_random.A.transpose() * qp.results.y +
+             qp_random.C.transpose() * qp.results.z)
+              .lpNorm<Eigen::Infinity>();
+  CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  std::cout << "Third solve " << std::endl;
+  std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in
+            << std::endl;
+  std::cout << "; dual residual " << dua_res << "; primal residual " << pri_res
+            << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter
+            << std::endl;
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
+
+  std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
+  qp.solve();
+  pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  dua_res = (qp_random.H * qp.results.x + qp_random.g +
+             qp_random.A.transpose() * qp.results.y +
+             qp_random.C.transpose() * qp.results.z)
+              .lpNorm<Eigen::Infinity>();
+  CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  std::cout << "Fourth solve " << std::endl;
+  std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in
+            << std::endl;
+  std::cout << "; dual residual " << dua_res << "; primal residual " << pri_res
+            << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter
+            << std::endl;
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
+}
+
+TEST_CASE(
+  "sparse random strongly convex qp with equality and "
+  "inequality constraints: test multiple solve at once with no initial guess")
+{
+
+  double sparsity_factor = 0.15;
+  T eps_abs = T(1e-9);
+  utils::rand::set_seed(1);
+  dense::isize dim = 10;
+
+  dense::isize n_eq(dim / 4);
+  dense::isize n_in(dim / 4);
+  T strong_convexity_factor(1.e-2);
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+  dense::QP<T> qp(dim, n_eq, n_in);
+  qp.settings.eps_abs = eps_abs;
+  qp.settings.eps_rel = 0;
+  qp.settings.initial_guess = InitialGuessStatus::NO_INITIAL_GUESS;
+
+  std::cout << "Test with warm start with previous result and first solve with "
+               "no initial guess"
+            << std::endl;
+  std::cout << "dirty workspace before any solving: " << qp.work.dirty
+            << std::endl;
+
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.l,
+          qp_random.u);
+  qp.solve();
+
+  T pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  T dua_res = (qp_random.H * qp.results.x + qp_random.g +
+               qp_random.A.transpose() * qp.results.y +
+               qp_random.C.transpose() * qp.results.z)
+                .lpNorm<Eigen::Infinity>();
+  CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+  std::cout << "--n = " << dim << " n_eq " << n_eq << " n_in " << n_in
+            << std::endl;
+  std::cout << "; dual residual " << dua_res << "; primal residual " << pri_res
+            << std::endl;
+  std::cout << "total number of iteration: " << qp.results.info.iter
+            << std::endl;
+  std::cout << "setup timing " << qp.results.info.setup_time << " solve time "
+            << qp.results.info.solve_time << std::endl;
+
+  qp.settings.initial_guess =
+    InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT;
+  std::cout << "dirty workspace : " << qp.work.dirty << std::endl;
+  qp_random.H *= 2.;
+  qp_random.g = utils::rand::vector_rand<T>(dim);
+  bool update_preconditioner = true;
+  qp.update(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u,
+            update_preconditioner);
   qp.solve();
   pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
