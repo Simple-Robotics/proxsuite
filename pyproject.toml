@@ -1,3 +1,6 @@
+# [build-system]
+# This section is maintained at https://github.com/cmake-wheel/proxsuite
+
 [project]
 name = "proxsuite"
 version = "0.7.3"
@@ -10,18 +13,6 @@ dependencies = ["numpy","scipy"]
 [project.urls]
 homepage = "https://github.com/Simple-Robotics/proxsuite"
 repository = "https://github.com/Simple-Robotics/proxsuite.git"
-
-[build-system]
-requires = [
-    "cmeel[build]",
-    "cmeel-eigen",
-    "cmeel-simde",
-    "typing-extensions",
-    ]
-build-backend = "cmeel.build"
-
-[tool.cmeel]
-configure-args = ["-DBUILD_TESTING:BOOL=OFF","-DBUILD_PYTHON_INTERFACE:BOOL=ON","-DBUILD_WITH_VECTORIZATION_SUPPORT:BOOL=ON","-DINSTALL_DOCUMENTATION:BOOL=OFF","-DBUILD_WITH_OPENMP_SUPPORT=OFF"]
 
 [tool.ruff.lint]
 ignore = [ "E741" ]
