@@ -13,6 +13,7 @@ ccache = "*"
 cmake = ">=3.22"
 cxx-compiler = "*"
 ninja = "*"
+jrl-cmakemodules = ">=2.1.0"
 eigen = ">=3.4.0"
 simde = ">=0.8.2"
 
@@ -39,6 +40,7 @@ ccache = "*"
 cmake = ">=3.22"
 cxx-compiler = "*"
 ninja = "*"
+jrl-cmakemodules = ">=2.1.0"
 
 [package.host-dependencies]
 eigen = ">=3.4.0"
