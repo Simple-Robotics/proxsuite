@@ -48,26 +48,26 @@ jobs:
           environments: ${{ matrix.pixi_environment }}
 
       - name: Configure
-        run: pixi run -e ${{ matrix.pixi_environment }} configure --fresh --log-level=DEBUG
+        run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps configure --fresh --log-level=DEBUG
 
       - name: Build
-        run: pixi run -e ${{ matrix.pixi_environment }} build --verbose --parallel 1
-
-      - name: Install
-        run: pixi run -e ${{ matrix.pixi_environment }} install
-
-      - name: Test Python import
-        run: pixi run -e ${{ matrix.pixi_environment }} test-import-python
+        run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps build --verbose --parallel 1
 
       - name: Run C++ tests
         if: ${{ !(startsWith(matrix.os, 'windows-') && matrix.build_type == 'Debug') }}
-        run: pixi run -e ${{ matrix.pixi_environment }} test
+        run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps test
+
+      - name: Install
+        run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps install
+
+      - name: Test Python import
+        run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps test-import-python
+
+      - name: Uninstall
+        run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps uninstall
 
       - name: Run packaging tests
         run: pixi run -e ${{ matrix.pixi_environment }} test-packaging
-
-      - name: Uninstall
-        run: pixi run -e ${{ matrix.pixi_environment }} uninstall
 
   # pixi-build:
   #   name: Pixi Build CI
