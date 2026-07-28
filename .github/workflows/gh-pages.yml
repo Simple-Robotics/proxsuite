@@ -14,10 +14,10 @@ jobs:
         uses: prefix-dev/setup-pixi@v0.9.3
 
       - name: Build documentation
-        run: pixi run build_documentation
+        run: pixi run build-documentation
 
       - name: Install documentation
-        run: pixi run install_documentation
+        run: pixi run install-documentation
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v7

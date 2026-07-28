@@ -96,7 +96,7 @@ clean = { cmd = "rm -rf build" }
 test = { cmd = "ctest --test-dir build -LE maros_meszaros --output-on-failure", depends-on = [
   "build",
 ] }
-test_maros_meszaros = { cmd = "ctest --test-dir build -L maros_meszaros --output-on-failure", depends-on = [
+test-maros-meszaros = { cmd = "ctest --test-dir build -L maros_meszaros --output-on-failure", depends-on = [
   "build",
 ] }
 install = { cmd = "cmake --build build --target install", depends-on = [
@@ -216,7 +216,7 @@ doxygen = ">=1.10.0"
 graphviz = ">=10.0.0"
 
 [feature.doc.tasks]
-_configure_documentation = { cmd = [
+_configure-documentation = { cmd = [
   "cmake",
   "-S",
   ".",
@@ -230,8 +230,8 @@ _configure_documentation = { cmd = [
   "-DBUILD_DOCUMENTATION=ON",
   "-DINSTALL_DOCUMENTATION=ON",
 ] }
-build_documentation = { depends-on = [
-  "_configure_documentation",
+build-documentation = { depends-on = [
+  "_configure-documentation",
 ], cmd = [
   "cmake",
   "--build",
@@ -239,8 +239,8 @@ build_documentation = { depends-on = [
   "--target",
   "doc",
 ] }
-install_documentation = { depends-on = [
-  "build_documentation",
+install-documentation = { depends-on = [
+  "build-documentation",
 ], cmd = [
   "cmake",
   "--install",
