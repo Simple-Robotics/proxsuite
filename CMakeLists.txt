@@ -176,6 +176,8 @@ target_include_directories(
 )
 
 jrl_target_generate_config_header(proxsuite INTERFACE VERSION ${PROJECT_VERSION})
+jrl_target_generate_deprecated_header(proxsuite INTERFACE)
+jrl_target_generate_warning_header(proxsuite INTERFACE)
 
 if(ENABLE_WARNINGS)
   jrl_target_set_default_compile_options(proxsuite INTERFACE)
