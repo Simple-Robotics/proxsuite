@@ -75,7 +75,7 @@ endif()
 ############################################################
 
 # Eigen3
-jrl_find_package(Eigen3 CONFIG REQUIRED)
+jrl_find_package(Eigen3 CONFIG REQUIRED EXPECTED_TARGETS Eigen3::Eigen)
 
 # Catch2
 # NOTE: We have to keep the FetchContent support because:
@@ -138,12 +138,12 @@ endif()
 
 # cereal (Serialization)
 if(BUILD_WITH_SERIALIZATION)
-  jrl_find_package(cereal CONFIG REQUIRED)
+  jrl_find_package(cereal CONFIG REQUIRED EXPECTED_TARGETS cereal::cereal)
 endif()
 
 # simde
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  jrl_find_package(simde REQUIRED)
+  jrl_find_package(simde REQUIRED EXPECTED_TARGETS simde::simde)
 endif()
 
 # matio
@@ -153,7 +153,7 @@ endif()
 
 # OpenMP
 if(BUILD_WITH_OPENMP_SUPPORT)
-  jrl_find_package(OpenMP REQUIRED)
+  jrl_find_package(OpenMP REQUIRED EXPECTED_TARGETS OpenMP::OpenMP_CXX)
 endif()
 
 # Doxygen + Graphviz (dot)
