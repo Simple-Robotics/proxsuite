@@ -1,10 +1,12 @@
 add_library(proxsuite-test-util STATIC util_f64.cpp util_f32.cpp)
 target_link_libraries(proxsuite-test-util PUBLIC proxsuite)
+proxsuite_set_default_target_options(proxsuite-test-util)
 
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_library(proxsuite-test-util-vectorized STATIC util_f64.cpp util_f32.cpp)
   target_include_directories(proxsuite-test-util-vectorized PRIVATE include)
   target_link_libraries(proxsuite-test-util-vectorized PUBLIC proxsuite-vectorized)
+  proxsuite_set_default_target_options(proxsuite-test-util-vectorized)
 endif()
 
 function(proxsuite_add_test name)
@@ -19,6 +21,7 @@ function(proxsuite_add_test name)
     PRIVATE proxsuite-test-util Catch2::Catch2WithMain ${arg_LINK_LIBRARIES}
   )
   target_compile_definitions(proxsuite-test-cpp-${name} PRIVATE ${arg_COMPILE_DEFINITIONS})
+  proxsuite_set_default_target_options(proxsuite-test-cpp-${name})
   add_test(NAME proxsuite-test-cpp.${name} COMMAND proxsuite-test-cpp-${name})
 
   if(arg_LABELS)
@@ -35,6 +38,7 @@ function(proxsuite_add_test name)
       proxsuite-vectorized-test-cpp-${name}
       PRIVATE ${arg_COMPILE_DEFINITIONS}
     )
+    proxsuite_set_default_target_options(proxsuite-vectorized-test-cpp-${name})
     add_test(
       NAME proxsuite-test-cpp.vectorized.${name}
       COMMAND proxsuite-vectorized-test-cpp-${name}
@@ -64,10 +68,10 @@ proxsuite_add_test(sparse_qp)
 proxsuite_add_test(sparse_ruiz_equilibration)
 
 if(BUILD_WITH_OPENMP_SUPPORT)
-  proxsuite_add_test(parallel_qp_solve)
+  proxsuite_add_test(parallel_qp_solve LINK_LIBRARIES proxsuite-parallel)
 endif()
 
-if(BUILD_WITH_SERIALIZATION)
+if(PROXSUITE_BUILD_WITH_SERIALIZATION)
   # We have to create the folder for the output data, tests don't do that.
   make_directory(${CMAKE_BINARY_DIR}/serialization-data)
   proxsuite_add_test(
@@ -76,7 +80,7 @@ if(BUILD_WITH_SERIALIZATION)
   )
 endif()
 
-if(BUILD_MAROS_MESZAROS_TESTS)
+if(PROXSUITE_BUILD_MAROS_MESZAROS_TESTS)
   proxsuite_add_test(
     dense_maros_meszaros
     COMPILE_DEFINITIONS MAROS_MESZAROS_DIR="${MAROS_MESZAROS_DIR}/"

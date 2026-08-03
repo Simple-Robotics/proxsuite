@@ -50,7 +50,7 @@ jobs:
         run: ccache --show-stats --zero-stats --verbose
 
       - name: CMake Configure
-        run: cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARKS=ON
+        run: cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DPROXSUITE_BUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARK=ON
 
       - name: CMake Build
         run: cmake --build build --verbose --parallel 2
@@ -72,7 +72,7 @@ jobs:
     steps:
       - run: pacman -Syu --noconfirm cmake ninja catch2 git eigen cereal libmatio doxygen graphviz nanobind python-scipy simde
       - uses: actions/checkout@v6
-      - run: cmake -G Ninja -B build -S . -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DBUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARKS=ON
+      - run: cmake -G Ninja -B build -S . -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DPROXSUITE_BUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARK=ON
       - run: cmake --build build --verbose --parallel 2
       - run: ctest --test-dir build --output-on-failure
 
