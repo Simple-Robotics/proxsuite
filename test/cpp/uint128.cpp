@@ -96,7 +96,6 @@ TEST_CASE("Bitwise Shifts with u128 (The Fix)", "[uint128][shift]")
   REQUIRE((val >> shift_amt) == u128(0));
 
   u128 one(1);
-  u128 two(2);
   REQUIRE((one << one) == u128(2));
 
   u128 large_shift(100);
