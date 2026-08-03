@@ -29,10 +29,10 @@ backend = { name = "pixi-build-cmake", version = "*" }
 extra-args = [
   "--log-level=DEBUG",
   "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
-  "-DBUILD_EXAMPLES=OFF",
-  "-DBUILD_BENCHMARKS=OFF",
+  "-DPROXSUITE_BUILD_EXAMPLES=OFF",
+  "-DBUILD_BENCHMARK=OFF",
   "-DBUILD_TESTING=OFF",
-  "-DBUILD_MAROS_MESZAROS_TESTS=OFF",
+  "-DPROXSUITE_BUILD_MAROS_MESZAROS_TESTS=OFF",
   "-DBUILD_PYTHON_INTERFACE=ON",
 ]
 
@@ -86,18 +86,15 @@ configure = { cmd = [
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$PROXSUITE_BUILD_TYPE",
   "-DBUILD_WITH_VECTORIZATION_SUPPORT=$PROXSUITE_BUILD_VECTORIZATION",
-  "-DBUILD_MAROS_MESZAROS_TESTS=$PROXSUITE_BUILD_MAROS_MESZAROS_TESTS",
-  "-DBUILD_EXAMPLES=ON",
-  "-DBUILD_BENCHMARKS=ON",
+  "-DPROXSUITE_BUILD_MAROS_MESZAROS_TESTS=$PROXSUITE_BUILD_MAROS_MESZAROS_TESTS",
+  "-DPROXSUITE_BUILD_EXAMPLES=ON",
+  "-DBUILD_BENCHMARK=ON",
   "-DBUILD_TESTING=$PROXSUITE_BUILD_TESTING",
   "-DBUILD_PYTHON_INTERFACE=$PROXSUITE_BUILD_PYTHON_INTERFACE",
 ] }
 build = { cmd = "cmake --build build", depends-on = ["configure"] }
 clean = { cmd = "rm -rf build" }
 test = { cmd = "ctest --test-dir build -LE maros_meszaros --output-on-failure", depends-on = [
-  "build",
-] }
-test-maros-meszaros = { cmd = "ctest --test-dir build -L maros_meszaros --output-on-failure", depends-on = [
   "build",
 ] }
 install = { cmd = "cmake --build build --target install", depends-on = [
@@ -209,6 +206,11 @@ PROXSUITE_BUILD_TESTING = "ON"
 
 [feature.maros-meszaros.activation.env]
 PROXSUITE_BUILD_MAROS_MESZAROS_TESTS = "ON"
+
+[feature.maros-meszaros.tasks]
+test-maros-meszaros = { cmd = "ctest --test-dir build -L maros_meszaros --output-on-failure", depends-on = [
+  "build",
+] }
 
 # --- Documentation Feature ---
 [feature.doc.dependencies]

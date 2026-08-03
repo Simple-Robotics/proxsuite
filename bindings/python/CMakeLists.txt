@@ -30,6 +30,7 @@ function(create_python_target target_name)
   target_link_libraries(${target_name} PRIVATE ${arg_LINK_LIBRARIES})
   target_compile_options(${target_name} PRIVATE ${arg_COMPILE_OPTIONS})
   target_compile_definitions(${target_name} PRIVATE PYTHON_MODULE_NAME=${target_name})
+  proxsuite_set_default_target_options(${target_name})
   jrl_target_set_output_directory(${target_name} OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/site-packages/${PROJECT_NAME})
 endfunction()
 
@@ -97,6 +98,7 @@ endif()
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
   nanobind_add_module(instructionset NB_STATIC LTO NB_SUPPRESS_WARNINGS helpers/instruction-set.cpp)
   target_link_libraries(instructionset PRIVATE proxsuite)
+  proxsuite_set_default_target_options(instructionset)
   jrl_target_set_output_directory(
     instructionset
     OUTPUT_DIRECTORY

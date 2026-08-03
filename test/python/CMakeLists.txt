@@ -19,7 +19,7 @@ if(BUILD_WITH_OPENMP_SUPPORT)
   proxsuite_python_add_test(test_parallel_qp_solve)
 endif()
 
-if(BUILD_WITH_SERIALIZATION)
+if(PROXSUITE_BUILD_WITH_SERIALIZATION)
   proxsuite_python_add_test(test_serialization)
 endif()
 

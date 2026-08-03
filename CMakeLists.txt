@@ -42,33 +42,30 @@ message(STATUS "[proxsuite] PROXSUITE_CXX_STANDARD set to '${PROXSUITE_CXX_STAND
 
 jrl_option(PROXSUITE_EXPORT_PACKAGE "Generate the CMake export files" ${PROJECT_IS_TOP_LEVEL})
 jrl_option(BUILD_TESTING "Build the tests" OFF)
-jrl_option(BUILD_EXAMPLES "Build the examples" OFF)
-jrl_option(BUILD_BENCHMARKS "Build the benchmarks" OFF)
+jrl_option(PROXSUITE_BUILD_EXAMPLES "Build the examples" OFF)
+jrl_option(BUILD_BENCHMARK "Build the benchmarks" OFF)
 jrl_option(BUILD_DOCUMENTATION "Build the documentation" OFF)
-jrl_option(BUILD_MAROS_MESZAROS_TESTS "Build the Maros-Meszaros tests, needs matio library" OFF)
-jrl_option(ENABLE_WARNINGS "Enable warnings during compilation" OFF)
-jrl_option(ENABLE_WARNINGS_AS_ERRORS "Treat all warnings as errors" OFF)
+jrl_option(PROXSUITE_BUILD_MAROS_MESZAROS_TESTS "Build the Maros-Meszaros tests, needs matio library" OFF)
+jrl_option(PROXSUITE_ENABLE_WARNINGS_AS_ERRORS "Treat all warnings as errors" OFF)
 jrl_option(BUILD_PYTHON_INTERFACE "Build the Python bindings" ON)
 jrl_option(INSTALL_DOCUMENTATION "Install the documentation" OFF)
 jrl_option(INITIALIZE_EIGEN_WITH_NAN "Initialize Eigen objects with NAN values" OFF)
 jrl_option(CHECK_RUNTIME_MALLOC "Check if some memory allocations are performed at runtime" OFF)
-jrl_option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
 jrl_option(BUILD_WITH_VECTORIZATION_SUPPORT "Build the library with the support of modern SIMD instructions" OFF)
 jrl_option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support" ON CONDITION "BUILD_WITH_VECTORIZATION_SUPPORT" FALLBACK OFF)
 jrl_option(BUILD_BINDINGS_WITH_AVX512_SUPPORT "Build the bindings with AVX512 support" ON CONDITION "BUILD_WITH_VECTORIZATION_SUPPORT" FALLBACK OFF)
 jrl_option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
 jrl_option(BUILD_WITH_OPENMP_SUPPORT "Build the library with the OpenMP support" OFF)
 jrl_option(LINK_PYTHON_INTERFACE_TO_OPENMP "Link OpenMP to the Python interface" ON CONDITION "BUILD_WITH_OPENMP_SUPPORT" FALLBACK OFF)
-jrl_option(BUILD_WITH_SERIALIZATION "Build with serialization support" ON)
+jrl_option(PROXSUITE_BUILD_WITH_SERIALIZATION "Build with serialization support" ON)
 jrl_option(GENERATE_PYTHON_STUBS "Generate Python stubs" OFF)
-jrl_option(PYTHON_BINDING_CUSTOM_INSTALL_DIR "Override the default <current-python-install-sitelib>/<project-name>" "")
 jrl_option(PROXSUITE_DOXYGEN_USE_MATHJAX "Avoid latex at build time" OFF)
 
 # Serialization is required to build the python bindings
-if(BUILD_PYTHON_INTERFACE AND NOT BUILD_WITH_SERIALIZATION)
+if(BUILD_PYTHON_INTERFACE AND NOT PROXSUITE_BUILD_WITH_SERIALIZATION)
   message(
     FATAL_ERROR
-    "[proxsuite] BUILD_WITH_SERIALIZATION must be ON to build the Python bindings."
+    "[proxsuite] PROXSUITE_BUILD_WITH_SERIALIZATION must be ON to build the Python bindings."
   )
 endif()
 
@@ -82,7 +79,7 @@ jrl_find_package(Eigen3 CONFIG REQUIRED EXPECTED_TARGETS Eigen3::Eigen)
 # - pixi does not have debug symbols for Catch2 on Windows.
 # - Ubuntu 22.04 LTS ships Catch2 v2 which is incompatible with our tests.
 if(BUILD_TESTING)
-  if(WIN32)
+  if(WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(Catch2_USE_FETCHCONTENT ON)
   endif()
 
@@ -137,7 +134,7 @@ if(BUILD_PYTHON_INTERFACE)
 endif()
 
 # cereal (Serialization)
-if(BUILD_WITH_SERIALIZATION)
+if(PROXSUITE_BUILD_WITH_SERIALIZATION)
   jrl_find_package(cereal CONFIG REQUIRED EXPECTED_TARGETS cereal::cereal)
 endif()
 
@@ -147,7 +144,7 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
 endif()
 
 # matio
-if(BUILD_TESTING AND BUILD_MAROS_MESZAROS_TESTS)
+if(BUILD_TESTING AND PROXSUITE_BUILD_MAROS_MESZAROS_TESTS)
   jrl_find_package(matio REQUIRED)
 endif()
 
@@ -179,14 +176,6 @@ jrl_target_generate_config_header(proxsuite INTERFACE VERSION ${PROJECT_VERSION}
 jrl_target_generate_deprecated_header(proxsuite INTERFACE)
 jrl_target_generate_warning_header(proxsuite INTERFACE)
 
-if(ENABLE_WARNINGS)
-  jrl_target_set_default_compile_options(proxsuite INTERFACE)
-endif()
-
-if(ENABLE_WARNINGS_AS_ERRORS)
-  jrl_target_treat_all_warnings_as_errors(proxsuite INTERFACE)
-endif()
-
 target_compile_definitions(
   proxsuite
   INTERFACE
@@ -198,24 +187,43 @@ target_compile_definitions(
 
 target_link_libraries(
   proxsuite
-  INTERFACE
-    Eigen3::Eigen
-    $<$<BOOL:${BUILD_WITH_OPENMP_SUPPORT}>:OpenMP::OpenMP_CXX>
-    $<$<BOOL:${BUILD_WITH_SERIALIZATION}>:cereal::cereal>
+  INTERFACE Eigen3::Eigen $<$<BOOL:${PROXSUITE_BUILD_WITH_SERIALIZATION}>:cereal::cereal>
 )
-
-if(BUILD_PYTHON_INTERFACE)
-  add_subdirectory(bindings/python)
-endif()
 
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_library(proxsuite-vectorized INTERFACE)
   add_library(proxsuite::proxsuite-vectorized ALIAS proxsuite-vectorized)
   target_link_libraries(
     proxsuite-vectorized
-    INTERFACE proxsuite simde::simde $<$<BOOL:${BUILD_WITH_SERIALIZATION}>:cereal::cereal>
+    INTERFACE proxsuite simde::simde $<$<BOOL:${PROXSUITE_BUILD_WITH_SERIALIZATION}>:cereal::cereal>
   )
   target_compile_definitions(proxsuite-vectorized INTERFACE PROXSUITE_VECTORIZE)
+endif()
+
+if(BUILD_WITH_OPENMP_SUPPORT)
+  add_library(proxsuite-parallel INTERFACE)
+  add_library(proxsuite::proxsuite-parallel ALIAS proxsuite-parallel)
+  target_link_libraries(proxsuite-parallel INTERFACE proxsuite OpenMP::OpenMP_CXX)
+
+  if(BUILD_WITH_VECTORIZATION_SUPPORT)
+    add_library(proxsuite-vectorized-parallel INTERFACE)
+    add_library(proxsuite::proxsuite-vectorized-parallel ALIAS proxsuite-vectorized-parallel)
+    target_link_libraries(
+      proxsuite-vectorized-parallel
+      INTERFACE proxsuite-vectorized OpenMP::OpenMP_CXX
+    )
+  endif()
+endif()
+
+function(proxsuite_set_default_target_options target_name)
+  jrl_target_set_default_compile_options(${target_name} PRIVATE)
+  if(PROXSUITE_ENABLE_WARNINGS_AS_ERRORS)
+    jrl_target_treat_all_warnings_as_errors(${target_name} PRIVATE)
+  endif()
+endfunction()
+
+if(BUILD_PYTHON_INTERFACE)
+  add_subdirectory(bindings/python)
 endif()
 
 if(BUILD_TESTING)
@@ -224,12 +232,12 @@ if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-if(BUILD_EXAMPLES)
+if(PROXSUITE_BUILD_EXAMPLES)
   message(STATUS "[proxsuite] Building examples")
   add_subdirectory(examples)
 endif()
 
-if(BUILD_BENCHMARKS)
+if(BUILD_BENCHMARK)
   message(STATUS "[proxsuite] Building benchmarks")
   add_subdirectory(benchmark)
 endif()
@@ -334,7 +342,7 @@ jrl_target_headers(proxsuite INTERFACE
   BASE_DIRS include
 )
 
-if(BUILD_WITH_SERIALIZATION)
+if(PROXSUITE_BUILD_WITH_SERIALIZATION)
   jrl_target_headers(proxsuite INTERFACE
     HEADERS
       include/proxsuite/serialization/archive.hpp
@@ -353,6 +361,14 @@ jrl_add_export_component(NAME proxsuite TARGETS proxsuite)
 
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   jrl_add_export_component(NAME vectorized TARGETS proxsuite-vectorized)
+endif()
+
+if(BUILD_WITH_OPENMP_SUPPORT)
+  jrl_add_export_component(NAME parallel TARGETS proxsuite-parallel)
+
+  if(BUILD_WITH_VECTORIZATION_SUPPORT)
+    jrl_add_export_component(NAME vectorized-parallel TARGETS proxsuite-vectorized-parallel)
+  endif()
 endif()
 
 jrl_export_package()
