@@ -55,7 +55,8 @@ set(DOXYGEN_DOT_TRANSPARENT YES)
 
 # Configure Doxygen
 doxygen_add_docs(
-  doc
+  proxsuite-doc
+  ALL
   ${PROJECT_SOURCE_DIR}/doc
   ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/bindings/python/proxsuite
