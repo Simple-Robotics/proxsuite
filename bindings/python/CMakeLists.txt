@@ -27,7 +27,10 @@ function(create_python_target target_name)
   nanobind_add_module(${target_name} NB_STATIC LTO NB_SUPPRESS_WARNINGS ${proxsuite_pywrap_SOURCES} ${proxsuite_pywrap_HEADERS})
   jrl_check_python_module_name(${target_name})
 
-  target_link_libraries(${target_name} PRIVATE ${arg_LINK_LIBRARIES})
+  target_link_libraries(
+    ${target_name}
+    PRIVATE ${arg_LINK_LIBRARIES} $<$<BOOL:${LINK_PYTHON_INTERFACE_TO_OPENMP}>:OpenMP::OpenMP_CXX>
+  )
   target_compile_options(${target_name} PRIVATE ${arg_COMPILE_OPTIONS})
   target_compile_definitions(${target_name} PRIVATE PYTHON_MODULE_NAME=${target_name})
   proxsuite_set_default_target_options(${target_name})
@@ -39,11 +42,6 @@ file(COPY proxsuite DESTINATION ${CMAKE_BINARY_DIR}/lib/site-packages)
 
 # The main python binding target
 create_python_target(proxsuite_pywrap LINK_LIBRARIES proxsuite)
-
-if(LINK_PYTHON_INTERFACE_TO_OPENMP)
-  message(STATUS "[proxsuite] Linking python bindings to OpenMP")
-  target_link_libraries(proxsuite_pywrap PRIVATE OpenMP::OpenMP_CXX)
-endif()
 
 # Vectorized python binding targets
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
