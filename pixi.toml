@@ -241,7 +241,7 @@ build-documentation = { depends-on = [
   "--build",
   "build/doc_build",
   "--target",
-  "doc",
+  "proxsuite-doc",
 ] }
 install-documentation = { depends-on = [
   "build-documentation",
