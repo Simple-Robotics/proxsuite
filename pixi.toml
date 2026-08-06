@@ -260,6 +260,10 @@ pre-commit = "*"
 [feature.lint.tasks]
 lint = { cmd = "pre-commit run --all" }
 
+# --- New version Feature ---
+[feature.new-version]
+dependencies = { jrl-cmakemodules-scripts = "*" }
+
 # --- Clang Feature ---
 [feature.clang]
 activation = { env = { CC = "clang", CXX = "clang++" } }
@@ -282,7 +286,8 @@ all-clang = { features = [
   "test",
   "python-latest",
 ], solve-group = "python-latest" }
-lint = { features = ["lint"], solve-group = "python-latest" }
+lint = { features = ["lint"], no-default-feature = true }
+new-version = { features = ["new-version"], no-default-feature = true }
 python-oldest = { features = [
   "python",
   "test",
