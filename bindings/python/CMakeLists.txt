@@ -142,8 +142,20 @@ jrl_python_compile_all(
   DIRECTORY ${CMAKE_BINARY_DIR}/lib/site-packages
 )
 
+set(targets_to_install proxsuite_pywrap)
+if(TARGET proxsuite_pywrap_avx2)
+  list(APPEND targets_to_install proxsuite_pywrap_avx2)
+endif()
+if(TARGET proxsuite_pywrap_avx512)
+  list(APPEND targets_to_install proxsuite_pywrap_avx512)
+endif()
+if(TARGET instructionset)
+  list(APPEND targets_to_install instructionset)
+endif()
+
 # Install the whole python package directory
 jrl_python_compute_install_dir(python_install_dir)
+install(TARGETS ${targets_to_install} DESTINATION ${python_install_dir}/${PROJECT_NAME})
 install(
   DIRECTORY ${CMAKE_BINARY_DIR}/lib/site-packages/${PROJECT_NAME}
   DESTINATION ${python_install_dir}
@@ -152,6 +164,4 @@ install(
   PATTERN "*.pyc"
   PATTERN "*.pyi"
   PATTERN "*.typed"
-  PATTERN "*.so"
-  PATTERN "*.pyd"
 )
