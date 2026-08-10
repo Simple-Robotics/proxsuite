@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Initialize `active_set_up` and `active_set_low` in dense `Workspace` ([#476](https://github.com/Simple-Robotics/proxsuite/pull/476))
+
 ### Added
 - Docker images `ghcr.io/Simple-Robotics/proxsuite` ([#470](https://github.com/Simple-Robotics/proxsuite/pull/470))
 
