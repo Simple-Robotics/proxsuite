@@ -307,6 +307,8 @@ struct Workspace
     Cdx.setZero();
     Adx.setZero();
     active_part_z.setZero();
+    active_set_up.setConstant(false);
+    active_set_low.setConstant(false);
     dw_aug.setZero();
     rhs.setZero();
     err.setZero();
@@ -366,6 +368,8 @@ struct Workspace
       current_bijection_map(i) = i;
       new_bijection_map(i) = i;
       active_inequalities(i) = false;
+      active_set_up(i) = false;
+      active_set_low(i) = false;
     }
 
     constraints_changed = false;
