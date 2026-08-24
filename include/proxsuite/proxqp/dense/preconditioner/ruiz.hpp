@@ -434,6 +434,8 @@ struct RuizEquilibration
       auto l_box = qp.l_box.to_eigen();
       auto u_box = qp.u_box.to_eigen();
       auto i_scaled = qp.I.to_eigen(); // it is a vector
+      i_scaled.setOnes();
+
       isize n = qp.H.rows;
       isize n_eq = qp.A.rows;
       isize n_in = qp.C.rows;
