@@ -502,6 +502,7 @@ struct RuizEquilibration
       if (box_constraints) {
         u_box.array() *= delta.tail(n).array();
         l_box.array() *= delta.tail(n).array();
+        i_scaled.setOnes();
         i_scaled.array() *= delta.tail(n).array();
         i_scaled.array() *= delta.head(n).array();
       }
