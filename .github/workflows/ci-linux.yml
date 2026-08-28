@@ -1,0 +1,93 @@
+name: CI - Linux
+
+on:
+  push:
+    branches:
+      - devel
+  pull_request:
+    paths-ignore:
+      - CHANGELOG.md
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ubuntu:
+    name: CI - Ubuntu ${{ matrix.ubuntu_version }} - ${{ matrix.build_type }} (APT)
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:${{ matrix.ubuntu_version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu_version: ["22.04", "24.04"]
+        build_type: [Release, Debug]
+    env:
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_COMPRESS: true
+      CCACHE_COMPRESSLEVEL: 6
+      CMAKE_C_COMPILER_LAUNCHER: ccache
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup ccache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-ubuntu-${{ matrix.ubuntu_version }}-${{ matrix.build_type }}-${{ github.sha }}
+          restore-keys: ccache-ubuntu-${{ matrix.ubuntu_version }}-${{ matrix.build_type }}-
+
+      - name: Update APT repositories
+        run: apt-get update
+
+      - name: Install dependencies via APT
+        run: apt-get install -y git cmake g++ ninja-build ccache graphviz libmatio-dev doxygen catch2 libeigen3-dev python3-numpy python3-dev python3-scipy libcereal-dev libsimde-dev
+
+      - name: Clear ccache stats
+        run: ccache --show-stats --zero-stats --verbose
+
+      - name: CMake Configure
+        run: cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DPROXSUITE_BUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARK=ON
+
+      - name: CMake Build
+        run: cmake --build build --verbose --parallel 2
+
+      - name: Show ccache stats
+        run: ccache --show-stats --verbose
+
+      - name: CTest
+        run: ctest --test-dir build --output-on-failure
+
+      - name: CMake Install
+        run: cmake --install build --prefix install
+
+  archlinux:
+    name: CI - ArchLinux
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux/archlinux:base-devel
+    steps:
+      - run: pacman -Syu --noconfirm cmake ninja catch2 git eigen cereal libmatio doxygen graphviz nanobind python-scipy simde
+      - uses: actions/checkout@v6
+      - run: cmake -G Ninja -B build -S . -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DPROXSUITE_BUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARK=ON
+      - run: cmake --build build --verbose --parallel 2
+      - run: ctest --test-dir build --output-on-failure
+
+  check:
+    if: always()
+    name: check-linux
+
+    needs:
+      - ubuntu
+      - archlinux
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

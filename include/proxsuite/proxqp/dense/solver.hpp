@@ -650,7 +650,7 @@ Martinez_update(const Settings<T>& qpsettings,
 
 )
 {
-  bcl_eta_in = std::max(bcl_eta_in * 0.1, eps_in_min);
+  bcl_eta_in = std::max(bcl_eta_in * T(0.1), eps_in_min);
   if (primal_feasibility_lhs_new <= 0.95 * primal_feasibility_lhs_old) {
     /* TO PUT IN DEBUG MODE
     if (qpsettings.verbose) {

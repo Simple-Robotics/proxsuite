@@ -1,0 +1,302 @@
+[workspace]
+name = "proxsuite"
+version = "0.7.2"
+description = "The Advanced Proximal Optimization Toolbox"
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+channels = ["conda-forge"]
+license = "BSD-2-Clause"
+license-file = "LICENSE"
+preview = ["pixi-build"]
+
+[dependencies]
+ccache = "*"
+cmake = ">=3.22"
+cxx-compiler = "*"
+ninja = "*"
+jrl-cmakemodules = ">=2.1.0"
+eigen = ">=3.4.0"
+simde = ">=0.8.2"
+cereal = ">=1.3.0"
+
+[package]
+name = { workspace = true }
+version = { workspace = true }
+
+[package.build]
+backend = { name = "pixi-build-cmake", version = "*" }
+
+[package.build.config]
+extra-args = [
+  "--log-level=DEBUG",
+  "-DBUILD_WITH_VECTORIZATION_SUPPORT=ON",
+  "-DPROXSUITE_BUILD_EXAMPLES=OFF",
+  "-DBUILD_BENCHMARK=OFF",
+  "-DBUILD_TESTING=OFF",
+  "-DPROXSUITE_BUILD_MAROS_MESZAROS_TESTS=OFF",
+  "-DBUILD_PYTHON_INTERFACE=ON",
+]
+
+[package.build-dependencies]
+ccache = "*"
+cmake = ">=3.22"
+cxx-compiler = "*"
+ninja = "*"
+jrl-cmakemodules = ">=2.1.0"
+
+[package.host-dependencies]
+eigen = ">=3.4.0"
+simde = ">=0.8.2"
+python = ">=3.10"
+numpy = ">=1.24.0"
+nanobind = ">=2.5.0"
+cereal = ">=1.3.0"
+
+[package.run-dependencies]
+eigen = ">=3.4.0"
+simde = ">=0.8.2"
+cereal = ">=1.3.0"
+
+[target.unix.activation]
+scripts = ["development/scripts/pixi/activation.sh"]
+
+[target.win-64.activation]
+scripts = ["development/scripts/pixi/activation.bat"]
+
+[activation.env]
+# Setup ccache
+CMAKE_CXX_COMPILER_LAUNCHER = "ccache"
+# Create compile_commands.json for language server
+CMAKE_EXPORT_COMPILE_COMMANDS = "ON"
+# Activate color output with Ninja
+CMAKE_COLOR_DIAGNOSTICS = "ON"
+# Help ccache manage generated files and PCH (https://ccache.dev/manual/latest.html#_precompiled_headers)
+CCACHE_SLOPPINESS = "include_file_ctime,include_file_mtime,pch_defines,time_macros"
+
+[tasks]
+configure = { cmd = [
+  "CXXFLAGS=$PROXSUITE_CXX_FLAGS",
+  "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "build",
+  "-S",
+  ".",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$PROXSUITE_BUILD_TYPE",
+  "-DBUILD_WITH_VECTORIZATION_SUPPORT=$PROXSUITE_BUILD_VECTORIZATION",
+  "-DPROXSUITE_BUILD_MAROS_MESZAROS_TESTS=$PROXSUITE_BUILD_MAROS_MESZAROS_TESTS",
+  "-DPROXSUITE_BUILD_EXAMPLES=ON",
+  "-DBUILD_BENCHMARK=ON",
+  "-DBUILD_TESTING=$PROXSUITE_BUILD_TESTING",
+  "-DBUILD_PYTHON_INTERFACE=$PROXSUITE_BUILD_PYTHON_INTERFACE",
+] }
+build = { cmd = "cmake --build build", depends-on = ["configure"] }
+clean = { cmd = "rm -rf build" }
+test = { cmd = "ctest --test-dir build -LE maros_meszaros --output-on-failure", depends-on = [
+  "build",
+] }
+install = { cmd = "cmake --build build --target install", depends-on = [
+  "build",
+] }
+uninstall = { cmd = "cmake --build build --target uninstall", depends-on = [
+  "install",
+] }
+
+test-import-python = { depends-on = [
+  "install",
+], cmd = [
+  "python",
+  "-c",
+  "import proxsuite; print(proxsuite.helpers.printVersion())",
+] }
+
+_test-packaging-simple-configure = { depends-on = [
+  "install",
+], cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-S",
+  "test/packaging/cmake",
+  "-B",
+  "build/packaging",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
+  "--log-level=DEBUG",
+] }
+_test-packaging-simple = { depends-on = [
+  "_test-packaging-simple-configure",
+], cmd = [
+  "cmake",
+  "--build",
+  "build/packaging",
+  "--verbose",
+] }
+_test-packaging-components-configure = { depends-on = [
+  "install",
+], cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-S",
+  "test/packaging/cmake-components",
+  "-B",
+  "build/packaging-components",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
+  "--log-level=DEBUG",
+] }
+_test-packaging-components = { depends-on = [
+  "_test-packaging-components-configure",
+], cmd = [
+  "cmake",
+  "--build",
+  "build/packaging-components",
+  "--verbose",
+] }
+_test-packaging-fetchcontent-configure = { cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-S",
+  "test/packaging/fetchcontent",
+  "-B",
+  "build/packaging-fetchcontent",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
+  "-DPROXSUITE_FETCHCONTENT_SOURCE_DIR=$PIXI_PROJECT_ROOT",
+  "--log-level=DEBUG",
+] }
+_test-packaging-fetchcontent = { depends-on = [
+  "_test-packaging-fetchcontent-configure",
+], cmd = [
+  "cmake",
+  "--build",
+  "build/packaging-fetchcontent",
+  "--verbose",
+] }
+test-packaging = { depends-on = [
+  "_test-packaging-simple",
+  "_test-packaging-components",
+  "_test-packaging-fetchcontent",
+] }
+
+# --- Python Feature ---
+[feature.python.dependencies]
+python = ">=3.10"
+numpy = ">=1.24.0"
+nanobind = ">=2.5.0"
+
+[feature.python.activation.env]
+PROXSUITE_BUILD_PYTHON_INTERFACE = "ON"
+
+[feature.python-latest.dependencies]
+python = "3.14.*"
+
+[feature.python-oldest.dependencies]
+python = "3.10.*"
+
+# --- Test Feature ---
+[feature.test.dependencies]
+catch2 = ">=3.4.0"
+scipy = ">=1.7.0"
+libmatio = ">=1.5.0"
+
+[feature.test.activation.env]
+PROXSUITE_BUILD_TESTING = "ON"
+
+[feature.maros-meszaros.activation.env]
+PROXSUITE_BUILD_MAROS_MESZAROS_TESTS = "ON"
+
+[feature.maros-meszaros.tasks]
+test-maros-meszaros = { cmd = "ctest --test-dir build -L maros_meszaros --output-on-failure", depends-on = [
+  "build",
+] }
+
+# --- Documentation Feature ---
+[feature.doc.dependencies]
+doxygen = ">=1.10.0"
+graphviz = ">=10.0.0"
+
+[feature.doc.tasks]
+_configure-documentation = { cmd = [
+  "cmake",
+  "-S",
+  ".",
+  "-B",
+  "build/doc_build",
+  "-G",
+  "Ninja",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
+  "-DCMAKE_INSTALL_PREFIX=build/doc_install",
+  "-DCMAKE_BUILD_TYPE=Release",
+  "-DBUILD_TESTING=OFF",
+  "-DBUILD_PYTHON_INTERFACE=OFF",
+  "-DBUILD_DOCUMENTATION=ON",
+  "-DINSTALL_DOCUMENTATION=ON",
+] }
+build-documentation = { depends-on = [
+  "_configure-documentation",
+], cmd = [
+  "cmake",
+  "--build",
+  "build/doc_build",
+  "--target",
+  "proxsuite-doc",
+] }
+install-documentation = { depends-on = [
+  "build-documentation",
+], cmd = [
+  "cmake",
+  "--install",
+  "build/doc_build",
+  "--component",
+  "doc",
+] }
+
+# --- Lint Feature ---
+[feature.lint.dependencies]
+pre-commit = "*"
+
+[feature.lint.tasks]
+lint = { cmd = "pre-commit run --all" }
+
+# --- New version Feature ---
+[feature.new-version]
+dependencies = { jrl-cmakemodules-scripts = "*" }
+
+# --- Clang Feature ---
+[feature.clang]
+activation = { env = { CC = "clang", CXX = "clang++" } }
+dependencies = { clangxx = "*", lld = "*" }
+
+[feature.clang.target.win-64.dependencies]
+llvm-tools = "*"
+
+# --- Environments ---
+[environments]
+default = { features = [
+  "python",
+  "test",
+  "python-latest",
+], solve-group = "python-latest" }
+clang = { features = ["clang", "python", "test", "python-latest"] }
+all-clang = { features = [
+  "clang",
+  "python",
+  "test",
+  "python-latest",
+], solve-group = "python-latest" }
+lint = { features = ["lint"], no-default-feature = true }
+new-version = { features = ["new-version"], no-default-feature = true }
+python-oldest = { features = [
+  "python",
+  "test",
+  "python-oldest",
+], solve-group = "python-oldest" }
+maros-meszaros = { features = [
+  "python",
+  "test",
+  "maros-meszaros",
+  "python-latest",
+], solve-group = "python-latest" }
+doc = { features = ["doc"] }

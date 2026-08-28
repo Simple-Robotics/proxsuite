@@ -698,11 +698,11 @@ It is important to notice that some other solvers API have made different choice
 
 \subsection OverviewArchitectureOptions Architecture options when compiling ProxSuite
 
-We highly encourage you to enable the vectorization of the underlying linear algebra for the best performance. You just need to activate the cmake option `BUILD_WITH_SIMD_SUPPORT=ON`, like:
+We highly encourage you to enable the vectorization of the underlying linear algebra for the best performance. You just need to activate the cmake option `BUILD_WITH_VECTORIZATION_SUPPORT=ON`, like:
 
 \code
 mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_SIMD_SUPPORT=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_VECTORIZATION_SUPPORT=ON
 make
 make install
 \endcode

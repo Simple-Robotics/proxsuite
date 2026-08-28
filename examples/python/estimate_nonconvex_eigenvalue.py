@@ -1,6 +1,6 @@
 import proxsuite
 import numpy as np
-import scipy.sparse as spa
+import scipy.sparse.linalg as spla
 from util import generate_mixed_qp
 
 
@@ -18,7 +18,7 @@ estimate_minimal_eigen_value = (
     )
 )
 qp.init(H, g, A, b, C, l, u, manual_minimal_H_eigenvalue=estimate_minimal_eigen_value)
-vals, _ = spa.linalg.eigs(H, which="SR")
+vals, _ = spla.eigs(H, which="SR")
 min_eigenvalue = float(np.min(vals))
 # print the estimates
 print(f"{min_eigenvalue=}")

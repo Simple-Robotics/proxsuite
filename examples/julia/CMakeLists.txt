@@ -1,14 +1,14 @@
-file(GLOB_RECURSE ${PROJECT_NAME}_JULIA_EXAMPLES *.jl)
+find_program(Julia_EXECUTABLE julia REQUIRED)
+message(STATUS "Found Julia executable: ${Julia_EXECUTABLE}")
 
-foreach(EXAMPLE ${${PROJECT_NAME}_JULIA_EXAMPLES})
-  string(
-    REGEX REPLACE "${PROJECT_SOURCE_DIR}/examples/julia/"
-    ""
-    EXAMPLE
-    ${EXAMPLE}
-  )
-  ADD_JULIA_UNIT_TEST(
-    "${PROJECT_NAME}-example-jl-${EXAMPLE}"
-    "examples/julia/${EXAMPLE}"
-  )
-endforeach()
+add_test(
+  NAME proxsuite-example-jl-overview-simple
+  COMMAND ${Julia_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/overview-simple.jl
+)
+set_property(
+  TEST proxsuite-example-jl-overview-simple
+  PROPERTY
+    ENVIRONMENT
+      "PYTHON=$<TARGET_FILE:Python::Interpreter>"
+      "PYTHONPATH=$<TARGET_FILE_DIR:proxsuite_pywrap>/.."
+)

@@ -1,9 +1,0 @@
-[submodule "bindings/python/external/nanobind"]
-	path = bindings/python/external/nanobind
-	url = https://github.com/wjakob/nanobind
-[submodule "cmake-module"]
-	path = cmake-module
-	url = https://github.com/jrl-umi3218/jrl-cmakemodules.git
-[submodule "external/cereal"]
-	path = external/cereal
-	url = https://github.com/USCiLab/cereal.git
