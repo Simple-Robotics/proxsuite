@@ -65,6 +65,6 @@ jobs:
           name: site
           path: site
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.8.0
+        uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           folder: site
