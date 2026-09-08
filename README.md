@@ -210,7 +210,24 @@ The currently active core developers of **ProxSuite** are:
 * Sarah Kazdadi (Inria): core developer
 * [Jeanne Matheron](https://github.com/j-matheron) (Inria): core developer
 
-
 ## Credits
 
 In addition to the core dev team, the following people have also been involved in the development of **ProxSuite** and are warmly thanked for their contributions:
+
+* [Antoine Bambade](https://bambade.github.io/) (Inria): main contributor of the dense solver and of **QPLayer**
+* [Wilson Jallet](https://manifoldfr.github.io/) (Inria): main contributor of the matrix-free solver and of the Julia bindings
+* [Stéphane Caron](https://scaron.info/) (Inria): for his early advices on proximal methods and his contributions to **ProxQP**
+* [Wolfgang Merkt](https://wxm.io/): for his advice on packaging and his contributions to the CI
+* [Quentin Le Lidec](https://quentinll.github.io/) (Inria): for his help on benchmarks
+* [Louis Montaut](https://github.com/lmontaut) (Inria): for his contributions to the documentation
+* [Adrien Escande](https://github.com/aescande) (Inria): for his contributions to the internal linear algebra utilities
+* Oumayma Bounou (Inria): for her contributions to the PyTorch interface of **QPLayer**
+* [Antoine Hoarau](https://github.com/ahoarau): for various contributions
+* [Joris Gillis](https://github.com/jgillis) (KU Leuven): for various contributions
+* Michael Fennel (KIT): for various contributions
+* Johannes Keustermans (Spectricity): for various contributions
+* J Berg: for various contributions
+* [Konstantinos Chatzilygeroudis](https://github.com/costashatz): for various contributions
+* [Daniel Morton](https://github.com/danielpmorton): for various contributions
+* [Daisuke Nishimatsu](https://github.com/wep21): for various contributions
+* Aaron Miller: for various contributions
