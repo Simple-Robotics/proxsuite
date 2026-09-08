@@ -133,7 +133,7 @@ category (`Added`, `Changed`, `Fixed`, `Removed`).
 Each entry is a short message followed by the pull request link, e.g.:
 
 ```
-- Add pixi support, CI, and fixup testing([#3](https://github.com/Simple-Robotics/proxsuite/pull/3))
+- Improve dense backend and simplify calculus when using a Diagonal Hessian([#239](https://github.com/Simple-Robotics/proxsuite/pull/239))
 ```
 
 CI and infra-only changes should not be listed. Use the **no changelog** label in this case.
