@@ -16,6 +16,7 @@ All communication on this project must follow the [Code of Conduct](../CODE_OF_C
       + [Choosing an issue](#choosing-an-issue)
       + [Set up the development environment](#set-up-the-development-environment)
       + [Pull request content](#pull-request-content)
+      + [Keeping the pull request up-to-date](#keeping-the-pull-request-up-to-date)
       + [Running tests](#running-tests)
       + [Code style](#code-style)
       + [Changelog](#changelog)
@@ -92,8 +93,8 @@ git pull --rebase origin devel
 ```
 
 Don't omit the `--rebase` argument or a merge commit will be created.
-Using merge commit to update your pull request is discouraged as it create
-a non linear git history.
+Using merge commits to update your pull request is discouraged as it creates
+a non-linear git history.
 
 ### Running tests
 
