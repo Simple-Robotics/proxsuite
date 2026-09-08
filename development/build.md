@@ -1,3 +1,5 @@
+**Pixi will soon be available**
+
 # Build and develop with pixi
 
 The easiest way to set up a development environment is to use [pixi](https://pixi.sh/latest/#installation).
@@ -17,7 +19,7 @@ The project is built in the `build` directory.
 The typical workflow is:
 
 ```bash
-pixi shell 
+pixi shell
 pixi run configure
 ninja -C build
 ```
