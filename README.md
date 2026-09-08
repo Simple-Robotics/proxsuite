@@ -169,3 +169,7 @@ If you are using **QPLayer** for your work, we encourage you to [cite the relate
 ## Installation procedure
 
 Please follow the installation procedure [here](https://github.com/Simple-Robotics/proxsuite/blob/devel/doc/5-installation.md).
+
+## Contribution
+
+If you want to ask a question, report a bug, request a new feature or contributing with a pull requests please, follow the [contribution guideline](./development/contributing.md).
