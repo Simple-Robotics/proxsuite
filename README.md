@@ -1,3 +1,5 @@
+# ProxSuite
+
 <p align="center">
   <img src="https://github.com/Simple-Robotics/proxsuite/raw/devel/doc/images/proxsuite-logo.png" width="700" alt="Proxsuite Logo" align="center"/>
 </p>
@@ -21,6 +23,28 @@ Through **ProxSuite**, we aim to offer the community scalable optimizers that de
 - [TSID](https://github.com/stack-of-tasks/tsid): robotic software for efficient robot inverse dynamics with contacts and based on [Pinocchio](https://github.com/stack-of-tasks/pinocchio).
 
 We are ready to integrate **ProxSuite** within other optimization ecosystems.
+
+## Table of contents
+- [ProxSuite](#proxsuite)
+   * [ProxSuite main features](#proxsuite-main-features)
+   * [Documentation](#documentation)
+   * [Getting started](#getting-started)
+      + [Quick install with <img src="https://www.python.org/static/community_logos/python-logo-inkscape.svg" height="30" style="vertical-align: -1em;">:](#quick-install-with-)
+      + [Quick install with <img src="https://s3.amazonaws.com/conda-dev/conda_logo.svg" height="18">:](#quick-install-with--1)
+      + [Quick install with <img src="https://brew.sh/assets/img/homebrew-256x256.png" height="30">:](#quick-install-with--2)
+      + [Alternative approaches](#alternative-approaches)
+      + [Compiling a first example program](#compiling-a-first-example-program)
+      + [Using ProxSuite with CMake](#using-proxsuite-with-cmake)
+   * [**ProxQP**](#proxqp)
+      + [Citing **ProxQP**](#citing-proxqp)
+      + [Numerical benchmarks](#numerical-benchmarks)
+   * [**QPLayer**](#qplayer)
+      + [Citing **QPLayer**](#citing-qplayer)
+   * [Installation procedure](#installation-procedure)
+   * [Contribution](#contribution)
+   * [Core-dev team](#core-dev-team)
+   * [Credits](#credits)
+
 
 ## ProxSuite main features
 
@@ -169,3 +193,41 @@ If you are using **QPLayer** for your work, we encourage you to [cite the relate
 ## Installation procedure
 
 Please follow the installation procedure [here](https://github.com/Simple-Robotics/proxsuite/blob/devel/doc/5-installation.md).
+
+## Contribution
+
+If you want to ask a question, report a bug, request a new feature or contributing with a pull requests please, follow the [contribution guideline](./development/contributing.md).
+
+## Core-dev team
+
+The currently active core developers of **ProxSuite** are:
+
+* [Justin Carpentier](https://jcarpent.github.io) (Inria): main developer and manager of the project
+* [Guilhem Saurel](https://github.com/nim65s) (LAAS-CNRS): core maintainer
+* [Joris Vailant](https://github.com/jorisv) (Inria): core developer and manager of the project
+* [Lucas Haubert](https://www.linkedin.com/in/lucas-haubert-b668a421a/) (Inria): core developer
+* [Fabian Schramm](https://github.com/fabinsch) (Inria): core developer
+* Sarah Kazdadi (Inria): core developer
+* [Jeanne Matheron](https://github.com/j-matheron) (Inria): core developer
+
+## Credits
+
+In addition to the core dev team, the following people have also been involved in the development of **ProxSuite** and are warmly thanked for their contributions:
+
+* [Antoine Bambade](https://bambade.github.io/) (Inria): main contributor of the dense solver and of **QPLayer**
+* [Wilson Jallet](https://manifoldfr.github.io/) (Inria): main contributor of the matrix-free solver and of the Julia bindings
+* [Stéphane Caron](https://scaron.info/) (Inria): for his early advices on proximal methods and his contributions to **ProxQP**
+* [Wolfgang Merkt](https://wxm.io/): for his advice on packaging and his contributions to the CI
+* [Quentin Le Lidec](https://quentinll.github.io/) (Inria): for his help on benchmarks
+* [Louis Montaut](https://github.com/lmontaut) (Inria): for his contributions to the documentation
+* [Adrien Escande](https://github.com/aescande) (Inria): for his contributions to the internal linear algebra utilities
+* Oumayma Bounou (Inria): for her contributions to the PyTorch interface of **QPLayer**
+* [Antoine Hoarau](https://github.com/ahoarau): for various contributions
+* [Joris Gillis](https://github.com/jgillis) (KU Leuven): for various contributions
+* Michael Fennel (KIT): for various contributions
+* Johannes Keustermans (Spectricity): for various contributions
+* J Berg: for various contributions
+* [Konstantinos Chatzilygeroudis](https://github.com/costashatz): for various contributions
+* [Daniel Morton](https://github.com/danielpmorton): for various contributions
+* [Daisuke Nishimatsu](https://github.com/wep21): for various contributions
+* Aaron Miller: for various contributions
