@@ -55,6 +55,10 @@ main()
               l_box,
               u_box);
   qp_box.solve();
+  // you can keep the same boxes
+  qp_box.update(qp2.H, qp2.g, qp2.A, qp2.b, qp2.C, qp2.l, qp2.u);
+  qp_box.solve();
+  // or update them
   u_box.array() += 1.E1;
   l_box.array() -= 1.E1;
   qp_box.update(qp2.H, qp2.g, qp2.A, qp2.b, qp2.C, qp2.l, qp2.u, l_box, u_box);
