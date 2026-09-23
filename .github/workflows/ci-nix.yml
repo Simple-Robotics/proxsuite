@@ -10,9 +10,6 @@ on:
 
 jobs:
   nix:
-    # ⚠️ temporarly disable the Nix job for https://github.com/Simple-Robotics/nanoeigenpy/pull/40 ⚠️
-    if: false
-
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
@@ -28,10 +25,7 @@ jobs:
       - run: nix build -L .#proxsuite${{ matrix.eigen }}
 
   check:
-    # ⚠️ temporarly disable the Nix job for https://github.com/Simple-Robotics/nanoeigenpy/pull/40 ⚠️
-    if: false
-    # if: always()
-
+    if: always()
     name: check-macos-linux-nix
 
     needs:
