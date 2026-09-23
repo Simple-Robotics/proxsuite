@@ -33,6 +33,11 @@
             (lib.cmakeBool "PROXSUITE_BUILD_MAROS_MESZAROS_TESTS" true)
             (lib.cmakeBool "GENERATE_PYTHON_STUBS" true)
           ];
+          buildInputs =
+            drv-prev.buildInputs
+            ++ lib.optionals pkgs-final.stdenv.cc.isClang [
+              pkgs-final.llvmPackages.openmp
+            ];
           checkInputs = drv-prev.checkInputs ++ [
             pkgs-final.catch2_3
           ];
