@@ -12,6 +12,7 @@
 #include <proxsuite/proxqp/sparse/model.hpp>
 #include <map>
 #include <random>
+#include <cmath>
 
 #if defined(_MSC_VER)
 #include <proxsuite/proxqp/utils/uint128_msvc.hpp>
@@ -270,7 +271,7 @@ sparse_positive_definite_rand_compressed(isize n, Scalar rho, Scalar p)
     H_dense.template selfadjointView<Eigen::Upper>().eigenvalues();
   Scalar min = eigh.minCoeff();
   for (isize i = 0; i < n; ++i) {
-    H.coeffRef(i, i) += (rho + abs(min));
+    H.coeffRef(i, i) += (rho + std::fabs(min));
   }
 
   H.makeCompressed();
@@ -301,7 +302,7 @@ sparse_positive_definite_rand_not_compressed(isize n, Scalar rho, Scalar p)
   // H.array() /= 2.;
   Vec<Scalar> eigh = H.template selfadjointView<Eigen::Upper>().eigenvalues();
   Scalar min = eigh.minCoeff();
-  H.diagonal().array() += (rho + abs(min));
+  H.diagonal().array() += (rho + std::fabs(min));
 
   return H;
 }
