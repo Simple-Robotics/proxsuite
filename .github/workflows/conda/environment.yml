@@ -8,7 +8,7 @@ dependencies:
   - compilers
   - make
   - pkg-config
-  - doxygen
+  - doxygen<1.18
   - ninja
   - graphviz
   - typing_extensions
