@@ -1,5 +1,3 @@
-**Pixi will soon be available**
-
 # Build and develop with pixi
 
 The easiest way to set up a development environment is to use [pixi](https://pixi.sh/latest/#installation).
