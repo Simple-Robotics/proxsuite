@@ -392,7 +392,7 @@ ereach(usize& count,
       usize(len) * sizeof(I));
 
     // move down the top of the stack
-    top = util::wrapping_plus(top, -len);
+    top -= len;
   }
 
   for (usize q = top; q < n; ++q) {

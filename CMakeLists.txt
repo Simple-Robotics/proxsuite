@@ -1,263 +1,382 @@
-#
-# Copyright (c) 2022-2023 INRIA
-#
+# Copyright (c) 2022-2026 Inria
 
 cmake_minimum_required(VERSION 3.22)
 
-if(DEFINED PROJECT_NAME AND NOT PROJECT_WORKSPACE)
-  set(PROXSUITE_AS_SUBPROJECT ON)
+project(
+  proxsuite
+  VERSION 0.7.2
+  DESCRIPTION "The Advanced Proximal Optimization Toolbox"
+  HOMEPAGE_URL "https://github.com/Simple-Robotics/proxsuite"
+)
+
+include(cmake/get-jrl-cmakemodules.cmake)
+
+jrl_configure_defaults()
+
+# Requires macOS >=10.14 SDK (fixes build issues on macos-15-intel)
+# ref: https://github.com/wjakob/nanobind_example/blob/master/pyproject.toml#L43
+set(
+  CMAKE_OSX_DEPLOYMENT_TARGET
+  "10.14"
+  CACHE STRING
+  "Minimum macOS version supported by proxsuite"
+  FORCE
+)
+
+set(PROXSUITE_CXX_STANDARD 17 CACHE STRING "C++ standard to be used by proxsuite")
+if(PROXSUITE_CXX_STANDARD LESS 17)
+  message(
+    FATAL_ERROR
+    "[proxsuite] PROXSUITE_CXX_STANDARD must be at least 17.
+    Current value: ${PROXSUITE_CXX_STANDARD}"
+  )
+elseif(NOT PROXSUITE_CXX_STANDARD)
+  message(
+    DEBUG
+    "[proxsuite] PROXSUITE_CXX_STANDARD passed in the cmd line, but set to nothing.
+    Defaulting to C++17."
+  )
+  set(PROXSUITE_CXX_STANDARD 17)
+endif()
+message(STATUS "[proxsuite] PROXSUITE_CXX_STANDARD set to '${PROXSUITE_CXX_STANDARD}'")
+
+jrl_option(PROXSUITE_EXPORT_PACKAGE "Generate the CMake export files" ${PROJECT_IS_TOP_LEVEL})
+jrl_option(BUILD_TESTING "Build the tests" OFF)
+jrl_option(PROXSUITE_BUILD_EXAMPLES "Build the examples" OFF)
+jrl_option(BUILD_BENCHMARK "Build the benchmarks" OFF)
+jrl_option(BUILD_DOCUMENTATION "Build the documentation" OFF)
+jrl_option(PROXSUITE_BUILD_MAROS_MESZAROS_TESTS "Build the Maros-Meszaros tests, needs matio library" OFF)
+jrl_option(PROXSUITE_ENABLE_WARNINGS_AS_ERRORS "Treat all warnings as errors" OFF)
+jrl_option(BUILD_PYTHON_INTERFACE "Build the Python bindings" ON)
+jrl_option(INSTALL_DOCUMENTATION "Install the documentation" OFF)
+jrl_option(INITIALIZE_EIGEN_WITH_NAN "Initialize Eigen objects with NAN values" OFF)
+jrl_option(CHECK_RUNTIME_MALLOC "Check if some memory allocations are performed at runtime" OFF)
+jrl_option(BUILD_WITH_VECTORIZATION_SUPPORT "Build the library with the support of modern SIMD instructions" OFF)
+jrl_option(BUILD_BINDINGS_WITH_AVX2_SUPPORT "Build the bindings with AVX2 support" ON CONDITION "BUILD_WITH_VECTORIZATION_SUPPORT" FALLBACK OFF)
+jrl_option(BUILD_BINDINGS_WITH_AVX512_SUPPORT "Build the bindings with AVX512 support" ON CONDITION "BUILD_WITH_VECTORIZATION_SUPPORT" FALLBACK OFF)
+jrl_option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
+jrl_option(BUILD_WITH_OPENMP_SUPPORT "Build the library with the OpenMP support" OFF)
+jrl_option(LINK_PYTHON_INTERFACE_TO_OPENMP "Link OpenMP to the Python interface" ON CONDITION "BUILD_WITH_OPENMP_SUPPORT" FALLBACK OFF)
+jrl_option(PROXSUITE_BUILD_WITH_SERIALIZATION "Build with serialization support" ON)
+jrl_option(GENERATE_PYTHON_STUBS "Generate Python stubs" OFF)
+jrl_option(PROXSUITE_DOXYGEN_USE_MATHJAX "Avoid latex at build time" OFF)
+
+# Serialization is required to build the python bindings
+if(BUILD_PYTHON_INTERFACE AND NOT PROXSUITE_BUILD_WITH_SERIALIZATION)
+  message(
+    FATAL_ERROR
+    "[proxsuite] PROXSUITE_BUILD_WITH_SERIALIZATION must be ON to build the Python bindings."
+  )
 endif()
 
-set(PROJECT_NAME proxsuite)
-set(PROJECT_DESCRIPTION "The Advanced Proximal Optimization Toolbox")
-set(PROJECT_URL "http://github.com/Simple-Robotics/proxsuite")
-set(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
-set(PROJECT_USE_CMAKE_EXPORT TRUE)
-set(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
-# To enable jrl-cmakemodules compatibility with workspace we must define the two
-# following lines
-set(PROJECT_AUTO_RUN_FINALIZE FALSE)
-set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
+############################################################
 
-# Check if the submodule cmake have been initialized
-set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake-module")
-if(EXISTS "${JRL_CMAKE_MODULES}/base.cmake")
-  message(STATUS "JRL cmakemodules found in 'cmake/' git submodule")
-else()
-  find_package(jrl-cmakemodules QUIET CONFIG)
-  if(jrl-cmakemodules_FOUND)
-    get_property(
-      JRL_CMAKE_MODULES
-      TARGET jrl-cmakemodules::jrl-cmakemodules
-      PROPERTY INTERFACE_INCLUDE_DIRECTORIES
-    )
-    message(STATUS "JRL cmakemodules found on system at ${JRL_CMAKE_MODULES}")
-  elseif(${CMAKE_VERSION} VERSION_LESS "3.14.0")
-    message(
-      FATAL_ERROR
-      "\nCan't find jrl-cmakemodules. Please either:\n"
-      "  - use git submodule: 'git submodule update --init'\n"
-      "  - or install https://github.com/jrl-umi3218/jrl-cmakemodules\n"
-      "  - or upgrade your CMake version to >= 3.14 to allow automatic fetching\n"
-    )
-  else()
-    message(STATUS "JRL cmakemodules not found. Let's fetch it.")
+# Eigen3
+jrl_find_package(Eigen3 CONFIG REQUIRED EXPECTED_TARGETS Eigen3::Eigen)
+
+# Catch2
+# NOTE: We have to keep the FetchContent support because:
+# - pixi does not have debug symbols for Catch2 on Windows.
+# - Ubuntu 22.04 LTS ships Catch2 v2 which is incompatible with our tests.
+if(BUILD_TESTING)
+  if(WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(Catch2_USE_FETCHCONTENT ON)
+  endif()
+
+  if(NOT Catch2_USE_FETCHCONTENT)
+    jrl_find_package(Catch2 3.0 CONFIG QUIET)
+    if(Catch2_FOUND)
+      include(Catch)
+    else()
+      message(
+        WARNING
+        "[proxsuite] Catch2 version >= 3.0 is required for testing.
+          Falling back to FetchContent to get Catch2 v3.12.0"
+      )
+      set(Catch2_USE_FETCHCONTENT ON)
+    endif()
+  endif()
+
+  if(Catch2_USE_FETCHCONTENT)
     include(FetchContent)
     FetchContent_Declare(
-      "jrl-cmakemodules"
-      GIT_REPOSITORY "https://github.com/jrl-umi3218/jrl-cmakemodules.git"
+      catch2
+      URL https://github.com/catchorg/Catch2/archive/refs/tags/v3.12.0.zip
+      URL_HASH MD5=f04aa334408d47e37aac534e34d1c861
+      EXCLUDE_FROM_ALL
     )
-    FetchContent_MakeAvailable("jrl-cmakemodules")
-    FetchContent_GetProperties("jrl-cmakemodules" SOURCE_DIR JRL_CMAKE_MODULES)
+    FetchContent_MakeAvailable(catch2)
+    include(${catch2_SOURCE_DIR}/extras/Catch.cmake)
   endif()
 endif()
 
-# Disable -Werror on Unix for now.
-set(CXX_DISABLE_WERROR True)
-set(CMAKE_VERBOSE_MAKEFILE True)
-
-# Set CMake Policies
-if(POLICY CMP0068)
-  cmake_policy(SET CMP0068 NEW)
-endif(POLICY CMP0068)
-
-# ----------------------------------------------------
-# --- OPTIONS  ---------------------------------------
-# Need to be set before including base.cmake
-# ----------------------------------------------------
-option(BUILD_DOCUMENTATION "Build the documentation." OFF)
-option(BUILD_BENCHMARK "Build the benchmarks" OFF)
-option(INSTALL_DOCUMENTATION "Install the documentation" OFF)
-option(BUILD_PYTHON_INTERFACE "Build the Python bindings" OFF)
-option(PROXSUITE_DOXYGEN_USE_MATHJAX "Avoid latex at build time" OFF)
-set(DOXYGEN_USE_TEMPLATE_CSS YES)
-
-if(PROXSUITE_DOXYGEN_USE_MATHJAX)
-  set(DOXYGEN_USE_MATHJAX YES)
+# nanobind (Python bindings)
+# NOTE: We have to keep the FetchContent support because:
+# - Ubuntu 24.04 ships an incompatible 1.9.2 version of nanobind via apt-get.
+# - Ubuntu 22.04 does not ship nanobind at all via apt-get.
+if(BUILD_PYTHON_INTERFACE)
+  jrl_find_python(3.10 REQUIRED COMPONENTS Interpreter Development.Module)
+  jrl_find_nanobind(2.5.0 CONFIG QUIET)
+  if(NOT nanobind_FOUND)
+    message(
+      WARNING
+      "[proxsuite] nanobind library not found. Falling back to FetchContent to get nanobind v2.11.0"
+    )
+    include(FetchContent)
+    FetchContent_Declare(
+      nanobind
+      GIT_REPOSITORY https://github.com/wjakob/nanobind.git
+      GIT_TAG v2.11.0
+      EXCLUDE_FROM_ALL
+    )
+    FetchContent_MakeAvailable(nanobind)
+  endif()
 endif()
 
-# install() DESTINATION paths are normalized (to remove in 3.31) (copied over
-# from Pinocchio)
-if(POLICY CMP0177)
-  cmake_policy(SET CMP0177 NEW)
-  set(CMAKE_POLICY_DEFAULT_CMP0177 NEW)
-endif()
-include(${JRL_CMAKE_MODULES}/base.cmake)
-COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
-project(${PROJECT_NAME} ${PROJECT_ARGS})
-
-include(${JRL_CMAKE_MODULES}/ide.cmake)
-include(${JRL_CMAKE_MODULES}/apple.cmake)
-
-if(NOT ${CMAKE_VERSION} VERSION_GREATER "3.26.0" OR WIN32)
-  set(
-    CMAKE_MODULE_PATH
-    ${JRL_CMAKE_MODULES}/find-external/OpenMP
-    ${CMAKE_MODULE_PATH}
-  )
-endif()
-include(${JRL_CMAKE_MODULES}/julia.cmake)
-include(CMakeDependentOption)
-
-# If needed, set CMake policy for APPLE systems
-APPLY_DEFAULT_APPLE_CONFIGURATION()
-SET_DEFAULT_CMAKE_BUILD_TYPE(Release)
-
-option(INITIALIZE_EIGEN_WITH_NAN "Initialize Eigen objects with NAN values" OFF)
-option(
-  CHECK_RUNTIME_MALLOC
-  "Check if some memory allocations are performed at runtime"
-  OFF
-)
-option(SUFFIX_SO_VERSION "Suffix library name with its version" ON)
-
-option(
-  BUILD_WITH_VECTORIZATION_SUPPORT
-  "Build the library with the support of modern SIMD instructions."
-  ON
-)
-option(
-  BUILD_BINDINGS_WITH_AVX2_SUPPORT
-  "Build the bindings with AVX2 support."
-  ON
-)
-option(
-  BUILD_BINDINGS_WITH_AVX512_SUPPORT
-  "Build the bindings with AVX512 support."
-  ON
-)
-option(TEST_JULIA_INTERFACE "Run the julia examples as unittest" OFF)
-option(
-  BUILD_WITH_OPENMP_SUPPORT
-  "Build the library with the OpenMP support"
-  OFF
-)
-cmake_dependent_option(
-  LINK_PYTHON_INTERFACE_TO_OPENMP
-  "Link OpenMP to the Python interface"
-  ON
-  BUILD_WITH_OPENMP_SUPPORT
-  OFF
-)
-
-if(BUILD_WITH_OPENMP_SUPPORT)
-  find_package(OpenMP REQUIRED)
-  separate_arguments(OpenMP_CXX_FLAGS UNIX_COMMAND "${OpenMP_CXX_FLAGS}")
-endif(BUILD_WITH_OPENMP_SUPPORT)
-
-set(
-  CMAKE_MODULE_PATH
-  "${JRL_CMAKE_MODULES}/find-external/Julia"
-  ${CMAKE_MODULE_PATH}
-)
-set(
-  CMAKE_MODULE_PATH
-  "${CMAKE_CURRENT_LIST_DIR}/cmake-external"
-  ${CMAKE_MODULE_PATH}
-)
-
-message(STATUS "CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
-if(INITIALIZE_EIGEN_WITH_NAN)
-  add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_NAN)
-endif(INITIALIZE_EIGEN_WITH_NAN)
-if(CHECK_RUNTIME_MALLOC)
-  message(STATUS "Check if some memory allocations are performed at runtime.")
-  add_definitions(-DPROXSUITE_EIGEN_CHECK_MALLOC)
-  add_definitions(-DEIGEN_RUNTIME_NO_MALLOC)
-endif(CHECK_RUNTIME_MALLOC)
-
-# set CXX standard
-if(DEFINED CMAKE_CXX_STANDARD)
-  CHECK_MINIMAL_CXX_STANDARD(14 ENFORCE)
-else()
-  set(CMAKE_CXX_STANDARD 17)
-endif()
-message(STATUS "[Proxsuite] Using C++ standard: ${CMAKE_CXX_STANDARD}")
-
-# Handle Windows context
-if(MSVC)
-  # add_definitions(-D_USE_MATH_DEFINES)
-  add_definitions(-DNOMINMAX)
+# cereal (Serialization)
+if(PROXSUITE_BUILD_WITH_SERIALIZATION)
+  jrl_find_package(cereal CONFIG REQUIRED EXPECTED_TARGETS cereal::cereal)
 endif()
 
-# Look for dependencies
-ADD_PROJECT_DEPENDENCY(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
-
-set(
-  SIMDE_HINT_FAILURE
-  "Set BUILD_WITH_VECTORIZATION_SUPPORT=OFF or install Simde on your system.\n If Simde is already installed, ensure that the CMake variable CMAKE_MODULE_PATH correctly points toward the location of FindSimde.cmake file."
-)
+# simde
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
-  ADD_PROJECT_DEPENDENCY(
-    Simde
-    REQUIRED
-    FIND_EXTERNAL "Simde"
-    PKG_CONFIG_REQUIRES "simde"
-  )
+  jrl_find_package(simde REQUIRED EXPECTED_TARGETS simde::simde)
 endif()
 
-# Build the main library
-file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${PROJECT_SOURCE_DIR}/include/*.hpp)
+# matio
+if(BUILD_TESTING AND PROXSUITE_BUILD_MAROS_MESZAROS_TESTS)
+  jrl_find_package(matio REQUIRED)
+endif()
+
+# OpenMP
+if(BUILD_WITH_OPENMP_SUPPORT)
+  jrl_find_package(OpenMP REQUIRED EXPECTED_TARGETS OpenMP::OpenMP_CXX)
+endif()
+
+# Doxygen + Graphviz (dot)
+if(BUILD_DOCUMENTATION)
+  jrl_find_package(Doxygen REQUIRED COMPONENTS dot)
+endif()
+
+############################################################
 
 add_library(proxsuite INTERFACE)
-if(MSVC)
-  target_compile_options(proxsuite INTERFACE /permissive-)
-  target_compile_options(proxsuite INTERFACE $<$<COMPILE_LANGUAGE:CXX>:/bigobj>)
-endif(MSVC)
-target_link_libraries(proxsuite PUBLIC INTERFACE Eigen3::Eigen)
+add_library(proxsuite::proxsuite ALIAS proxsuite)
+target_compile_features(proxsuite INTERFACE cxx_std_${PROXSUITE_CXX_STANDARD})
+jrl_target_enforce_msvc_conformance(proxsuite INTERFACE)
+
 target_include_directories(
   proxsuite
   INTERFACE
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
-    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
-target_include_directories(
-  proxsuite
-  INTERFACE "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>"
-)
-set(EXPORTED_TARGETS_LIST proxsuite)
 
-ADD_HEADER_GROUP(${PROJECT_NAME}_HEADERS)
+jrl_target_generate_config_header(proxsuite INTERFACE VERSION ${PROJECT_VERSION})
+jrl_target_generate_deprecated_header(proxsuite INTERFACE)
+jrl_target_generate_warning_header(proxsuite INTERFACE)
+
+target_compile_definitions(
+  proxsuite
+  INTERFACE
+    $<$<BOOL:${INITIALIZE_EIGEN_WITH_NAN}>:EIGEN_INITIALIZE_MATRICES_BY_NAN>
+    $<$<BOOL:${CHECK_RUNTIME_MALLOC}>:EIGEN_RUNTIME_NO_MALLOC>
+    $<$<BOOL:${CHECK_RUNTIME_MALLOC}>:PROXSUITE_EIGEN_CHECK_MALLOC>
+    $<$<BOOL:${BUILD_WITH_OPENMP_SUPPORT}>:PROXSUITE_PYTHON_INTERFACE_WITH_OPENMP>
+)
+
+target_link_libraries(
+  proxsuite
+  INTERFACE Eigen3::Eigen $<$<BOOL:${PROXSUITE_BUILD_WITH_SERIALIZATION}>:cereal::cereal>
+)
 
 if(BUILD_WITH_VECTORIZATION_SUPPORT)
   add_library(proxsuite-vectorized INTERFACE)
-  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE proxsuite)
-  target_link_libraries(proxsuite-vectorized PUBLIC INTERFACE simde)
+  add_library(proxsuite::proxsuite-vectorized ALIAS proxsuite-vectorized)
+  target_link_libraries(
+    proxsuite-vectorized
+    INTERFACE proxsuite simde::simde $<$<BOOL:${PROXSUITE_BUILD_WITH_SERIALIZATION}>:cereal::cereal>
+  )
   target_compile_definitions(proxsuite-vectorized INTERFACE PROXSUITE_VECTORIZE)
-  list(APPEND EXPORTED_TARGETS_LIST proxsuite-vectorized)
 endif()
 
-if(BUILD_TESTING OR BUILD_PYTHON_INTERFACE)
-  # Download cereal for pything bindings and unittests
-  find_package(cereal QUIET CONFIG)
-  if(NOT cereal_FOUND)
-    set(cereal_dir ${PROJECT_SOURCE_DIR}/external/cereal)
-    set(cereal ${cereal_dir}/README.md)
-    find_package(Git REQUIRED)
-    if(NOT EXISTS ${cereal})
-      execute_process(
-        COMMAND ${GIT_EXECUTABLE} submodule update --init ${cereal_dir}
-        WORKING_DIRECTORY ${cereal_dir}
-        COMMAND_ERROR_IS_FATAL ANY
-      )
-    endif()
+if(BUILD_WITH_OPENMP_SUPPORT)
+  add_library(proxsuite-parallel INTERFACE)
+  add_library(proxsuite::proxsuite-parallel ALIAS proxsuite-parallel)
+  target_link_libraries(proxsuite-parallel INTERFACE proxsuite OpenMP::OpenMP_CXX)
+
+  if(BUILD_WITH_VECTORIZATION_SUPPORT)
+    add_library(proxsuite-vectorized-parallel INTERFACE)
+    add_library(proxsuite::proxsuite-vectorized-parallel ALIAS proxsuite-vectorized-parallel)
+    target_link_libraries(
+      proxsuite-vectorized-parallel
+      INTERFACE proxsuite-vectorized OpenMP::OpenMP_CXX
+    )
   endif()
 endif()
 
-install(
-  TARGETS ${EXPORTED_TARGETS_LIST}
-  EXPORT ${TARGETS_EXPORT_NAME}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
-)
+function(proxsuite_set_default_target_options target_name)
+  jrl_target_set_default_compile_options(${target_name} PRIVATE)
+  if(PROXSUITE_ENABLE_WARNINGS_AS_ERRORS)
+    jrl_target_treat_all_warnings_as_errors(${target_name} PRIVATE)
+  endif()
+endfunction()
 
-add_subdirectory(bindings)
-if(BUILD_TESTING AND NOT PROXSUITE_AS_SUBPROJECT)
+if(BUILD_PYTHON_INTERFACE)
+  add_subdirectory(bindings/python)
+endif()
+
+if(BUILD_TESTING)
+  message(STATUS "[proxsuite] Building tests")
+  enable_testing()
   add_subdirectory(test)
+endif()
+
+if(PROXSUITE_BUILD_EXAMPLES)
+  message(STATUS "[proxsuite] Building examples")
   add_subdirectory(examples)
 endif()
 
-add_subdirectory(benchmark)
+if(BUILD_BENCHMARK)
+  message(STATUS "[proxsuite] Building benchmarks")
+  add_subdirectory(benchmark)
+endif()
 
-SETUP_PROJECT_FINALIZE()
+if(BUILD_DOCUMENTATION)
+  message(STATUS "[proxsuite] Building documentation")
+  add_subdirectory(doc)
+endif()
+
+jrl_target_headers(proxsuite INTERFACE
+  HEADERS
+    include/proxsuite/helpers/common.hpp
+    include/proxsuite/helpers/instruction-set.hpp
+    include/proxsuite/helpers/optional.hpp
+    include/proxsuite/helpers/version.hpp
+    include/proxsuite/linalg/dense/core.hpp
+    include/proxsuite/linalg/dense/factorize.hpp
+    include/proxsuite/linalg/dense/ldlt.hpp
+    include/proxsuite/linalg/dense/modify.hpp
+    include/proxsuite/linalg/dense/solve.hpp
+    include/proxsuite/linalg/dense/update.hpp
+    include/proxsuite/linalg/sparse/core.hpp
+    include/proxsuite/linalg/sparse/factorize.hpp
+    include/proxsuite/linalg/sparse/rowmod.hpp
+    include/proxsuite/linalg/sparse/update.hpp
+    include/proxsuite/linalg/veg/internal/external/hedley.ext.hpp
+    include/proxsuite/linalg/veg/internal/external/unhedley.ext.hpp
+    include/proxsuite/linalg/veg/internal/assert_impl.hpp
+    include/proxsuite/linalg/veg/internal/collection_algo.hpp
+    include/proxsuite/linalg/veg/internal/dbg.hpp
+    include/proxsuite/linalg/veg/internal/delete_special_members.hpp
+    include/proxsuite/linalg/veg/internal/dyn_index.hpp
+    include/proxsuite/linalg/veg/internal/epilogue.hpp
+    include/proxsuite/linalg/veg/internal/fix_index.hpp
+    include/proxsuite/linalg/veg/internal/has_asan.hpp
+    include/proxsuite/linalg/veg/internal/integer_seq.hpp
+    include/proxsuite/linalg/veg/internal/macros.hpp
+    include/proxsuite/linalg/veg/internal/narrow.hpp
+    include/proxsuite/linalg/veg/internal/preprocessor.hpp
+    include/proxsuite/linalg/veg/internal/prologue.hpp
+    include/proxsuite/linalg/veg/internal/std.hpp
+    include/proxsuite/linalg/veg/internal/terminate.hpp
+    include/proxsuite/linalg/veg/internal/typedefs.hpp
+    include/proxsuite/linalg/veg/memory/address.hpp
+    include/proxsuite/linalg/veg/memory/alloc.hpp
+    include/proxsuite/linalg/veg/memory/dynamic_stack.hpp
+    include/proxsuite/linalg/veg/memory/placement.hpp
+    include/proxsuite/linalg/veg/memory/stack_alloc.hpp
+    include/proxsuite/linalg/veg/type_traits/alloc.hpp
+    include/proxsuite/linalg/veg/type_traits/assignable.hpp
+    include/proxsuite/linalg/veg/type_traits/constructible.hpp
+    include/proxsuite/linalg/veg/type_traits/core.hpp
+    include/proxsuite/linalg/veg/type_traits/invocable.hpp
+    include/proxsuite/linalg/veg/type_traits/primitives.hpp
+    include/proxsuite/linalg/veg/type_traits/tags.hpp
+    include/proxsuite/linalg/veg/util/assert.hpp
+    include/proxsuite/linalg/veg/util/dbg.hpp
+    include/proxsuite/linalg/veg/util/defer.hpp
+    include/proxsuite/linalg/veg/util/dynstack_alloc.hpp
+    include/proxsuite/linalg/veg/util/get.hpp
+    include/proxsuite/linalg/veg/util/index.hpp
+    include/proxsuite/linalg/veg/util/unreachable.hpp
+    include/proxsuite/linalg/veg/ref.hpp
+    include/proxsuite/linalg/veg/slice.hpp
+    include/proxsuite/linalg/veg/tuple.hpp
+    include/proxsuite/linalg/veg/vec.hpp
+    include/proxsuite/proxqp/dense/preconditioner/identity.hpp
+    include/proxsuite/proxqp/dense/preconditioner/ruiz.hpp
+    include/proxsuite/proxqp/dense/backward_data.hpp
+    include/proxsuite/proxqp/dense/compute_ECJ.hpp
+    include/proxsuite/proxqp/dense/dense.hpp
+    include/proxsuite/proxqp/dense/fwd.hpp
+    include/proxsuite/proxqp/dense/helpers.hpp
+    include/proxsuite/proxqp/dense/linesearch.hpp
+    include/proxsuite/proxqp/dense/model.hpp
+    include/proxsuite/proxqp/dense/solver.hpp
+    include/proxsuite/proxqp/dense/utils.hpp
+    include/proxsuite/proxqp/dense/views.hpp
+    include/proxsuite/proxqp/dense/workspace.hpp
+    include/proxsuite/proxqp/dense/wrapper.hpp
+    include/proxsuite/proxqp/parallel/omp.hpp
+    include/proxsuite/proxqp/parallel/qp_solve.hpp
+    include/proxsuite/proxqp/sparse/preconditioner/identity.hpp
+    include/proxsuite/proxqp/sparse/preconditioner/ruiz.hpp
+    include/proxsuite/proxqp/sparse/fwd.hpp
+    include/proxsuite/proxqp/sparse/helpers.hpp
+    include/proxsuite/proxqp/sparse/model.hpp
+    include/proxsuite/proxqp/sparse/solver.hpp
+    include/proxsuite/proxqp/sparse/sparse.hpp
+    include/proxsuite/proxqp/sparse/utils.hpp
+    include/proxsuite/proxqp/sparse/views.hpp
+    include/proxsuite/proxqp/sparse/workspace.hpp
+    include/proxsuite/proxqp/sparse/wrapper.hpp
+    include/proxsuite/proxqp/utils/prints.hpp
+    include/proxsuite/proxqp/utils/random_qp_problems.hpp
+    include/proxsuite/proxqp/utils/uint128_msvc.hpp
+    include/proxsuite/proxqp/results.hpp
+    include/proxsuite/proxqp/settings.hpp
+    include/proxsuite/proxqp/status.hpp
+    include/proxsuite/proxqp/timings.hpp
+    include/proxsuite/fwd.hpp
+  BASE_DIRS include
+)
+
+if(PROXSUITE_BUILD_WITH_SERIALIZATION)
+  jrl_target_headers(proxsuite INTERFACE
+    HEADERS
+      include/proxsuite/serialization/archive.hpp
+      include/proxsuite/serialization/eigen.hpp
+      include/proxsuite/serialization/model.hpp
+      include/proxsuite/serialization/results.hpp
+      include/proxsuite/serialization/ruiz.hpp
+      include/proxsuite/serialization/settings.hpp
+      include/proxsuite/serialization/workspace.hpp
+      include/proxsuite/serialization/wrapper.hpp
+    BASE_DIRS include
+  )
+endif()
+
+jrl_add_export_component(NAME proxsuite TARGETS proxsuite)
+
+if(BUILD_WITH_VECTORIZATION_SUPPORT)
+  jrl_add_export_component(NAME vectorized TARGETS proxsuite-vectorized)
+endif()
+
+if(BUILD_WITH_OPENMP_SUPPORT)
+  jrl_add_export_component(NAME parallel TARGETS proxsuite-parallel)
+
+  if(BUILD_WITH_VECTORIZATION_SUPPORT)
+    jrl_add_export_component(NAME vectorized-parallel TARGETS proxsuite-vectorized-parallel)
+  endif()
+endif()
+
+jrl_export_package()
+
+jrl_generate_ros2_package_files(
+  INSTALL_CPP_PACKAGE_FILES [[NOT BUILD_STANDALONE_PYTHON_INTERFACE]]
+  INSTALL_PYTHON_PACKAGE_FILES [[BUILD_PYTHON_INTERFACE]]
+)
+
+jrl_print_dependencies_summary()
+jrl_print_options_summary()
