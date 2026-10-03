@@ -733,14 +733,14 @@ public:
               optional<T> mu_in = nullopt,
               optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
-    PROXSUITE_THROW_PRETTY(
-      box_constraints == true,
-      std::invalid_argument,
-      "wrong model setup: the QP object is designed without box "
-      "constraints, but the update does not include lower or upper box "
-      "inequalities.");
     settings.update_preconditioner = update_preconditioner;
     if (!work.is_initialized) {
+      PROXSUITE_THROW_PRETTY(
+        box_constraints == true,
+        std::invalid_argument,
+        "wrong model setup: cannot lazily call init() from update() on a "
+        "box-constrained QP without l_box/u_box; call init() explicitly "
+        "first.");
       init(H, g, A, b, C, l, u, update_preconditioner, rho, mu_eq, mu_in);
       return;
     }
