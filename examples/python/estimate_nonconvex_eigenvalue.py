@@ -1,8 +1,7 @@
-import proxsuite
 import numpy as np
+import proxsuite
 import scipy.sparse as spa
 from util import generate_mixed_qp
-
 
 # load a qp object using qp problem dimensions
 n = 10

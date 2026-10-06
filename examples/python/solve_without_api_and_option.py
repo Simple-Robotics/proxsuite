@@ -1,7 +1,6 @@
 import proxsuite
 from util import generate_mixed_qp
 
-
 # load a qp object using qp problem dimensions
 n = 10
 n_eq = 2
@@ -14,6 +13,6 @@ results = proxsuite.proxqp.dense.solve(
 )
 # Note that in python the order does not matter for rho and eps_abs
 # print an optimal solution
-print("optimal x: {}".format(results.x))
-print("optimal y: {}".format(results.y))
-print("optimal z: {}".format(results.z))
+print(f"optimal x: {results.x}")
+print(f"optimal y: {results.y}")
+print(f"optimal z: {results.z}")

@@ -1,8 +1,9 @@
-import proxsuite
-import numpy as np
-import scipy.sparse as spa
-from time import perf_counter_ns
 from concurrent.futures import ThreadPoolExecutor
+from time import perf_counter_ns
+
+import numpy as np
+import proxsuite
+import scipy.sparse as spa
 
 """
 There are two interfaces to solve a QP problem with the dense backend. a) create a qp object by passing the problem data (matrices, vectors) to the qp.init method (this does memory allocation and the preconditioning) and then calling qp.solve or b) use the solve function directly taking the problem data as input (this does everything in one go).

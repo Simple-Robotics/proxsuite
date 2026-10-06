@@ -810,8 +810,8 @@ enum Enum
   is_nothrow = 2 * is_throws_with,
 
   is_false = 2 * is_nothrow,
-  is_unary =
-    2 * is_false, // not checked anywhere - used just to distinguish the types
+  is_unary = 2 *
+    is_false, // not checked anywhere - used just to distinguish the types
 
   is_eq = 2 * is_unary,
   is_ne = 2 * is_eq,

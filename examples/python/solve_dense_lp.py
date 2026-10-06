@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2023 Inria
 
@@ -31,6 +30,6 @@ problem.init(None, g, None, None, C, None, u)
 
 # Solve problem and print solution
 problem.solve()
-print("optimal x: {}".format(problem.results.x))
-print("optimal y: {}".format(problem.results.y))
-print("optimal z: {}".format(problem.results.z))
+print(f"optimal x: {problem.results.x}")
+print(f"optimal y: {problem.results.y}")
+print(f"optimal z: {problem.results.z}")

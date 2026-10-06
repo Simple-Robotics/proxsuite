@@ -1,7 +1,6 @@
 import proxsuite
 from util import generate_mixed_qp
 
-
 # load a qp object using qp problem dimensions
 n = 10
 n_eq = 2

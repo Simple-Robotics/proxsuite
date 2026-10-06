@@ -1,7 +1,6 @@
-import proxsuite
 import numpy as np
+import proxsuite
 from util import generate_mixed_qp
-
 
 # load a qp object using qp problem dimensions
 n = 10
@@ -21,9 +20,9 @@ results2 = proxsuite.proxqp.dense.solve(
 # should convert them in dense format
 
 # print an optimal solution
-print("optimal x: {}".format(results.x))
-print("optimal y: {}".format(results.y))
-print("optimal z: {}".format(results.z))
+print(f"optimal x: {results.x}")
+print(f"optimal y: {results.y}")
+print(f"optimal z: {results.z}")
 
 # solve the problem using the dense backend using its feature for handling box constraints
 
@@ -44,8 +43,8 @@ results_dense_solver_box = proxsuite.proxqp.dense.solve(
     u_box=u_box,
 )
 # print an optimal solution
-print("optimal x: {}".format(results_dense_solver_box.x))
-print("optimal y: {}".format(results_dense_solver_box.y))
-print("optimal z: {}".format(results_dense_solver_box.z))
+print(f"optimal x: {results_dense_solver_box.x}")
+print(f"optimal y: {results_dense_solver_box.y}")
+print(f"optimal z: {results_dense_solver_box.z}")
 # Note that the last n elements of z corresponds to the multipliers associated to the box
 # constraints

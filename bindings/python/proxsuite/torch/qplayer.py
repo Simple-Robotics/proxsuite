@@ -1,12 +1,13 @@
 import os
-import scipy.sparse as spa
+
 import numpy as np
+import scipy.sparse as spa
 import torch
+from torch.autograd import Function
 
 import proxsuite
 
-from torch.autograd import Function
-from .utils import expandParam, extract_nBatch, bger
+from .utils import bger, expandParam, extract_nBatch
 
 
 def QPFunction(
