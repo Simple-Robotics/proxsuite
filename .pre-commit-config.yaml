@@ -5,11 +5,11 @@ ci:
   submodules: true
 repos:
 - repo: https://github.com/BlankSpruce/gersemi-pre-commit
-  rev: 0.28.0
+  rev: 0.29.2
   hooks:
   - id: gersemi
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.20
+  rev: v0.16.10
   hooks:
   - id: ruff-check
     args:
@@ -17,7 +17,7 @@ repos:
     - --exit-non-zero-on-fix
   - id: ruff-format
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v22.1.8
+  rev: v23.1.3
   hooks:
   - id: clang-format
     args:
