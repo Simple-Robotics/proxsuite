@@ -9,5 +9,5 @@ qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in)
 # generate a random QP
 H, g, A, b, C, u, l = generate_mixed_qp(n)
 # initialize the model of the problem to solve
-qp.settings.compute_timings  # compute all timings
+qp.settings.compute_timings = True  # compute all timings
 qp.init(H, g, A, b, C, l, u)

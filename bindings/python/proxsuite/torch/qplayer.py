@@ -417,9 +417,8 @@ def QPFunction(
                 Q_i = Q[i].numpy()
                 C_i = G[i].numpy()
                 A_i = None
-                if A is not None:
-                    if A.shape[0] != 0:
-                        A_i = A[i].numpy()
+                if A is not None and A.shape[0] != 0:
+                    A_i = A[i].numpy()
                 z_i = ctx.nus[i]
                 s_i = ctx.slacks[i]  # G @ z_- h = slacks
 
@@ -473,35 +472,31 @@ def QPFunction(
 
                 rhs = np.zeros(kkt.shape[0])
                 rhs[:dim] = -dl_dzhat[i]
-                if dl_dlams is not None:
-                    if n_eq != 0:
-                        rhs[dim : dim + n_eq] = -dl_dlams[i]
+                if dl_dlams is not None and n_eq != 0:
+                    rhs[dim : dim + n_eq] = -dl_dlams[i]
                 active_set = None
                 if n_in != 0:
                     active_set = -z_i[:n_in_sol] + z_i[n_in_sol:] >= 0
-                if dl_dnus is not None:
-                    if n_in != 0:
-                        # we must convert dl_dnus to a uni sided version
-                        # to do so we reconstitute the active set
-                        rhs[dim + n_eq : dim + n_eq + n_in_sol][~active_set] = dl_dnus[
-                            i
-                        ][~active_set]
-                        rhs[dim + n_eq + n_in_sol : dim + n_eq + n_in][
-                            active_set
-                        ] = -dl_dnus[i][active_set]
-                if dl_ds_e is not None:
-                    if dl_ds_e.shape[0] != 0:
-                        rhs[dim + n_eq + n_in : dim + 2 * n_eq + n_in] = -dl_ds_e[i]
-                if dl_ds_i is not None:
-                    if dl_ds_i.shape[0] != 0:
-                        # we must convert dl_dnus to a uni sided version
-                        # to do so we reconstitute the active set
-                        rhs[dim + 2 * n_eq + n_in : dim + 2 * n_eq + n_in + n_in_sol][
-                            ~active_set
-                        ] = dl_ds_i[i][~active_set]
-                        rhs[dim + 2 * n_eq + n_in + n_in_sol :][active_set] = -dl_ds_i[
-                            i
-                        ][active_set]
+                if dl_dnus is not None and n_in != 0:
+                    # we must convert dl_dnus to a uni sided version
+                    # to do so we reconstitute the active set
+                    rhs[dim + n_eq : dim + n_eq + n_in_sol][~active_set] = dl_dnus[i][
+                        ~active_set
+                    ]
+                    rhs[dim + n_eq + n_in_sol : dim + n_eq + n_in][
+                        active_set
+                    ] = -dl_dnus[i][active_set]
+                if dl_ds_e is not None and dl_ds_e.shape[0] != 0:
+                    rhs[dim + n_eq + n_in : dim + 2 * n_eq + n_in] = -dl_ds_e[i]
+                if dl_ds_i is not None and dl_ds_i.shape[0] != 0:
+                    # we must convert dl_dnus to a uni sided version
+                    # to do so we reconstitute the active set
+                    rhs[dim + 2 * n_eq + n_in : dim + 2 * n_eq + n_in + n_in_sol][
+                        ~active_set
+                    ] = dl_ds_i[i][~active_set]
+                    rhs[dim + 2 * n_eq + n_in + n_in_sol :][active_set] = -dl_ds_i[i][
+                        active_set
+                    ]
 
                 l = np.zeros(0)
                 u = np.zeros(0)
