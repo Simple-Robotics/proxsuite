@@ -32,7 +32,7 @@ jobs:
         build_type: [Release, Debug]
         cxx_std: [17, 20]
         pixi_environment: [default]
-        os: [ubuntu-24.04, macos-15-intel, macos-26, windows-2025]
+        os: [ubuntu-24.04, macos-15-intel, macos-26, windows-2022]
 
     steps:
       - uses: actions/checkout@v6
@@ -54,7 +54,7 @@ jobs:
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps build --verbose --parallel 1
 
       - name: Run C++ tests
-        if: ${{ !(startsWith(matrix.os, 'windows-') && matrix.build_type == 'Debug') }}
+        # if: ${{ !(startsWith(matrix.os, 'windows-') && matrix.build_type == 'Debug') }}
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps test
 
       - name: Install
@@ -74,7 +74,7 @@ jobs:
   #   strategy:
   #     fail-fast: false
   #     matrix:
-  #       os: [ubuntu-24.04, macos-15-intel, macos-26, windows-2025]
+  #       os: [ubuntu-24.04, macos-15-intel, macos-26, windows-2022]
   #   runs-on: ${{ matrix.os }}
   #   steps:
   #     - uses: actions/checkout@v6
