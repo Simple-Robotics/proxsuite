@@ -4,20 +4,20 @@ ci:
   autoupdate_schedule: quarterly
   submodules: true
 repos:
-- repo: https://github.com/BlankSpruce/gersemi
-  rev: 0.26.1
+- repo: https://github.com/BlankSpruce/gersemi-pre-commit
+  rev: 0.28.0
   hooks:
   - id: gersemi
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.15.20
   hooks:
-  - id: ruff
+  - id: ruff-check
     args:
     - --fix
     - --exit-non-zero-on-fix
   - id: ruff-format
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v22.1.5
+  rev: v22.1.8
   hooks:
   - id: clang-format
     args:

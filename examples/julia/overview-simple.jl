@@ -1,5 +1,8 @@
 import Pkg
 Pkg.add("PyCall")
+if haskey(ENV, "PYTHON")
+    Pkg.build("PyCall")
+end
 
 using PyCall
 using Printf

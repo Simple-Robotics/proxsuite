@@ -15,16 +15,15 @@ The following dependencies are required at compile time:
 1. Clone this repository with:
 
 ```bash
-git clone https://github.com/Simple-Robotics/proxsuite.git --recursive
+git clone https://github.com/Simple-Robotics/proxsuite.git
 ```
 
 2. Create a build tree using CMake, build and install:
 
 ```bash
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
-make
-make install
+cmake -S proxsuite -B proxsuite-build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF
+cmake --build proxsuite-build
+cmake --install proxsuite-build --prefix proxsuite-install
 ```
 
 Note: if you are building Proxsuite within a conda environment, consider passing `-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX`.
@@ -34,10 +33,9 @@ Note: if you are building Proxsuite within a conda environment, consider passing
 You just need to ensure that Python3 is indeed present on your system and activate the cmake option `BUILD_PYTHON_INTERFACE=ON` by replacing:
 
 ```bash
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_PYTHON_INTERFACE=ON
-make
-make install
+cmake -S proxsuite -B proxsuite-build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_PYTHON_INTERFACE=ON
+cmake --build proxsuite-build
+cmake --install proxsuite-build --prefix proxsuite-install
 ```
 
 4. Generate the doc
@@ -57,10 +55,9 @@ Yet, some CPU architectures may not support such operations.
 You just need to deactivate the cmake option `BUILD_WITH_VECTORIZATION_SUPPORT=OFF`, like:
 
 ```bash
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_VECTORIZATION_SUPPORT=OFF
-make
-make install
+cmake -S proxsuite -B proxsuite-build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DBUILD_WITH_VECTORIZATION_SUPPORT=OFF
+cmake --build proxsuite-build
+cmake --install proxsuite-build --prefix proxsuite-install
 ```
 
 #### Testing
