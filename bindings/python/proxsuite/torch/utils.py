@@ -1,5 +1,5 @@
-import torch
 import numpy as np
+import torch
 
 
 def extract_nBatch(Q, p, A, b, G, l, u):

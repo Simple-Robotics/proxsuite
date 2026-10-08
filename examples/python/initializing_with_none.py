@@ -12,4 +12,4 @@ l = None
 qp = proxsuite.proxqp.dense.QP(3, 0, 0)
 qp.init(H, g, A, b, C, l, u)  # it is equivalent to do as well qp.init(H, g)
 qp.solve()
-print("optimal x: {}".format(qp.results.x))
+print(f"optimal x: {qp.results.x}")

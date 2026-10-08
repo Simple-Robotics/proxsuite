@@ -1,17 +1,16 @@
 # adapted from https://github.com/locuslab/optnet/blob/master/sudoku/train.py
+import argparse
 import os
 import time
-import argparse
+
 import numpy as np
 
 try:
-    import torch
-    import torch.nn as nn
-    import torch.optim as optim
-    from torch.nn.parameter import Parameter
-
     import cvxpy as cp
+    import torch
     from proxsuite.torch.qplayer import QPFunction
+    from torch import nn, optim
+    from torch.nn.parameter import Parameter
 except ImportError:
     print("Exiting script because torch is not installed.")
     exit(0)
@@ -145,7 +144,7 @@ def test(args, epoch, model, testX, testY):
 
     nErr = 0
     for i in range(0, testX.size(0), batchSz):
-        print("Testing model: {}/{}".format(i, testX.size(0)), end="\r")
+        print(f"Testing model: {i}/{testX.size(0)}", end="\r")
         with torch.no_grad():
             batch_data.data[:] = testX[i : i + batchSz]
             batch_targets.data[:] = testY[i : i + batchSz]
