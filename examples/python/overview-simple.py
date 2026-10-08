@@ -1,9 +1,17 @@
 import proxsuite
 from util import generate_mixed_qp
+import numpy as np
 
 # generate a qp problem
 n = 10
-H, g, A, b, C, u, l = generate_mixed_qp(n)
+H = np.eye(10)
+g = np.zeros(10)
+A = np.zeros((1, 10))
+A[0] = 1.0
+b = np.zeros(1)
+C = A[:]
+u = np.ones(1) * -1
+l = np.ones(1) * 1
 n_eq = A.shape[0]
 n_in = C.shape[0]
 
