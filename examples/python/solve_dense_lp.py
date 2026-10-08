@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-#
 # Copyright 2023 Inria
 
 import numpy as np
