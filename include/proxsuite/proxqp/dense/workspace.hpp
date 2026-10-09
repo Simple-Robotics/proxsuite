@@ -309,6 +309,7 @@ struct Workspace
     active_part_z.setZero();
     active_set_up.setConstant(false);
     active_set_low.setConstant(false);
+    active_inequalities.setConstant(false);
     dw_aug.setZero();
     rhs.setZero();
     err.setZero();
