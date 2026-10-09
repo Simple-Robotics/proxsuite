@@ -1,11 +1,12 @@
 #
 # Copyright (c) 2022, INRIA
 #
-import proxsuite
-import numpy as np
-import scipy.sparse as spa
-import unittest
 import pickle
+import unittest
+
+import numpy as np
+import proxsuite
+import scipy.sparse as spa
 
 
 def generate_mixed_qp(n, seed=1):

@@ -1,20 +1,20 @@
 # adapted from https://github.com/locuslab/optnet/blob/master/sudoku/train.py
-import os
-import time
 import argparse
+import os
+import sys
+import time
+
 import numpy as np
 
 try:
-    import torch
-    import torch.nn as nn
-    import torch.optim as optim
-    from torch.nn.parameter import Parameter
-
     import cvxpy as cp
+    import torch
     from proxsuite.torch.qplayer import QPFunction
+    from torch import nn, optim
+    from torch.nn.parameter import Parameter
 except ImportError:
     print("Exiting script because torch is not installed.")
-    exit(0)
+    sys.exit(0)
 
 
 def get_sudoku_matrix(n):
@@ -90,7 +90,7 @@ class QPlayer_Learn_feasibility(nn.Module):
 
         p = -puzzles.view(nBatch, -1)
 
-        x, y, z, s_e, s_i = QPFunction(
+        x, _y, _z, s_e, s_i = QPFunction(
             structural_feasibility=False, omp_parallel=self.omp_parallel
         )(
             self.Q, p.double(), self.A, self.b, self.G, self.l, self.h
@@ -145,7 +145,7 @@ def test(args, epoch, model, testX, testY):
 
     nErr = 0
     for i in range(0, testX.size(0), batchSz):
-        print("Testing model: {}/{}".format(i, testX.size(0)), end="\r")
+        print(f"Testing model: {i}/{testX.size(0)}", end="\r")
         with torch.no_grad():
             batch_data.data[:] = testX[i : i + batchSz]
             batch_targets.data[:] = testY[i : i + batchSz]

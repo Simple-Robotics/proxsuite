@@ -278,9 +278,9 @@
     using NothrowTestExpr = ::proxsuite::linalg::veg::meta::false_type;        \
   };                                                                           \
   template<__VEG_PP_REMOVE_PAREN1(Tpl)>                                        \
-  struct test_sfinae_##                                                        \
-    Name<::proxsuite::linalg::veg::meta::void_t<decltype((Expr))>,             \
-         __VEG_PP_REMOVE_PAREN1(TplNames)>                                     \
+  struct test_sfinae_##Name<                                                   \
+    ::proxsuite::linalg::veg::meta::void_t<decltype((Expr))>,                  \
+    __VEG_PP_REMOVE_PAREN1(TplNames)>                                          \
   {                                                                            \
     using ExprType = decltype((Expr));                                         \
     using TestExpr =                                                           \

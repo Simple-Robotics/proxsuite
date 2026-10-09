@@ -1,10 +1,11 @@
 #
 # Copyright (c) 2023, INRIA
 #
-import proxsuite
-import numpy as np
-import scipy.sparse as spa
 import unittest
+
+import numpy as np
+import proxsuite
+import scipy.sparse as spa
 
 
 def normInf(x):

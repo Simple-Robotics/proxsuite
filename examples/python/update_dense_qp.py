@@ -1,7 +1,6 @@
-import proxsuite
 import numpy as np
+import proxsuite
 from util import generate_mixed_qp
-
 
 # load a qp object using qp problem dimensions
 n = 10
@@ -20,9 +19,9 @@ qp.update(H_new, g_new, A_new, b_new, C_new, l_new, u_new)
 # solve it
 qp.solve()
 # print an optimal solution
-print("optimal x: {}".format(qp.results.x))
-print("optimal y: {}".format(qp.results.y))
-print("optimal z: {}".format(qp.results.z))
+print(f"optimal x: {qp.results.x}")
+print(f"optimal y: {qp.results.y}")
+print(f"optimal z: {qp.results.z}")
 # if you have boxes (dense backend only) you proceed the same way
 qp2 = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
 l_box = -np.ones(n) * 1.0e10

@@ -1,7 +1,6 @@
 import proxsuite
 from util import generate_mixed_qp
 
-
 # load a qp object using qp problem dimensions
 n = 10
 n_eq = 2
@@ -26,6 +25,6 @@ qp2 = proxsuite.proxqp.sparse.QP(n, n_eq, n_in)
 qp2.init(H2, g_new, A, b, C, l, u)
 qp2.solve()  # it will solve the new problem
 # print an optimal solution
-print("optimal x: {}".format(qp.results.x))
-print("optimal y: {}".format(qp.results.y))
-print("optimal z: {}".format(qp.results.z))
+print(f"optimal x: {qp.results.x}")
+print(f"optimal y: {qp.results.y}")
+print(f"optimal z: {qp.results.z}")

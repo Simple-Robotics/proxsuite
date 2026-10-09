@@ -2,9 +2,10 @@
 # Copyright (c) 2022, INRIA
 #
 
-import proxsuite
-import numpy as np
 import unittest
+
+import numpy as np
+import proxsuite
 
 
 def normInf(x):
@@ -26,7 +27,7 @@ class CvxpyTest(unittest.TestCase):
         A = None
         b = None
         C = np.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
-        l = -np.ones((n))
+        l = -np.ones(n)
         u = np.ones(n)
 
         qp = proxsuite.proxqp.dense.QP(n, 0, n)
@@ -44,13 +45,11 @@ class CvxpyTest(unittest.TestCase):
         assert dua_res <= 1e-3  # default precision of the solver
         assert pri_res <= 1e-3
         assert normInf(x_sol - qp.results.x) <= 1e-3
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
-        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(qp.results.info.iter))
+        print(f"--n = {n} ; n_eq = {0} ; n_in = {n}")
+        print(f"dual residual = {dua_res} ; primal residual = {pri_res}")
+        print(f"total number of iteration: {qp.results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                qp.results.info.setup_time, qp.results.info.solve_time
-            )
+            f"setup timing = {qp.results.info.setup_time} ; solve time = {qp.results.info.solve_time}"
         )
 
     def test_one_dim_with_exact_solution_known(self):
@@ -61,7 +60,7 @@ class CvxpyTest(unittest.TestCase):
         A = None
         b = None
         C = np.array([[1.0]])
-        l = 0 * np.ones((n))
+        l = 0 * np.ones(n)
         u = np.ones(n)
 
         qp = proxsuite.proxqp.dense.QP(n, 0, n)

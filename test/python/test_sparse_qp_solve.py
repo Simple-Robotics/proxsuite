@@ -1,10 +1,11 @@
 #
 # Copyright (c) 2022, INRIA
 #
-import proxsuite
-import numpy as np
-import scipy.sparse as spa
 import unittest
+
+import numpy as np
+import proxsuite
+import scipy.sparse as spa
 
 
 def normInf(x):
@@ -77,13 +78,11 @@ class SparseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
-        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print(f"--n = {n} ; n_eq = {n_eq} ; n_in = {n_in}")
+        print(f"dual residual = {dua_res} ; primal residual = {pri_res}")
+        print(f"total number of iteration: {results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                results.info.setup_time, results.info.solve_time
-            )
+            f"setup timing = {results.info.setup_time} ; solve time = {results.info.solve_time}"
         )
 
     def test_case_different_rho_value(self):
@@ -118,13 +117,11 @@ class SparseQpWrapper(unittest.TestCase):
         assert results.info.rho == 1e-7
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
-        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print(f"--n = {n} ; n_eq = {n_eq} ; n_in = {n_in}")
+        print(f"dual residual = {dua_res} ; primal residual = {pri_res}")
+        print(f"total number of iteration: {results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                results.info.setup_time, results.info.solve_time
-            )
+            f"setup timing = {results.info.setup_time} ; solve time = {results.info.solve_time}"
         )
 
     def test_case_different_mu_values(self):
@@ -159,13 +156,11 @@ class SparseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
-        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print(f"--n = {n} ; n_eq = {n_eq} ; n_in = {n_in}")
+        print(f"dual residual = {dua_res} ; primal residual = {pri_res}")
+        print(f"total number of iteration: {results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                results.info.setup_time, results.info.solve_time
-            )
+            f"setup timing = {results.info.setup_time} ; solve time = {results.info.solve_time}"
         )
 
     def test_case_different_warm_starting(self):
@@ -203,13 +198,11 @@ class SparseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
-        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print(f"--n = {n} ; n_eq = {n_eq} ; n_in = {n_in}")
+        print(f"dual residual = {dua_res} ; primal residual = {pri_res}")
+        print(f"total number of iteration: {results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                results.info.setup_time, results.info.solve_time
-            )
+            f"setup timing = {results.info.setup_time} ; solve time = {results.info.solve_time}"
         )
 
     def test_case_different_verbose_true(self):
@@ -242,13 +235,11 @@ class SparseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
-        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print(f"--n = {n} ; n_eq = {n_eq} ; n_in = {n_in}")
+        print(f"dual residual = {dua_res} ; primal residual = {pri_res}")
+        print(f"total number of iteration: {results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                results.info.setup_time, results.info.solve_time
-            )
+            f"setup timing = {results.info.setup_time} ; solve time = {results.info.solve_time}"
         )
 
     def test_case_different_no_initial_guess(self):
@@ -281,13 +272,11 @@ class SparseQpWrapper(unittest.TestCase):
         )
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
-        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print(f"--n = {n} ; n_eq = {n_eq} ; n_in = {n_in}")
+        print(f"dual residual = {dua_res} ; primal residual = {pri_res}")
+        print(f"total number of iteration: {results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                results.info.setup_time, results.info.solve_time
-            )
+            f"setup timing = {results.info.setup_time} ; solve time = {results.info.solve_time}"
         )
 
     def test_case_different_matrix_free_sparse_backend(self):
@@ -321,13 +310,11 @@ class SparseQpWrapper(unittest.TestCase):
         assert dua_res <= 1e-9
         assert pri_res <= 1e-9
         assert results.info.sparse_backend == proxsuite.proxqp.SparseBackend.MatrixFree
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, n_eq, n_in))
-        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print(f"--n = {n} ; n_eq = {n_eq} ; n_in = {n_in}")
+        print(f"dual residual = {dua_res} ; primal residual = {pri_res}")
+        print(f"total number of iteration: {results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                results.info.setup_time, results.info.solve_time
-            )
+            f"setup timing = {results.info.setup_time} ; solve time = {results.info.solve_time}"
         )
 
     def test_sparse_problem_with_exact_solution_known(self):
@@ -360,13 +347,11 @@ class SparseQpWrapper(unittest.TestCase):
         assert dua_res <= 1e-3  # default precision of the solver
         assert pri_res <= 1e-3
         assert normInf(x_theoretically_optimal - results.x) <= 1e-3
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(n, 0, n))
-        print("dual residual = {} ; primal residual = {}".format(dua_res, pri_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print(f"--n = {n} ; n_eq = {0} ; n_in = {n}")
+        print(f"dual residual = {dua_res} ; primal residual = {pri_res}")
+        print(f"total number of iteration: {results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                results.info.setup_time, results.info.solve_time
-            )
+            f"setup timing = {results.info.setup_time} ; solve time = {results.info.solve_time}"
         )
 
     def test_initializing_with_None(self):
@@ -381,18 +366,16 @@ class SparseQpWrapper(unittest.TestCase):
         l = None
 
         results = proxsuite.proxqp.sparse.solve(H, g, A, b, C, l, u)
-        print("optimal x: {}".format(results.x))
+        print(f"optimal x: {results.x}")
 
         dua_res = normInf(H @ results.x + g)
 
         assert dua_res <= 1e-3  # default precision of the solver
-        print("--n = {} ; n_eq = {} ; n_in = {}".format(3, 0, 0))
-        print("dual residual = {} ".format(dua_res))
-        print("total number of iteration: {}".format(results.info.iter))
+        print(f"--n = {3} ; n_eq = {0} ; n_in = {0}")
+        print(f"dual residual = {dua_res} ")
+        print(f"total number of iteration: {results.info.iter}")
         print(
-            "setup timing = {} ; solve time = {}".format(
-                results.info.setup_time, results.info.solve_time
-            )
+            f"setup timing = {results.info.setup_time} ; solve time = {results.info.solve_time}"
         )
 
 
