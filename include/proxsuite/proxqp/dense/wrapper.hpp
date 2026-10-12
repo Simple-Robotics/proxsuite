@@ -364,12 +364,6 @@ public:
             optional<T> mu_in = nullopt,
             optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
-    PROXSUITE_THROW_PRETTY(
-      box_constraints == true,
-      std::invalid_argument,
-      "wrong model setup: the QP object is designed with box "
-      "constraints, but is initialized without lower or upper box "
-      "inequalities.");
     // dense case
     if (settings.compute_timings) {
       work.timer.stop();
