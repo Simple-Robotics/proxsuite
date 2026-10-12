@@ -554,7 +554,7 @@ public:
                                     "variable for initializing u_box "
                                     "is not valid.");
     } else {
-      l_box.reset();
+      u_box.reset();
     }
     // check the model is valid
     if (g != nullopt && g.value().size() != 0) {
