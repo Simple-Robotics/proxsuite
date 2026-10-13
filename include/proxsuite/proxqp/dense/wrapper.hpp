@@ -670,7 +670,8 @@ public:
            update_preconditioner,
            rho,
            mu_eq,
-           mu_in);
+           mu_in,
+           manual_minimal_H_eigenvalue);
       return;
     }
     // dense case
