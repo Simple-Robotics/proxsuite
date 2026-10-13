@@ -474,16 +474,6 @@ public:
     } else {
       u.reset();
     }
-    if (u_box != nullopt && u_box.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        u_box.value().size(),
-        model.dim,
-        "the dimension wrt box inequality constrained variables for "
-        "initializing u_box "
-        "is not valid.");
-    } else {
-      u_box.reset();
-    }
     if (l != nullopt && l.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         l.value().size(),
@@ -492,16 +482,6 @@ public:
         "is not valid.");
     } else {
       l.reset();
-    }
-    if (l_box != nullopt && l_box.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        l_box.value().size(),
-        model.dim,
-        "the dimension wrt box inequality constrained variables for "
-        "initializing l_box "
-        "is not valid.");
-    } else {
-      l_box.reset();
     }
     if (H != nullopt && H.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
