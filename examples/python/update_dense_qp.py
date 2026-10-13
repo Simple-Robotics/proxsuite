@@ -32,8 +32,8 @@ qp2.solve()
 qp2.update(H_new, g_new, A_new, b_new, C_new, l_new, u_new)
 qp2.solve()
 # or update boxes along with other quantities
-g_new_new = 0.95 * g_new
+g_scaled = 0.95 * g_new
 l_box_new = l_box + 1.0e1
-u_box_new = l_box - 1.0e1
-qp2.update(g=g_new_new, l_box=l_box_new, u_box=u_box_new)
+u_box_new = u_box - 1.0e1
+qp2.update(g=g_scaled, l_box=l_box_new, u_box=u_box_new)
 qp2.solve()
