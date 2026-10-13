@@ -248,3 +248,4 @@ In addition to the core dev team, the following people have also been involved i
 * [Daniel Morton](https://github.com/danielpmorton): for various contributions
 * [Daisuke Nishimatsu](https://github.com/wep21): for various contributions
 * Aaron Miller: for various contributions
+* [Franek Stark](https://github.com/FranekStark) (DFKI): for bugfixes
