@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Initialize `active_set_up` and `active_set_low` in dense `Workspace` ([#476](https://github.com/Simple-Robotics/proxsuite/pull/476))
+- Fix wrong box constraint multipliers after dense `update` with `update_preconditioner=false` ([#477](https://github.com/Simple-Robotics/proxsuite/pull/477))
 
 ### Added
 - Docker images `ghcr.io/Simple-Robotics/proxsuite` ([#470](https://github.com/Simple-Robotics/proxsuite/pull/470))
