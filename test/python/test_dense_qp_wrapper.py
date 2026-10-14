@@ -4557,25 +4557,24 @@ class DenseqpWrapper(unittest.TestCase):
             "------------------------test update without boxes keeps the existing box constraints"
         )
         n = 50
-        H, g, A, b, C, u, l = generate_mixed_qp(n)
+        H, g, A, b, C, u, l, u_box, l_box = generate_mixed_qp_with_box(n)
         eps = 1.0e-9
         n_eq = A.shape[0]
         n_in = C.shape[0]
-        # inactive boxes: box duals after an update without preconditioner
-        # recomputation are wrong when boxes are active (see [#477](https://github.com/Simple-Robotics/proxsuite/pull/477))
-        u_box = np.ones(n) * 100
-        l_box = -np.ones(n) * 100
 
         qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
         qp.settings.eps_abs = eps
         qp.init(H, g, A, b, C, l, u, l_box, u_box)
         qp.solve()
 
-        g_new = 1.01 * g
+        # large linear cost so that the boxes become active
+        g_new = 100.0 * np.random.randn(n)
         qp.update(H, g_new, A, b, C, l, u)
         assert np.array_equal(qp.model.l_box, l_box)
         assert np.array_equal(qp.model.u_box, u_box)
         qp.solve()
+        # Check that at least one box is active
+        assert np.any((qp.results.x <= l_box + 1e-8) | (qp.results.x >= u_box - 1e-8))
 
         dua_res = normInf(
             H @ qp.results.x

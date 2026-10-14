@@ -7139,13 +7139,24 @@ TEST_CASE("ProxQP::dense: update without boxes keeps the existing box "
   T strong_convexity_factor(1.e-2);
   proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
     dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
-  // inactive boxes: box duals after an update without preconditioner
-  // recomputation are wrong when boxes are active (see
-  // [#477](https://github.com/Simple-Robotics/proxsuite/pull/477))
+
+  // boxes around a feasible point x_sol
+  Eigen::Matrix<T, Eigen::Dynamic, 1> x_sol = utils::rand::vector_rand<T>(dim);
+  Eigen::Matrix<T, Eigen::Dynamic, 1> delta(n_in);
+  for (isize i = 0; i < n_in; ++i) {
+    delta(i) = utils::rand::uniform_rand();
+  }
+  qp_random.u = qp_random.C * x_sol + delta;
+  qp_random.b = qp_random.A * x_sol;
   Eigen::Matrix<T, Eigen::Dynamic, 1> u_box(dim);
-  u_box.setConstant(1.E2);
+  u_box.setZero();
   Eigen::Matrix<T, Eigen::Dynamic, 1> l_box(dim);
-  l_box.setConstant(-1.E2);
+  l_box.setZero();
+  for (isize i = 0; i < dim; ++i) {
+    T shift = utils::rand::uniform_rand();
+    u_box(i) = x_sol(i) + shift;
+    l_box(i) = x_sol(i) - shift;
+  }
 
   dense::QP<T> qp(dim, n_eq, n_in, true);
   qp.settings.eps_abs = eps_abs;
@@ -7172,6 +7183,9 @@ TEST_CASE("ProxQP::dense: update without boxes keeps the existing box "
   CHECK(qp.model.l_box == l_box);
   CHECK(qp.model.u_box == u_box);
   qp.solve();
+  CHECK(((qp.results.x.array() <= l_box.array() + 1e-8) ||
+         (qp.results.x.array() >= u_box.array() - 1e-8))
+          .any());
 
   T pri_res = std::max(
     (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
