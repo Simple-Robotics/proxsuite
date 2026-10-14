@@ -7127,6 +7127,195 @@ TEST_CASE("ProxQP::dense: check updates work when there are box constraints")
   CHECK(dua_res <= eps_abs);
   CHECK(pri_res <= eps_abs);
 }
+TEST_CASE("ProxQP::dense: update without boxes keeps the existing box "
+          "constraints")
+{
+  double sparsity_factor = 1.;
+  T eps_abs = T(1e-9);
+  utils::rand::set_seed(1);
+  dense::isize dim = 50;
+  dense::isize n_eq(dim / 4);
+  dense::isize n_in(dim / 4);
+  T strong_convexity_factor(1.e-2);
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+  // inactive boxes: box duals after an update without preconditioner
+  // recomputation are wrong when boxes are active (see
+  // [#477](https://github.com/Simple-Robotics/proxsuite/pull/477))
+  Eigen::Matrix<T, Eigen::Dynamic, 1> u_box(dim);
+  u_box.setConstant(1.E2);
+  Eigen::Matrix<T, Eigen::Dynamic, 1> l_box(dim);
+  l_box.setConstant(-1.E2);
+
+  dense::QP<T> qp(dim, n_eq, n_in, true);
+  qp.settings.eps_abs = eps_abs;
+  qp.settings.eps_rel = 0;
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.l,
+          qp_random.u,
+          l_box,
+          u_box);
+  qp.solve();
+
+  qp_random.g *= T(1.01);
+  qp.update(qp_random.H,
+            qp_random.g,
+            qp_random.A,
+            qp_random.b,
+            qp_random.C,
+            qp_random.l,
+            qp_random.u);
+  CHECK(qp.model.l_box == l_box);
+  CHECK(qp.model.u_box == u_box);
+  qp.solve();
+
+  T pri_res = std::max(
+    (qp_random.A * qp.results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+    (helpers::positive_part(qp_random.C * qp.results.x - qp_random.u) +
+     helpers::negative_part(qp_random.C * qp.results.x - qp_random.l))
+      .lpNorm<Eigen::Infinity>());
+  pri_res = std::max(pri_res,
+                     (helpers::positive_part(qp.results.x - u_box) +
+                      helpers::negative_part(qp.results.x - l_box))
+                       .lpNorm<Eigen::Infinity>());
+  T dua_res =
+    (qp_random.H * qp.results.x + qp_random.g +
+     qp_random.A.transpose() * qp.results.y +
+     qp_random.C.transpose() * qp.results.z.head(n_in) + qp.results.z.tail(dim))
+      .lpNorm<Eigen::Infinity>();
+  CHECK(dua_res <= eps_abs);
+  CHECK(pri_res <= eps_abs);
+
+  dense::QP<T> qp_ref(dim, n_eq, n_in, true);
+  qp_ref.settings.eps_abs = eps_abs;
+  qp_ref.settings.eps_rel = 0;
+  qp_ref.init(qp_random.H,
+              qp_random.g,
+              qp_random.A,
+              qp_random.b,
+              qp_random.C,
+              qp_random.l,
+              qp_random.u,
+              l_box,
+              u_box);
+  qp_ref.solve();
+  CHECK((qp.results.x - qp_ref.results.x).lpNorm<Eigen::Infinity>() <= 1e-6);
+}
+TEST_CASE("ProxQP::dense: init and update without boxes on a box-constrained "
+          "QP")
+{
+  double sparsity_factor = 1.;
+  T eps_abs = T(1e-9);
+  utils::rand::set_seed(1);
+  dense::isize dim = 50;
+  dense::isize n_eq(dim / 4);
+  dense::isize n_in(dim / 4);
+  T strong_convexity_factor(1.e-2);
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+
+  dense::QP<T> qp_ref(dim, n_eq, n_in, false);
+  qp_ref.settings.eps_abs = eps_abs;
+  qp_ref.settings.eps_rel = 0;
+  qp_ref.init(qp_random.H,
+              qp_random.g,
+              qp_random.A,
+              qp_random.b,
+              qp_random.C,
+              qp_random.l,
+              qp_random.u);
+  qp_ref.solve();
+
+  // explicit init without boxes, then lazy init through update
+  dense::QP<T> qp_init(dim, n_eq, n_in, true);
+  qp_init.settings.eps_abs = eps_abs;
+  qp_init.settings.eps_rel = 0;
+  qp_init.init(qp_random.H,
+               qp_random.g,
+               qp_random.A,
+               qp_random.b,
+               qp_random.C,
+               qp_random.l,
+               qp_random.u);
+  dense::QP<T> qp_update(dim, n_eq, n_in, true);
+  qp_update.settings.eps_abs = eps_abs;
+  qp_update.settings.eps_rel = 0;
+  qp_update.update(qp_random.H,
+                   qp_random.g,
+                   qp_random.A,
+                   qp_random.b,
+                   qp_random.C,
+                   qp_random.l,
+                   qp_random.u);
+
+  for (dense::QP<T>* qp : { &qp_init, &qp_update }) {
+    CHECK((qp->model.l_box.array() <= T(-1.E20)).all());
+    CHECK((qp->model.u_box.array() >= T(1.E20)).all());
+    qp->solve();
+
+    T pri_res = std::max(
+      (qp_random.A * qp->results.x - qp_random.b).lpNorm<Eigen::Infinity>(),
+      (helpers::positive_part(qp_random.C * qp->results.x - qp_random.u) +
+       helpers::negative_part(qp_random.C * qp->results.x - qp_random.l))
+        .lpNorm<Eigen::Infinity>());
+    T dua_res = (qp_random.H * qp->results.x + qp_random.g +
+                 qp_random.A.transpose() * qp->results.y +
+                 qp_random.C.transpose() * qp->results.z.head(n_in) +
+                 qp->results.z.tail(dim))
+                  .lpNorm<Eigen::Infinity>();
+    CHECK(dua_res <= eps_abs);
+    CHECK(pri_res <= eps_abs);
+    CHECK((qp->results.x - qp_ref.results.x).lpNorm<Eigen::Infinity>() <= 1e-6);
+  }
+}
+TEST_CASE("ProxQP::dense: boxes are rejected on a QP without box constraints")
+{
+  double sparsity_factor = 1.;
+  utils::rand::set_seed(1);
+  dense::isize dim = 50;
+  dense::isize n_eq(dim / 4);
+  dense::isize n_in(dim / 4);
+  T strong_convexity_factor(1.e-2);
+  proxqp::dense::Model<T> qp_random = proxqp::utils::dense_strongly_convex_qp(
+    dim, n_eq, n_in, sparsity_factor, strong_convexity_factor);
+  Eigen::Matrix<T, Eigen::Dynamic, 1> u_box(dim);
+  u_box.setConstant(1.E2);
+  Eigen::Matrix<T, Eigen::Dynamic, 1> l_box(dim);
+  l_box.setConstant(-1.E2);
+
+  dense::QP<T> qp(dim, n_eq, n_in, false);
+  CHECK_THROWS_AS(qp.init(qp_random.H,
+                          qp_random.g,
+                          qp_random.A,
+                          qp_random.b,
+                          qp_random.C,
+                          qp_random.l,
+                          qp_random.u,
+                          l_box,
+                          u_box),
+                  std::invalid_argument);
+  qp.init(qp_random.H,
+          qp_random.g,
+          qp_random.A,
+          qp_random.b,
+          qp_random.C,
+          qp_random.l,
+          qp_random.u);
+  CHECK_THROWS_AS(qp.update(nullopt,
+                            nullopt,
+                            nullopt,
+                            nullopt,
+                            nullopt,
+                            nullopt,
+                            nullopt,
+                            l_box,
+                            u_box),
+                  std::invalid_argument);
+}
 TEST_CASE("ProxQP::dense: test primal infeasibility solving")
 {
   double sparsity_factor = 0.15;

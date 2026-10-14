@@ -4552,6 +4552,120 @@ class DenseqpWrapper(unittest.TestCase):
         assert dua_res <= eps
         assert pri_res <= eps
 
+    def test_update_without_boxes_keeps_box_constraints(self):
+        print(
+            "------------------------test update without boxes keeps the existing box constraints"
+        )
+        n = 50
+        H, g, A, b, C, u, l = generate_mixed_qp(n)
+        eps = 1.0e-9
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+        # inactive boxes: box duals after an update without preconditioner
+        # recomputation are wrong when boxes are active (see [#477](https://github.com/Simple-Robotics/proxsuite/pull/477))
+        u_box = np.ones(n) * 100
+        l_box = -np.ones(n) * 100
+
+        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+        qp.settings.eps_abs = eps
+        qp.init(H, g, A, b, C, l, u, l_box, u_box)
+        qp.solve()
+
+        g_new = 1.01 * g
+        qp.update(H, g_new, A, b, C, l, u)
+        assert np.array_equal(qp.model.l_box, l_box)
+        assert np.array_equal(qp.model.u_box, u_box)
+        qp.solve()
+
+        dua_res = normInf(
+            H @ qp.results.x
+            + g_new
+            + A.transpose() @ qp.results.y
+            + C.transpose() @ qp.results.z[:n_in]
+            + qp.results.z[n_in:]
+        )
+        pri_res = max(
+            normInf(A @ qp.results.x - b),
+            normInf(
+                np.maximum(C @ qp.results.x - u, 0)
+                + np.minimum(C @ qp.results.x - l, 0)
+            ),
+            normInf(
+                np.maximum(qp.results.x - u_box, 0)
+                + np.minimum(qp.results.x - l_box, 0)
+            ),
+        )
+        assert dua_res <= eps
+        assert pri_res <= eps
+
+        qp_ref = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+        qp_ref.settings.eps_abs = eps
+        qp_ref.init(H, g_new, A, b, C, l, u, l_box, u_box)
+        qp_ref.solve()
+        assert normInf(qp.results.x - qp_ref.results.x) <= 1e-6
+
+    def test_init_and_update_without_boxes_on_box_constrained_qp(self):
+        print(
+            "------------------------test init and update without boxes on a box-constrained qp"
+        )
+        n = 50
+        H, g, A, b, C, u, l = generate_mixed_qp(n)
+        eps = 1.0e-9
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+
+        qp_ref = proxsuite.proxqp.dense.QP(n, n_eq, n_in, False)
+        qp_ref.settings.eps_abs = eps
+        qp_ref.init(H, g, A, b, C, l, u)
+        qp_ref.solve()
+
+        # explicit init without boxes, then lazy init through update
+        qp_init = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+        qp_init.settings.eps_abs = eps
+        qp_init.init(H, g, A, b, C, l, u)
+        qp_update = proxsuite.proxqp.dense.QP(n, n_eq, n_in, True)
+        qp_update.settings.eps_abs = eps
+        qp_update.update(H, g, A, b, C, l, u)
+
+        for qp in [qp_init, qp_update]:
+            assert np.all(qp.model.l_box <= -1.0e20)
+            assert np.all(qp.model.u_box >= 1.0e20)
+            qp.solve()
+
+            dua_res = normInf(
+                H @ qp.results.x
+                + g
+                + A.transpose() @ qp.results.y
+                + C.transpose() @ qp.results.z[:n_in]
+                + qp.results.z[n_in:]
+            )
+            pri_res = max(
+                normInf(A @ qp.results.x - b),
+                normInf(
+                    np.maximum(C @ qp.results.x - u, 0)
+                    + np.minimum(C @ qp.results.x - l, 0)
+                ),
+            )
+            assert dua_res <= eps
+            assert pri_res <= eps
+            assert normInf(qp.results.x - qp_ref.results.x) <= 1e-6
+
+    def test_boxes_rejected_on_qp_without_box_constraints(self):
+        print(
+            "------------------------test boxes are rejected on a qp without box constraints"
+        )
+        n = 50
+        H, g, A, b, C, u, l, u_box, l_box = generate_mixed_qp_with_box(n)
+        n_eq = A.shape[0]
+        n_in = C.shape[0]
+
+        qp = proxsuite.proxqp.dense.QP(n, n_eq, n_in, False)
+        with self.assertRaises(ValueError):
+            qp.init(H, g, A, b, C, l, u, l_box, u_box)
+        qp.init(H, g, A, b, C, l, u)
+        with self.assertRaises(ValueError):
+            qp.update(l_box=l_box, u_box=u_box)
+
     def test_dense_infeasibility_solving(
         self,
     ):
