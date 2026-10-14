@@ -9,9 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Initialize `active_set_up` and `active_set_low` in dense `Workspace` ([#476](https://github.com/Simple-Robotics/proxsuite/pull/476))
 - Fix wrong box constraint multipliers after dense `update` with `update_preconditioner=false` ([#477](https://github.com/Simple-Robotics/proxsuite/pull/477))
+- Dense QP `init()`/`update()` now accept omitted `l_box`/`u_box` on box-constrained QPs ([#479](https://github.com/Simple-Robotics/proxsuite/pull/479))
 
 ### Added
 - Docker images `ghcr.io/Simple-Robotics/proxsuite` ([#470](https://github.com/Simple-Robotics/proxsuite/pull/470))
+- Expose `l_box`/`u_box` in the Python dense `Model` ([#479](https://github.com/Simple-Robotics/proxsuite/pull/479))
 
 ### Removed
 - CMake: remove unconditional `DOXYGEN_USE_MATHJAX`. You can turn it on if necessary with `cmake -DDOXYGEN_USE_MATHJAX=ON`. ([#467](https://github.com/Simple-Robotics/proxsuite/pull/467))
