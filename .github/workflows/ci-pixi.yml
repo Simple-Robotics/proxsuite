@@ -47,6 +47,15 @@ jobs:
         with:
           environments: ${{ matrix.pixi_environment }}
 
+
+      - name: Enable User-Mode Dumps collecting
+        shell: powershell
+        run: |
+          New-Item '${{ github.workspace }}\CrashDumps' -Type Directory
+          Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps' -Name 'DumpFolder' -Type ExpandString -Value '${{ github.workspace }}\CrashDumps'
+          Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps' -Name 'DumpCount' -Type DWord -Value '10'
+          Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps' -Name 'DumpType' -Type DWord -Value '2'
+
       - name: Configure
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps configure --fresh --log-level=DEBUG
 
@@ -56,6 +65,13 @@ jobs:
       - name: Run C++ tests
         # if: ${{ !(startsWith(matrix.os, 'windows-') && matrix.build_type == 'Debug') }}
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps test
+
+      - name: Artifact - CrashDumps
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: CrashDumps-${{ matrix.pixi_environment }}-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_std }}
+          path: '${{ github.workspace }}\CrashDumps'
 
       - name: Install
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps install
