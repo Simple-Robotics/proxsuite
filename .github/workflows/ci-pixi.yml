@@ -73,6 +73,7 @@ jobs:
         with:
           name: CrashDumps-${{ matrix.pixi_environment }}-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_std }}
           path: '${{ github.workspace }}\CrashDumps'
+          include-hidden-files: true
 
       - name: Install
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps install
