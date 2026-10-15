@@ -26,6 +26,7 @@ jobs:
       CCACHE_COMPILERCHECK: content
       CMAKE_BUILD_TYPE: ${{ matrix.build_type }}
       PROXSUITE_CXX_STANDARD: ${{ matrix.cxx_std }}
+      PYTHONFAULTHANDLER: true
     strategy:
       fail-fast: false
       matrix:
