@@ -26,13 +26,14 @@ jobs:
       CCACHE_COMPILERCHECK: content
       CMAKE_BUILD_TYPE: ${{ matrix.build_type }}
       PROXSUITE_CXX_STANDARD: ${{ matrix.cxx_std }}
+      PYTHONFAULTHANDLER: true
     strategy:
       fail-fast: false
       matrix:
         build_type: [Release, Debug]
         cxx_std: [17, 20]
         pixi_environment: [default]
-        os: [ubuntu-24.04, macos-15-intel, macos-26, windows-2022]
+        os: [windows-2022]
 
     steps:
       - uses: actions/checkout@v6
@@ -47,15 +48,44 @@ jobs:
         with:
           environments: ${{ matrix.pixi_environment }}
 
+
+      - name: Enable User-Mode Dumps collecting
+        shell: powershell
+        run: |
+          New-Item '${{ github.workspace }}\CrashDumps' -Type Directory
+          Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps' -Name 'DumpFolder' -Type ExpandString -Value '${{ github.workspace }}\CrashDumps'
+          Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps' -Name 'DumpCount' -Type DWord -Value '10'
+          Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps' -Name 'DumpType' -Type DWord -Value '2'
+
       - name: Configure
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps configure --fresh --log-level=DEBUG
 
       - name: Build
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps build --verbose --parallel 1
 
+      - name: download procdump
+        shell: bash
+        run: |
+          curl https://download.sysinternals.com/files/Procdump.zip --output Procdump.zip
+          unzip Procdump.zip
+
+      - name: run procdump
+        shell: bash
+        run: |
+          ./procdump.exe -accepteula -ma -i "${{ github.workspace }}\CrashDumps"
+
+
       - name: Run C++ tests
         # if: ${{ !(startsWith(matrix.os, 'windows-') && matrix.build_type == 'Debug') }}
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps test
+
+      - name: Artifact - CrashDumps
+        uses: actions/upload-artifact@v7
+        if: ${{ always() }}
+        with:
+          name: CrashDumps-${{ matrix.pixi_environment }}-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_std }}
+          path: '${{ github.workspace }}\CrashDumps'
+          include-hidden-files: true
 
       - name: Install
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps install
