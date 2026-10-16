@@ -364,137 +364,21 @@ public:
             optional<T> mu_in = nullopt,
             optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
-    PROXSUITE_THROW_PRETTY(
-      box_constraints == true,
-      std::invalid_argument,
-      "wrong model setup: the QP object is designed with box "
-      "constraints, but is initialized without lower or upper box "
-      "inequalities.");
-    // dense case
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    settings.compute_preconditioner = compute_preconditioner;
-    // check the model is valid
-    if (g != nullopt && g.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        g.value().size(),
-        model.dim,
-        "the dimension wrt the primal variable x variable for initializing g "
-        "is not valid.");
-    } else {
-      g.reset();
-    }
-    if (b != nullopt && b.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        b.value().size(),
-        model.n_eq,
-        "the dimension wrt equality constrained variables for initializing b "
-        "is not valid.");
-    } else {
-      b.reset();
-    }
-    if (u != nullopt && u.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        u.value().size(),
-        model.n_in,
-        "the dimension wrt inequality constrained variables for initializing u "
-        "is not valid.");
-    } else {
-      u.reset();
-    }
-    if (l != nullopt && l.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        l.value().size(),
-        model.n_in,
-        "the dimension wrt inequality constrained variables for initializing l "
-        "is not valid.");
-    } else {
-      l.reset();
-    }
-    if (H != nullopt && H.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        H.value().rows(),
-        model.dim,
-        "the row dimension for initializing H is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        H.value().cols(),
-        model.dim,
-        "the column dimension for initializing H is not valid.");
-    } else {
-      H.reset();
-    }
-    if (A != nullopt && A.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        A.value().rows(),
-        model.n_eq,
-        "the row dimension for initializing A is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        A.value().cols(),
-        model.dim,
-        "the column dimension for initializing A is not valid.");
-    } else {
-      A.reset();
-    }
-    if (C != nullopt && C.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        C.value().rows(),
-        model.n_in,
-        "the row dimension for initializing C is not valid.");
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        C.value().cols(),
-        model.dim,
-        "the column dimension for initializing C is not valid.");
-    } else {
-      C.reset();
-    }
-    if (settings.initial_guess ==
-        InitialGuessStatus::WARM_START_WITH_PREVIOUS_RESULT) {
-      work.refactorize =
-        true; // necessary for the first solve (then refactorize only if there
-              // is an update of the matrices)
-    } else {
-      work.refactorize = false;
-    }
-    work.proximal_parameter_update = false;
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    PreconditionerStatus preconditioner_status;
-    if (compute_preconditioner) {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::EXECUTE;
-    } else {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::IDENTITY;
-    }
-    proxsuite::proxqp::dense::update_proximal_parameters(
-      settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::
-      update_default_rho_with_minimal_Hessian_eigen_value(
-        manual_minimal_H_eigenvalue, results, settings);
     typedef optional<VecRef<T>> optional_VecRef;
-    proxsuite::proxqp::dense::setup(H,
-                                    g,
-                                    A,
-                                    b,
-                                    C,
-                                    l,
-                                    u,
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    settings,
-                                    model,
-                                    work,
-                                    results,
-                                    box_constraints,
-                                    ruiz,
-                                    preconditioner_status,
-                                    hessian_type);
-    work.is_initialized = true;
-    if (settings.compute_timings) {
-      results.info.setup_time = work.timer.elapsed().user; // in microseconds
-    }
+    init(H,
+         g,
+         A,
+         b,
+         C,
+         l,
+         u,
+         optional_VecRef(nullopt),
+         optional_VecRef(nullopt),
+         compute_preconditioner,
+         rho,
+         mu_eq,
+         mu_in,
+         manual_minimal_H_eigenvalue);
   };
   /*!
    * Setups the QP model (with dense matrix format) and equilibrates it if
@@ -560,7 +444,7 @@ public:
                                     "variable for initializing u_box "
                                     "is not valid.");
     } else {
-      l_box.reset();
+      u_box.reset();
     }
     // check the model is valid
     if (g != nullopt && g.value().size() != 0) {
@@ -590,16 +474,6 @@ public:
     } else {
       u.reset();
     }
-    if (u_box != nullopt && u_box.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        u_box.value().size(),
-        model.dim,
-        "the dimension wrt box inequality constrained variables for "
-        "initializing u_box "
-        "is not valid.");
-    } else {
-      u_box.reset();
-    }
     if (l != nullopt && l.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
         l.value().size(),
@@ -608,16 +482,6 @@ public:
         "is not valid.");
     } else {
       l.reset();
-    }
-    if (l_box != nullopt && l_box.value().size() != 0) {
-      PROXSUITE_CHECK_ARGUMENT_SIZE(
-        l_box.value().size(),
-        model.dim,
-        "the dimension wrt box inequality constrained variables for "
-        "initializing l_box "
-        "is not valid.");
-    } else {
-      l_box.reset();
     }
     if (H != nullopt && H.value().size() != 0) {
       PROXSUITE_CHECK_ARGUMENT_SIZE(
@@ -733,77 +597,21 @@ public:
               optional<T> mu_in = nullopt,
               optional<T> manual_minimal_H_eigenvalue = nullopt)
   {
-    PROXSUITE_THROW_PRETTY(
-      box_constraints == true,
-      std::invalid_argument,
-      "wrong model setup: the QP object is designed without box "
-      "constraints, but the update does not include lower or upper box "
-      "inequalities.");
-    settings.update_preconditioner = update_preconditioner;
-    if (!work.is_initialized) {
-      init(H, g, A, b, C, l, u, update_preconditioner, rho, mu_eq, mu_in);
-      return;
-    }
-    // dense case
-    work.refactorize = false;
-    work.proximal_parameter_update = false;
-    if (settings.compute_timings) {
-      work.timer.stop();
-      work.timer.start();
-    }
-    PreconditionerStatus preconditioner_status;
-    if (update_preconditioner) {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::EXECUTE;
-    } else {
-      preconditioner_status = proxsuite::proxqp::PreconditionerStatus::KEEP;
-    }
-    const bool matrix_update =
-      !(H == nullopt && g == nullopt && A == nullopt && b == nullopt &&
-        C == nullopt && u == nullopt && l == nullopt);
-    if (matrix_update) {
-      typedef optional<VecRef<T>> optional_VecRef;
-      proxsuite::proxqp::dense::update(H,
-                                       g,
-                                       A,
-                                       b,
-                                       C,
-                                       l,
-                                       u,
-                                       optional_VecRef(nullopt),
-                                       optional_VecRef(nullopt),
-                                       model,
-                                       work,
-                                       box_constraints);
-    }
-    proxsuite::proxqp::dense::update_proximal_parameters(
-      settings, results, work, rho, mu_eq, mu_in);
-    proxsuite::proxqp::dense::
-      update_default_rho_with_minimal_Hessian_eigen_value(
-        manual_minimal_H_eigenvalue, results, settings);
-    typedef optional<MatRef<T>> optional_MatRef;
     typedef optional<VecRef<T>> optional_VecRef;
-    proxsuite::proxqp::dense::setup(/* avoid double assignation */
-                                    optional_MatRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_MatRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_MatRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    optional_VecRef(nullopt),
-                                    settings,
-                                    model,
-                                    work,
-                                    results,
-                                    box_constraints,
-                                    ruiz,
-                                    preconditioner_status,
-                                    hessian_type);
-
-    if (settings.compute_timings) {
-      results.info.setup_time = work.timer.elapsed().user; // in microseconds
-    }
+    update(H,
+           g,
+           A,
+           b,
+           C,
+           l,
+           u,
+           optional_VecRef(nullopt),
+           optional_VecRef(nullopt),
+           update_preconditioner,
+           rho,
+           mu_eq,
+           mu_in,
+           manual_minimal_H_eigenvalue);
   };
   /*!
    * Updates the QP model (with dense matrix format) and re-equilibrates it if
@@ -862,7 +670,8 @@ public:
            update_preconditioner,
            rho,
            mu_eq,
-           mu_in);
+           mu_in,
+           manual_minimal_H_eigenvalue);
       return;
     }
     // dense case

@@ -249,3 +249,4 @@ In addition to the core dev team, the following people have also been involved i
 * [Daisuke Nishimatsu](https://github.com/wep21): for various contributions
 * Aaron Miller: for various contributions
 * [Franek Stark](https://github.com/FranekStark) (DFKI): for bugfixes
+* [Pierre Fabre](https://pierfabre.github.io/) (Inria): for improvements to the dense QP API with box constraints
