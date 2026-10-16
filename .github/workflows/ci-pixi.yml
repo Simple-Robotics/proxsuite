@@ -63,6 +63,18 @@ jobs:
       - name: Build
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps build --verbose --parallel 1
 
+      - name: download procdump
+        shell: bash
+        run: |
+          curl https://download.sysinternals.com/files/Procdump.zip --output Procdump.zip
+          unzip Procdump.zip
+
+      - name: run procdump
+        shell: bash
+        run: |
+          ./procdump.exe -accepteula -ma -i "${{ github.workspace }}\CrashDumps"
+
+
       - name: Run C++ tests
         # if: ${{ !(startsWith(matrix.os, 'windows-') && matrix.build_type == 'Debug') }}
         run: pixi run -e ${{ matrix.pixi_environment }} --skip-deps test
