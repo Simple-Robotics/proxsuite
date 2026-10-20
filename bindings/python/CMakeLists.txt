@@ -81,7 +81,9 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
       if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" AND Eigen3_VERSION VERSION_GREATER_EQUAL 5.0)
         # BUG: Eigen5 introduced a new AVX512 GEMM kernel that causes extremely long compilation times on MSVC.
         # Disabling it for now. ref: libeigen/eigen#3066
-        target_compile_definitions(proxsuite_pywrap_avx512 PRIVATE EIGEN_USE_AVX512_GEMM_KERNELS=0)
+        # BUG: Eigen5 introduced a new AVX512 TRSM kernel that causes crash on MSVC.
+        # Disabling it for now.
+        target_compile_definitions(proxsuite_pywrap_avx512 PRIVATE EIGEN_USE_AVX512_GEMM_KERNELS=0 EIGEN_USE_AVX512_TRSM_KERNELS=0)
       endif()
     endif()
   else()
