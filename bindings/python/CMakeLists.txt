@@ -83,7 +83,10 @@ if(BUILD_WITH_VECTORIZATION_SUPPORT)
         # Disabling it for now. ref: libeigen/eigen#3066
         # BUG: Eigen5 introduced a new AVX512 TRSM kernel that causes crash on MSVC.
         # Disabling it for now.
-        target_compile_definitions(proxsuite_pywrap_avx512 PRIVATE EIGEN_USE_AVX512_GEMM_KERNELS=0 EIGEN_USE_AVX512_TRSM_KERNELS=0)
+        target_compile_definitions(
+          proxsuite_pywrap_avx512
+          PRIVATE EIGEN_USE_AVX512_GEMM_KERNELS=0 EIGEN_USE_AVX512_TRSM_KERNELS=0
+        )
       endif()
     endif()
   else()
