@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## Fixed
+- Fix python bindings crash on Windows with AVX512 support ([#485](https://github.com/Simple-Robotics/proxsuite/pull/485))
+
 ## [0.8.0] - 2026-10-19
 
 ### Fixed
