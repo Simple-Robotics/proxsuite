@@ -6,8 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## Added
+
 ## Fixed
 - Fix python bindings crash on Windows with AVX512 support ([#485](https://github.com/Simple-Robotics/proxsuite/pull/485))
+- Fix ROS CI build by supporting nanobind < 2 ([#489](https://github.com/Simple-Robotics/proxsuite/pull/489))
+  - Don't build Python bindings on ROS humble
+  - Add `nanobind-dev` dependency in `package.xml`
+
 
 ## [0.8.0] - 2026-10-19
 
