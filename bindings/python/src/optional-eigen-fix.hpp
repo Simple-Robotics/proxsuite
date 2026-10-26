@@ -11,39 +11,6 @@
 NAMESPACE_BEGIN(NB_NAMESPACE)
 NAMESPACE_BEGIN(detail)
 
-template<typename T>
-inline constexpr uint32_t none_disallowed_flag =
-  (is_base_caster_v<make_caster<T>> &&
-   !std::is_pointer_v<std::remove_reference_t<T>>)
-    ? (uint32_t)cast_flags::none_disallowed
-    : 0u;
-
-template<typename T>
-NB_INLINE uint32_t
-flags_for_local_caster(uint32_t flags) noexcept
-{
-  using Caster = make_caster<T>;
-  constexpr bool is_ref = std::is_pointer_v<T> || std::is_reference_v<T>;
-  if constexpr (is_base_caster_v<Caster>) {
-    flags |= none_disallowed_flag<T>;
-  } else {
-    // Any pointer produced by a non-base caster will generally point
-    // into storage owned by the caster, which won't live long enough.
-    // Exception: the 'char' caster produces a result that points to
-    // storage owned by the incoming Python 'str' object, so it's OK.
-    static_assert(
-      !is_ref || std::is_same_v<T, const char*> ||
-        (std::is_pointer_v<T> && std::is_constructible_v<T*, Caster>),
-      "nanobind generally cannot produce objects that "
-      "contain interior pointers T* (or references T&) if "
-      "the pointee T is not handled by nanobind's regular "
-      "class binding mechanism. For example, you can write "
-      "a function that accepts int*, or std::vector<int>, "
-      "but not std::vector<int*>.");
-  }
-  return flags;
-}
-
 template<typename T, typename U>
 NB_INLINE forwarded_type<T, U>
 forward_like_(U&& u)
@@ -93,7 +60,7 @@ struct type_caster<std::optional<Eigen::Ref<const T>>>
     if (!caster.from_python(src, flags_for_local_caster<T>(flags), cleanup) ||
         !caster.template can_cast<T>())
 #else
-    if (!caster.from_python(src, flags_for_local_caster<T>(flags), cleanup))
+    if (!caster.from_python(src, flags, cleanup))
 #endif
       return false;
     /// This allows us to bypass the type_caster for Eigen::Ref
