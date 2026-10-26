@@ -103,7 +103,6 @@ endif()
 
 # Add simd feature detectors for current intel CPU
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "(x86)|(X86)|(amd64)|(AMD64)")
-
   if(DEFINED nanobind_VERSION AND nanobind_VERSION VERSION_GREATER_EQUAL "2.5.0")
     nanobind_add_module(instructionset NB_STATIC LTO NB_SUPPRESS_WARNINGS helpers/instruction-set.cpp)
   else()
