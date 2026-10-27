@@ -6,6 +6,7 @@ on:
       - devel
     tags:
       - "v*"
+  pull_request:
 
 jobs:
   dockgen:
@@ -41,11 +42,12 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          push: true
+          push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
+        if: github.event_name == 'push'
         uses: actions/attest-build-provenance@v4
         with:
           subject-name: ghcr.io/${{ github.repository }}
