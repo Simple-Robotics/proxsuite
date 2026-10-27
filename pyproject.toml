@@ -3,7 +3,7 @@
 
 [project]
 name = "proxsuite"
-version = "0.8.0"
+version = "0.8.1"
 description = "Quadratic Programming Solver for Robotics and beyond."
 readme = "README.md"
 requires-python = ">=3.10"
