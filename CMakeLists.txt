@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(
   proxsuite
-  VERSION 0.8.1
+  VERSION 0.8.2
   DESCRIPTION "The Advanced Proximal Optimization Toolbox"
   HOMEPAGE_URL "https://github.com/Simple-Robotics/proxsuite"
 )

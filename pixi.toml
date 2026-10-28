@@ -1,6 +1,6 @@
 [workspace]
 name = "proxsuite"
-version = "0.8.1"
+version = "0.8.2"
 description = "The Advanced Proximal Optimization Toolbox"
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 channels = ["conda-forge"]
