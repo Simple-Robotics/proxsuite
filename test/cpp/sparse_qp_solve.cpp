@@ -455,3 +455,51 @@ TEST_CASE("sparse random strongly convex qp with equality and "
               << results.info.solve_time << std::endl;
   }
 }
+
+TEST_CASE("sparse dual infeasible qp (unbounded below)")
+{
+  // x1^2 / 2 + x1 - x2
+  // s.t.
+  // x1 <= 10
+  // x2 >= 0
+  Eigen::Matrix<T, 2, 2> H;
+  H << 1.0, 0.0, 0.0, 0.0;
+
+  Eigen::Matrix<T, 2, 1> g;
+  g << 1.0, -1.0;
+
+  Eigen::Matrix<T, 3, 2> C;
+  C << 1, 0, // x1 <= 10
+    0, 1,    // x2 >= 0
+    0, -1;   // no finite bound
+
+  int n = H.rows();
+  int n_in = C.rows();
+  int n_eq = 0;
+
+  Eigen::Matrix<T, Eigen::Dynamic, 1> l =
+    Eigen::Matrix<T, Eigen::Dynamic, 1>::Constant(
+      n_in, -std::numeric_limits<double>::infinity());
+
+  Eigen::Matrix<T, Eigen::Dynamic, 1> u =
+    Eigen::Matrix<T, Eigen::Dynamic, 1>::Constant(
+      n_in, std::numeric_limits<double>::infinity());
+
+  l(1) = 0;  // x2 >= 0
+  u(0) = 10; // x1 <= 10
+
+  for (bool compute_preconditioner : { true, false }) {
+    proxsuite::proxqp::sparse::QP<T, I> qp(n, n_eq, n_in);
+    qp.init(H.sparseView(),
+            g,
+            nullopt,
+            nullopt,
+            C.sparseView(),
+            l,
+            u,
+            compute_preconditioner);
+    qp.solve();
+    CHECK(qp.results.info.status ==
+          proxsuite::proxqp::QPSolverOutput::PROXQP_DUAL_INFEASIBLE);
+  }
+}
