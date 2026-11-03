@@ -386,25 +386,21 @@ global_dual_residual_infeasibility(
 
   for (i64 iter = 0; iter < qpmodel.n_in; ++iter) {
     T Cdx_i = Cdx.to_eigen()[iter];
-    if (qpwork.u_scaled[iter] <= 1.E20 && qpwork.l_scaled[iter] >= -1.E20) {
-      first_cond = first_cond && Cdx_i <= bound && Cdx_i >= bound_neg;
-    } else if (qpwork.u_scaled[iter] > 1.E20) {
-      first_cond = first_cond && Cdx_i >= bound_neg;
-    } else if (qpwork.l_scaled[iter] < -1.E20) {
+    if (qpmodel.u[iter] < T(1.E20)) {
       first_cond = first_cond && Cdx_i <= bound;
+    }
+    if (qpmodel.l[iter] > T(-1.E20)) {
+      first_cond = first_cond && Cdx_i >= bound_neg;
     }
   }
   if (box_constraints) {
     for (i64 iter = 0; iter < qpmodel.dim; ++iter) {
       T dx_i = dx.to_eigen()[iter];
-      // if (qpmodel.u_box[iter] <= 1.E20 && qpmodel.l_box[iter] >= -1.E20) {
-      if (qpwork.u_box_scaled[iter] <= 1.E20 &&
-          qpwork.l_box_scaled[iter] >= -1.E20) {
-        first_cond = first_cond && dx_i <= bound && dx_i >= bound_neg;
-      } else if (qpwork.u_box_scaled[iter] > 1.E20) {
-        first_cond = first_cond && dx_i >= bound_neg;
-      } else if (qpwork.l_box_scaled[iter] < -1.E20) {
+      if (qpmodel.u_box[iter] < T(1.E20)) {
         first_cond = first_cond && dx_i <= bound;
+      }
+      if (qpmodel.l_box[iter] > T(-1.E20)) {
+        first_cond = first_cond && dx_i >= bound_neg;
       }
     }
   }

@@ -563,13 +563,11 @@ global_dual_residual_infeasibility(VectorViewMut<T> Adx,
 
   for (i64 iter = 0; iter < qpmodel.n_in; ++iter) {
     T Cdx_i = Cdx.to_eigen()[iter];
-    if (qp_scaled.u.to_eigen()[iter] <= T(1.E20) &&
-        qp_scaled.l.to_eigen()[iter] >= T(-1.E20)) {
-      first_cond = first_cond && Cdx_i <= bound && Cdx_i >= bound_neg;
-    } else if (qp_scaled.u.to_eigen()[iter] > T(1.E20)) {
-      first_cond = first_cond && Cdx_i >= bound_neg;
-    } else if (qp_scaled.l.to_eigen()[iter] < T(-1.E20)) {
+    if (qpmodel.u[iter] < T(1.E20)) {
       first_cond = first_cond && Cdx_i <= bound;
+    }
+    if (qpmodel.l[iter] > T(-1.E20)) {
+      first_cond = first_cond && Cdx_i >= bound_neg;
     }
   }
 
