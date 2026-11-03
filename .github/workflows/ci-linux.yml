@@ -32,7 +32,7 @@ jobs:
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
       DEBIAN_FRONTEND: noninteractive
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup ccache
         uses: actions/cache@v6
         with:
@@ -71,7 +71,7 @@ jobs:
       image: archlinux/archlinux:base-devel
     steps:
       - run: pacman -Syu --noconfirm cmake ninja catch2 git eigen cereal libmatio doxygen graphviz nanobind python-scipy simde
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: cmake -G Ninja -B build -S . -DBUILD_PYTHON_INTERFACE=ON -DBUILD_TESTING=ON -DPROXSUITE_BUILD_EXAMPLES=ON -DBUILD_DOCUMENTATION=ON -DBUILD_BENCHMARK=ON
       - run: cmake --build build --verbose --parallel 2
       - run: ctest --test-dir build --output-on-failure
