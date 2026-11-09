@@ -9,10 +9,11 @@ on:
       - devel
 
 jobs:
-  changes:
+  # Heavy jobs run only if a file that affects the build changes. Other paths are skipped.
+  filter-paths:
     runs-on: ubuntu-latest
     outputs:
-      run-tests: ${{ steps.filter.outputs.sources }}
+      run-jobs: ${{ steps.filter.outputs.sources }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
@@ -34,8 +35,8 @@ jobs:
               - '.github/workflows/ci-nix.yml'
 
   nix:
-    needs: changes
-    if: needs.changes.outputs.run-tests == 'true'
+    needs: filter-paths
+    if: needs.filter-paths.outputs.run-jobs == 'true'
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
@@ -51,12 +52,14 @@ jobs:
       - run: nix flake check -L
       - run: nix build -L ".#${{ matrix.extends }}"
 
+  # Reports success if the other jobs succeeded.
+  # The nix job may be skipped when the filter-paths job finds no relevant file (paths that do not need CI).
   check:
     if: always()
     name: check-macos-linux-nix
 
     needs:
-      - changes
+      - filter-paths
       - nix
 
     runs-on: ubuntu-latest

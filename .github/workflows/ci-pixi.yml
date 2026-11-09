@@ -11,10 +11,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  changes:
+  # Heavy jobs run only if a file that affects the build changes. Other paths are skipped.
+  filter-paths:
     runs-on: ubuntu-latest
     outputs:
-      run-tests: ${{ steps.filter.outputs.sources }}
+      run-jobs: ${{ steps.filter.outputs.sources }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
@@ -22,21 +23,22 @@ jobs:
         with:
           filters: |
             sources:
-              - 'include/**'
-              - 'bindings/**'
-              - 'test/**'
-              - 'examples/**'
               - 'benchmark/**'
-              - 'CMakeLists.txt'
+              - 'bindings/**'
               - 'cmake/**'
+              - 'CMakeLists.txt'
+              - 'examples/**'
+              - 'include/**'
+              - 'package.xml'
+              - 'test/**'
               - 'pixi.toml'
               - 'pixi.lock'
               - 'development/scripts/pixi/**'
               - '.github/workflows/ci-pixi.yml'
 
   pixi:
-    needs: changes
-    if: needs.changes.outputs.run-tests == 'true'
+    needs: filter-paths
+    if: needs.filter-paths.outputs.run-jobs == 'true'
     name: Pixi CI - ${{ matrix.os }} - ${{ matrix.build_type }} - C++${{ matrix.cxx_std }}
     runs-on: ${{ matrix.os }}
     env:
@@ -125,12 +127,14 @@ jobs:
       - name: Run pre-commit checks
         run: pixi run -e lint lint
 
+  # Reports success if the other jobs succeeded.
+  # The pixi job may be skipped when the filter-paths job finds no relevant file (paths that do not need CI).
   check:
     if: always()
     name: check-linux
 
     needs:
-      - changes
+      - filter-paths
       - lint
       - pixi
       # - pixi-build
