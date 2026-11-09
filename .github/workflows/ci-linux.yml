@@ -5,15 +5,36 @@ on:
     branches:
       - devel
   pull_request:
-    paths-ignore:
-      - CHANGELOG.md
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      run-tests: ${{ steps.filter.outputs.sources }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            sources:
+              - 'benchmark/**'
+              - 'bindings/**'
+              - 'cmake/**'
+              - 'CMakeLists.txt'
+              - 'doc/**'
+              - 'examples/**'
+              - 'include/**'
+              - 'test/**'
+              - '.github/workflows/ci-linux.yml'
+
   ubuntu:
+    needs: changes
+    if: needs.changes.outputs.run-tests == 'true'
     name: CI - Ubuntu ${{ matrix.ubuntu_version }} - ${{ matrix.build_type }} (APT)
     runs-on: ubuntu-latest
     container:
@@ -65,6 +86,8 @@ jobs:
         run: cmake --install build --prefix install
 
   archlinux:
+    needs: changes
+    if: needs.changes.outputs.run-tests == 'true'
     name: CI - ArchLinux
     runs-on: ubuntu-latest
     container:
@@ -81,6 +104,7 @@ jobs:
     name: check-linux
 
     needs:
+      - changes
       - ubuntu
       - archlinux
 
@@ -91,3 +115,4 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+          allowed-skips: ubuntu, archlinux
