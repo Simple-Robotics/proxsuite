@@ -6,8 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-## [0.8.3] - 2026-11-12
+### Changed
+- Run the CI jobs (pixi, linux, ros, nix) only when a file that affects the build changes ([#499](https://github.com/Simple-Robotics/proxsuite/pull/499))
 
+## [0.8.3] - 2026-11-12
 ### Fixed
 - Fix ROS package dependency by declaring `ros_environment` as a build dependency ([#501](https://github.com/Simple-Robotics/proxsuite/pull/501))
 - Fix dual infeasibility detection when some bounds are infinite (dense and sparse) ([#497](https://github.com/Simple-Robotics/proxsuite/pull/497))
