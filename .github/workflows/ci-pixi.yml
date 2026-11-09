@@ -15,26 +15,13 @@ jobs:
   filter-paths:
     runs-on: ubuntu-latest
     outputs:
-      run-jobs: ${{ steps.filter.outputs.sources }}
+      run-jobs: ${{ steps.filter.outputs.pixi }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
         id: filter
         with:
-          filters: |
-            sources:
-              - 'benchmark/**'
-              - 'bindings/**'
-              - 'cmake/**'
-              - 'CMakeLists.txt'
-              - 'examples/**'
-              - 'include/**'
-              - 'package.xml'
-              - 'test/**'
-              - 'pixi.toml'
-              - 'pixi.lock'
-              - 'development/scripts/pixi/**'
-              - '.github/workflows/ci-pixi.yml'
+          filters: .github/workflows/paths-filter/paths-filter.yml
 
   pixi:
     needs: filter-paths

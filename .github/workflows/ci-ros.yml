@@ -14,23 +14,13 @@ jobs:
   filter-paths:
     runs-on: ubuntu-latest
     outputs:
-      run-jobs: ${{ steps.filter.outputs.sources }}
+      run-jobs: ${{ steps.filter.outputs.ros }}
     steps:
     - uses: actions/checkout@v7
     - uses: dorny/paths-filter@v4
       id: filter
       with:
-        filters: |
-          sources:
-            - 'benchmark/**'
-            - 'bindings/**'
-            - 'cmake/**'
-            - 'CMakeLists.txt'
-            - 'examples/**'
-            - 'include/**'
-            - 'package.xml'
-            - 'test/**'
-            - '.github/workflows/ci-ros.yml'
+        filters: .github/workflows/paths-filter/paths-filter.yml
 
   ros:
     needs: filter-paths

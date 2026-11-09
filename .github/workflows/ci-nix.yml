@@ -13,26 +13,13 @@ jobs:
   filter-paths:
     runs-on: ubuntu-latest
     outputs:
-      run-jobs: ${{ steps.filter.outputs.sources }}
+      run-jobs: ${{ steps.filter.outputs.nix }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
         id: filter
         with:
-          filters: |
-            sources:
-              - 'benchmark/**'
-              - 'bindings/**'
-              - 'cmake/**'
-              - 'CMakeLists.txt'
-              - 'doc/**'
-              - 'examples/**'
-              - 'include/**'
-              - 'package.xml'
-              - 'test/**'
-              - 'flake.nix'
-              - 'flake.lock'
-              - '.github/workflows/ci-nix.yml'
+          filters: .github/workflows/paths-filter/paths-filter.yml
 
   nix:
     needs: filter-paths

@@ -13,25 +13,14 @@ jobs:
   filter-paths:
     runs-on: ubuntu-latest
     outputs:
-      run-jobs: ${{ github.event_name != 'pull_request' || steps.filter.outputs.sources }}
+      run-jobs: ${{ github.event_name != 'pull_request' || steps.filter.outputs.dockgen }}
     steps:
+      - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
         if: github.event_name == 'pull_request'
         id: filter
         with:
-          filters: |
-            sources:
-              - 'benchmark/**'
-              - 'bindings/**'
-              - 'cmake/**'
-              - 'CMakeLists.txt'
-              - 'doc/**'
-              - 'examples/**'
-              - 'include/**'
-              - 'package.xml'
-              - 'test/**'
-              - 'dockgen.toml'
-              - '.github/workflows/dockgen.yml'
+          filters: .github/workflows/paths-filter/paths-filter.yml
 
   dockgen:
     needs: filter-paths
