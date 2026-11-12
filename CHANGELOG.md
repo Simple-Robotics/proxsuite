@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Fixed
+- Fix ROS package dependency by declaring `ros_environment` as a build dependency ([#501](https://github.com/Simple-Robotics/proxsuite/pull/501))
 - Fix dual infeasibility detection when some bounds are infinite (dense and sparse) ([#497](https://github.com/Simple-Robotics/proxsuite/pull/497))
 
 ## [0.8.2] - 2026-10-28
