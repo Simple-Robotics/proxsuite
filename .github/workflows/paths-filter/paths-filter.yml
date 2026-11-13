@@ -1,0 +1,42 @@
+# Shared filters for dorny/paths-filter, used by every CI workflow.
+# Each workflow reads this file and checks the filter named after itself.
+# 'sources' holds the paths that affect the build for all CIs and is reused
+# through a YAML anchor.
+sources: &sources
+  - 'benchmark/**'
+  - 'bindings/**'
+  - 'cmake/**'
+  - 'CMakeLists.txt'
+  - 'examples/**'
+  - 'include/**'
+  - 'test/**'
+  - '.github/workflows/paths-filter/**'
+
+linux:
+  - *sources
+  - 'doc/**'
+  - '.github/workflows/ci-linux.yml'
+
+nix:
+  - *sources
+  - 'doc/**'
+  - 'flake.nix'
+  - 'flake.lock'
+  - '.github/workflows/ci-nix.yml'
+
+pixi:
+  - *sources
+  - 'pixi.toml'
+  - 'pixi.lock'
+  - 'development/scripts/pixi/**'
+  - '.github/workflows/ci-pixi.yml'
+
+ros:
+  - *sources
+  - 'package.xml'
+  - '.github/workflows/ci-ros.yml'
+
+dockgen:
+  - *sources
+  - 'dockgen.toml'
+  - '.github/workflows/dockgen.yml'

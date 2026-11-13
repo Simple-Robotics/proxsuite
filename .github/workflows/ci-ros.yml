@@ -4,15 +4,27 @@ on:
     branches:
       - devel
   pull_request:
-    paths-ignore:
-      - CHANGELOG.md
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # Heavy jobs run only if a file that affects the build changes. Other paths are skipped.
+  filter-paths:
+    runs-on: ubuntu-latest
+    outputs:
+      run-jobs: ${{ steps.filter.outputs.ros }}
+    steps:
+    - uses: actions/checkout@v7
+    - uses: dorny/paths-filter@v4
+      id: filter
+      with:
+        filters: .github/workflows/paths-filter/paths-filter.yml
+
   ros:
+    needs: filter-paths
+    if: needs.filter-paths.outputs.run-jobs == 'true'
     name: ROS ${{ matrix.ROS_DISTRO }} - ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -54,11 +66,14 @@ jobs:
           VERBOSE_TESTS: true
           ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
 
+  # Reports success if the other jobs succeeded.
+  # The ros job may be skipped when the filter-paths job finds no relevant file (paths that do not need CI).
   check:
     if: always()
     name: check-ci-linux-ros
 
     needs:
+    - filter-paths
     - ros
 
     runs-on: ubuntu-latest
@@ -67,3 +82,4 @@ jobs:
       uses: re-actors/alls-green@release/v1
       with:
         jobs: ${{ toJSON(needs) }}
+        allowed-skips: ros
