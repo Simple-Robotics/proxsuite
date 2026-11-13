@@ -38,6 +38,5 @@ ros:
 
 dockgen:
   - *sources
-  - 'package.xml'
   - 'dockgen.toml'
   - '.github/workflows/dockgen.yml'
