@@ -5,15 +5,27 @@ on:
     branches:
       - devel
   pull_request:
-    paths-ignore:
-      - CHANGELOG.md
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # Heavy jobs run only if a file that affects the build changes. Other paths are skipped.
+  filter-paths:
+    runs-on: ubuntu-latest
+    outputs:
+      run-jobs: ${{ steps.filter.outputs.linux }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: .github/workflows/paths-filter/paths-filter.yml
+
   ubuntu:
+    needs: filter-paths
+    if: needs.filter-paths.outputs.run-jobs == 'true'
     name: CI - Ubuntu ${{ matrix.ubuntu_version }} - ${{ matrix.build_type }} (APT)
     runs-on: ubuntu-latest
     container:
@@ -65,6 +77,8 @@ jobs:
         run: cmake --install build --prefix install
 
   archlinux:
+    needs: filter-paths
+    if: needs.filter-paths.outputs.run-jobs == 'true'
     name: CI - ArchLinux
     runs-on: ubuntu-latest
     container:
@@ -76,11 +90,14 @@ jobs:
       - run: cmake --build build --verbose --parallel 2
       - run: ctest --test-dir build --output-on-failure
 
+  # Reports success if the other jobs succeeded.
+  # The ubuntu and archlinux jobs may be skipped when the filter-paths job finds no relevant file (paths that do not need CI).
   check:
     if: always()
     name: check-linux
 
     needs:
+      - filter-paths
       - ubuntu
       - archlinux
 
@@ -91,3 +108,4 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
+          allowed-skips: ubuntu, archlinux

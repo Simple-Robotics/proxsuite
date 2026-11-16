@@ -9,7 +9,22 @@ on:
   pull_request:
 
 jobs:
+  # Pushes and tags always run; on pull requests, heavy jobs run only if a file that affects the build changes.
+  filter-paths:
+    runs-on: ubuntu-latest
+    outputs:
+      run-jobs: ${{ github.event_name != 'pull_request' || steps.filter.outputs.dockgen }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        if: github.event_name == 'pull_request'
+        id: filter
+        with:
+          filters: .github/workflows/paths-filter/paths-filter.yml
+
   dockgen:
+    needs: filter-paths
+    if: needs.filter-paths.outputs.run-jobs == 'true'
     runs-on: "ubuntu-latest"
     permissions:
       contents: read
