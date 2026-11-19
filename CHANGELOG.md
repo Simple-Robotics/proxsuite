@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+# Fixed
 - Workaround ubuntu 22.04 cereal cmake ([#504](https://github.com/Simple-Robotics/proxsuite/pull/504))
 
 ## [0.8.3] - 2026-11-12
