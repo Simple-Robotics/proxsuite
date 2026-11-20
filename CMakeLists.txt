@@ -141,29 +141,12 @@ endif()
 set(PACKAGE_CONFIG_EXTRA_CONTENT "")
 if(PROXSUITE_BUILD_WITH_SERIALIZATION)
   jrl_find_package(cereal CONFIG REQUIRED EXPECTED_TARGETS cereal::cereal)
-
-  # Detect and workaround ubuntu 22.04 https://bugs.launchpad.net/ubuntu/+source/libcereal/+bug/2174758
-  get_target_property(_cereal_INCLUDE_DIRECTORIES cereal::cereal INTERFACE_INCLUDE_DIRECTORIES)
-  if(_cereal_INCLUDE_DIRECTORIES STREQUAL "/include")
-    get_filename_component(_cereal_PREFIX "${cereal_DIR}" PATH)
-    get_filename_component(_cereal_PREFIX "${_cereal_PREFIX}" PATH)
-    get_filename_component(_cereal_PREFIX "${_cereal_PREFIX}" PATH)
-    set_target_properties(
-      cereal::cereal
-      PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${_cereal_PREFIX}/include"
-    )
-  endif()
-  # and export that
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\nget_target_property(_cereal_INCLUDE_DIRECTORIES cereal::cereal INTERFACE_INCLUDE_DIRECTORIES)")
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\nif(_cereal_INCLUDE_DIRECTORIES STREQUAL \"/include\")")
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\n  get_filename_component(_cereal_PREFIX \"\${cereal_DIR}\" PATH)")
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\n  get_filename_component(_cereal_PREFIX \"\${_cereal_PREFIX}\" PATH)")
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\n  get_filename_component(_cereal_PREFIX \"\${_cereal_PREFIX}\" PATH)")
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\n  set_target_properties(")
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\n    cereal::cereal")
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\n    PROPERTIES INTERFACE_INCLUDE_DIRECTORIES \"\${_cereal_PREFIX}/include\"")
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\n  )")
-  set(PACKAGE_CONFIG_EXTRA_CONTENT "${PACKAGE_CONFIG_EXTRA_CONTENT}\nendif()")
+  include(cmake/cereal.cmake)
+  file(READ cmake/cereal.cmake PACKAGE_CONFIG_EXTRA_CONTENT_CEREAL)
+  set(
+    PACKAGE_CONFIG_EXTRA_CONTENT
+    "${PACKAGE_CONFIG_EXTRA_CONTENT}\n${PACKAGE_CONFIG_EXTRA_CONTENT_CEREAL}"
+  )
 endif()
 
 # simde
