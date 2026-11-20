@@ -138,8 +138,15 @@ if(BUILD_PYTHON_INTERFACE)
 endif()
 
 # cereal (Serialization)
+set(PACKAGE_CONFIG_EXTRA_CONTENT "")
 if(PROXSUITE_BUILD_WITH_SERIALIZATION)
   jrl_find_package(cereal CONFIG REQUIRED EXPECTED_TARGETS cereal::cereal)
+  include(cmake/cereal.cmake)
+  file(READ cmake/cereal.cmake PACKAGE_CONFIG_EXTRA_CONTENT_CEREAL)
+  set(
+    PACKAGE_CONFIG_EXTRA_CONTENT
+    "${PACKAGE_CONFIG_EXTRA_CONTENT}\n${PACKAGE_CONFIG_EXTRA_CONTENT_CEREAL}"
+  )
 endif()
 
 # simde
@@ -375,7 +382,7 @@ if(BUILD_WITH_OPENMP_SUPPORT)
   endif()
 endif()
 
-jrl_export_package()
+jrl_export_package(PACKAGE_CONFIG_EXTRA_CONTENT ${PACKAGE_CONFIG_EXTRA_CONTENT})
 
 jrl_generate_ros2_package_files(
   INSTALL_CPP_PACKAGE_FILES [[NOT BUILD_STANDALONE_PYTHON_INTERFACE]]
